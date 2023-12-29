@@ -144,7 +144,7 @@ If you're wondering, "Why not X feature?"—great question!
 Open an issue on our GitHub repository, and let's dive into the
 discussion. I am open to exploring new additions or substitutions.
 
-** Extra: Emacs instalation
+** Extra: Emacs install
 *** Debian (or Debian Based distros)
 For Debian or Debian based Distros, such as Ubuntu and it's derivatives.
 
