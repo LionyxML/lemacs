@@ -927,7 +927,7 @@
 								  (let ((midpoint (/ (window-height) 2)))
 									(goto-char (window-start))
 									(forward-line midpoint)
-									(recenter midpoint)))))  
+									(recenter midpoint)))))
 
   ;; Inits everything in the right order
   (when (fboundp 'pixel-scroll-precision-mode)
@@ -936,7 +936,7 @@
 
   ;; Activate global on init
   (global-undo-tree-mode)
-  
+
   ;; General customizations
   ;; (my-setup-outline-mode-elisp)
   (set-default 'truncate-lines t)
@@ -946,7 +946,7 @@
   (setq-default line-spacing 1)
   (setq-default ident-tabs-mode nil)
   (setq initial-scratch-message "")
-  
+
   (setq ibuffer-show-empty-filter-groups nil)
 
   (setq gnus-init-file "~/.gnus.el")
