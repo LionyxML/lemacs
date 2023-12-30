@@ -3,7 +3,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.0
+;; Version: 0.1.1
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -123,16 +123,9 @@
 	 "46aa01ed69cef28b48aaa49053a6f987f9c12c06cf9f88a028b249dcc5a48157"
 	 "0527c20293f587f79fc1544a2472c8171abcc0fa767074a0d3ebac74793ab117"
 	 default))
- '(diff-hl-margin-mode t)
- '(diff-hl-margin-symbols-alist
-   '((insert . " ") (delete . " ") (change . " ") (unknown . " ")
-	 (ignored . " ")))
  '(dired-kill-when-opening-new-dired-buffer t)
  '(dired-listing-switches "-lh")
  '(doc-view-continuous t)
- '(doom-modeline-buffer-file-name-style 'truncate-upto-root)
- '(doom-modeline-buffer-name t)
- '(doom-modeline-vcs-max-length 25)
  '(emms-mode-line-icon-image-cache
    '(image :type xpm :ascent center :data
 		   "/* XPM */\12static char *note[] = {\12/* width height num_colors chars_per_pixel */\12\"    10   11        2            1\",\12/* colors */\12\". c #358d8d\",\12\"# c None s None\",\12/* pixels */\12\"###...####\",\12\"###.#...##\",\12\"###.###...\",\12\"###.#####.\",\12\"###.#####.\",\12\"#...#####.\",\12\"....#####.\",\12\"#..######.\",\12\"#######...\",\12\"######....\",\12\"#######..#\" };") t)
@@ -188,7 +181,6 @@
  '(jdee-db-active-breakpoint-face-colors (cons "#0d0d0d" "#5DD8FF"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#0d0d0d" "#67B7A4"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#0d0d0d" "#6C7986"))
- '(lsp-ui-doc-max-width 100)
  '(magit-diff-use-overlays nil)
  '(magit-ediff-dwim-show-on-hunks t)
  '(make-backup-files nil)
@@ -303,6 +295,14 @@
 (use-package diff-hl
   :defer t
   :ensure t
+  :custom
+  (diff-hl-margin-mode t)
+  (diff-hl-margin-symbols-alist
+   '((insert . " ") (delete . " ") (change . " ") (unknown . " ")
+	 (ignored . " ")))
+  :bind
+  (("M-9" . 'diff-hl-previous-hunk)
+   ("M-0" . 'diff-hl-next-hunk))
   :config)
 
 (use-package docker
@@ -318,34 +318,38 @@
 (use-package doom-modeline
   :defer t
   :ensure t
+  :custom
+  (doom-modeline-buffer-file-name-style 'truncate-upto-root)
+  (doom-modeline-buffer-name t)
+  (doom-modeline-vcs-max-length 25)
+  (doom-modeline-icon t)
+  ()
   :config
-  (setq doom-modeline-icon t)
-  ;; (setq doom-modeline-unicode-fallback nil)
   (setq inhibit-compacting-font-caches t) ;; Don´t compact font caches during GC
   
   (unless (eq system-type 'darwin)
-	(if (facep 'mode-line-active)
-		(set-face-attribute 'mode-line-active nil
-							:family "Hack Nerd Font"
-							:height 110) ; For 29+
-	  (set-face-attribute 'mode-line nil
-						  :family "Hack Nerd Font"
-						  :height 110))
-	(set-face-attribute 'mode-line-inactive nil
-						:family "Hack Nerd Font"
-						:height 110))
+    (if (facep 'mode-line-active)
+        (set-face-attribute 'mode-line-active nil
+                            :family "Hack Nerd Font"
+                            :height 110) ; For 29+
+      (set-face-attribute 'mode-line nil
+                          :family "Hack Nerd Font"
+                          :height 110))
+    (set-face-attribute 'mode-line-inactive nil
+                        :family "Hack Nerd Font"
+                        :height 110))
 
   (when (eq system-type 'darwin)
-	(if (facep 'mode-line-active)
-		(set-face-attribute 'mode-line-active nil
-							:family "Hack Nerd Font"
-							:height 130) ; For 29+
-	  (set-face-attribute 'mode-line nil
-						  :family "Hack Nerd Font"
-						  :height 130))
-	(set-face-attribute 'mode-line-inactive nil
-						:family "Hack Nerd Font"
-						:height 130)))
+    (if (facep 'mode-line-active)
+        (set-face-attribute 'mode-line-active nil
+                            :family "Hack Nerd Font"
+                            :height 130) ; For 29+
+      (set-face-attribute 'mode-line nil
+                          :family "Hack Nerd Font"
+                          :height 130))
+    (set-face-attribute 'mode-line-inactive nil
+                        :family "Hack Nerd Font"
+                        :height 130)))
 
 (use-package dotenv-mode
   :defer t
@@ -389,6 +393,8 @@
 (use-package expand-region
   :defer t
   :ensure t
+  :bind
+  (("M-1" . 'er/expand-region))
   :config)
 
 (use-package gh-md
@@ -469,14 +475,13 @@
   (add-hook 'ibuffer-mode-hook #'nerd-icons-ibuffer-mode))
 
 (use-package ibuffer-project
-  ;; :defer t
   :ensure t
   :config
   (add-hook
    'ibuffer-hook
    (lambda ()
-	 (setq ibuffer-filter-groups (ibuffer-project-generate-filter-groups))
-	 (unless (eq ibuffer-sorting-mode 'project-file-relative)
+     (setq ibuffer-filter-groups (ibuffer-project-generate-filter-groups))
+     (unless (eq ibuffer-sorting-mode 'project-file-relative)
        (ibuffer-do-sort-by-project-file-relative)))))
 
 (use-package org-ros
@@ -569,17 +574,17 @@
   :ensure t
   :config
   (setq major-mode-remap-alist
-		'((yaml-mode . yaml-ts-mode)
-		  (bash-mode . bash-ts-mode)
-		  (js-mode . js-ts-mode)
-		  (javascript-mode . js-ts-mode)
-		  (js2-mode . js-ts-mode)
-		  (typescript-mode . typescript-ts-mode)))
+        '((yaml-mode . yaml-ts-mode)
+          (bash-mode . bash-ts-mode)
+          (js-mode . js-ts-mode)
+          (javascript-mode . js-ts-mode)
+          (js2-mode . js-ts-mode)
+          (typescript-mode . typescript-ts-mode)))
 
   ;; we choose this instead of tsx-mode so that eglot / lsp-mode can automatically figure out language for server
   ;; see https://github.com/joaotavora/eglot/issues/624 and https://github.com/joaotavora/eglot#handling-quirky-servers
   (define-derived-mode typescriptreact-mode tsx-ts-mode
-	"TypeScript TSX")
+    "TypeScript TSX")
   ;; use our derived mode for tsx files
   (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescriptreact-mode))
   ;; by default, typescript-mode is mapped to the treesitter typescript parser
@@ -634,24 +639,28 @@
 (use-package vc-msg
   :defer t
   :ensure t
+  :bind
+  (("M-2" . 'vc-msg-show))
   :config
   (setq vc-msg-show-at-line-beginning-p nil))
 
 (use-package vterm
   :defer t
   :ensure t
+  :bind
+  (("M-t" . 'my-toggle-vterm-buffer))
   :config
   (add-hook 'vterm-mode-hook (lambda ()
-							   (define-key vterm-mode-map (kbd "M-t") #'my-toggle-vterm-buffer)
-							   (setq-local global-hl-line-mode
-										   nil))))
+                               (define-key vterm-mode-map (kbd "M-t") #'my-toggle-vterm-buffer)
+                               (setq-local global-hl-line-mode
+                                           nil))))
 
 (use-package which-key
   :defer t
   :ensure t
   :config
   (with-eval-after-load 'lsp-mode
-	(add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)))
+    (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)))
 
 (use-package xclip
   :defer t
@@ -758,7 +767,7 @@
          ("M-s d" . consult-find)                  ;; Alternative: consult-fd
          ("M-s c" . consult-locate)
          ("M-s g" . consult-grep)
-		 ("M-s G" . consult-git-grep)
+         ("M-s G" . consult-git-grep)
          ("M-s r" . consult-ripgrep)
          ;; ("M-s l" . consult-line)
          ("M-s l" . my-consult-line-current-selection-or-word)
@@ -875,6 +884,8 @@
   :ensure t)
 
 (use-package emacs
+  :bind
+  (("M-D" . 'my-duplicate-line-or-region))
   :init
   ;; TAB cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
@@ -899,24 +910,73 @@
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
   ;; Enable recursive minibuffers
-  (setq enable-recursive-minibuffers t))
+  (setq enable-recursive-minibuffers t)
+
+  ;; Remap scrolling to always center
+  (global-set-key (kbd "C-v") (lambda ()
+								(interactive)
+								(scroll-up-command)
+								(recenter)
+								))
+  (global-set-key (kbd "M-v") (lambda ()
+								(interactive)
+								(scroll-down-command)
+								(unless (= (window-start) (point-min))
+								  (recenter))
+								(when (= (window-start) (point-min))
+								  (let ((midpoint (/ (window-height) 2)))
+									(goto-char (window-start))
+									(forward-line midpoint)
+									(recenter midpoint)))))  
+
+  ;; Inits everything in the right order
+  (when (fboundp 'pixel-scroll-precision-mode)
+    (pixel-scroll-precision-mode 1))
+  (setq pixel-scroll-precision-use-momentum nil)
+
+  ;; Activate global on init
+  (global-undo-tree-mode)
+  
+  ;; General customizations
+  ;; (my-setup-outline-mode-elisp)
+  (set-default 'truncate-lines t)
+  (desktop-save-mode 1)
+
+  (setq ring-bell-function 'ignore)
+  (setq-default line-spacing 1)
+  (setq-default ident-tabs-mode nil)
+  (setq initial-scratch-message "")
+  
+  (setq ibuffer-show-empty-filter-groups nil)
+
+  (setq gnus-init-file "~/.gnus.el")
+
+  (setq warning-minimum-level :emergency)
+  (setq read-process-output-max (* 1024 1024)) ;; 1mb
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)
+  (setq create-lockfiles nil)
+  (setq window-combination-resize t
+        split-width-threshold 300)
+
+  (doom-modeline-mode 1))
 
 (use-package flycheck
   :defer t
   :ensure t
   :config
   (with-eval-after-load 'flycheck
-	(custom-set-variables
-	 '(flycheck-indication-mode-line-symbol (quote <))))
+    (custom-set-variables
+     '(flycheck-indication-mode-line-symbol (quote <))))
 
   (setq-default flycheck-indication-mode 'left-margin)
   (add-hook 'flycheck-mode-hook #'flycheck-set-indication-mode)
 
   (defun my-set-flycheck-margins ()
-	(interactive)
-	(setq left-fringe-width 1 right-fringe-width 1
-		  left-margin-width 1 right-margin-width 1)
-	(flycheck-refresh-fringes-and-margins))
+    (interactive)
+    (setq left-fringe-width 1 right-fringe-width 1
+          left-margin-width 1 right-margin-width 1)
+    (flycheck-refresh-fringes-and-margins))
 
   (add-hook 'flycheck-mode-hook #'my-set-flycheck-margins))
 
@@ -936,20 +996,10 @@
   (lsp-inlay-hints-mode)
   (setq lsp-inlay-hint-enable t)
 
-  (setq lsp-ui-peek-always-show nil)
   (setq lsp-enable-links nil)
   (setq lsp-eldoc-enable-hover nil)
   (setq lsp-python-ms-python-executable "/usr/bin/python3")
 
-  (setq lsp-ui-doc-alignment 'window)
-  (setq lsp-ui-doc-position 'top) ;; 'at-point 'top 'bottom
-  ;; (setq lsp-ui-doc-show-with-cursor t)
-  ;; (setq lsp-ui-doc-enable t)
-  ;; (setq lsp-ui-sideline-show-hover t)
-  (setq lsp-ui-sideline-diagnostic-max-line-length 100)
-  (setq lsp-ui-sideline-ignore-duplicate t)
-  (setq lsp-ui-sideline-show-code-actions nil)
-  
   (setq lsp-headerline-breadcrumb-enable-symbol-numbers t)
   (setq lsp-headerline-arrow "▶")
   (setq lsp-headerline-breadcrumb-enable-diagnostics nil)
@@ -974,7 +1024,7 @@
   (require 'lsp-prisma)
 
   (add-hook 'before-save-hook #'(lambda () (when (eq major-mode 'prisma-mode)
-											 (lsp-format-buffer))))
+                                             (lsp-format-buffer))))
   (add-hook 'prisma-mode-hook #'lsp-deferred)
 
   ;; LSP requirements on the server
@@ -982,39 +1032,38 @@
 
   ;; LSP Mapping on what mode uses what LSP server
   (setq lsp-language-id-configuration '((java-mode . "java")
-										(python-mode . "python")
+                                        (python-mode . "python")
                     (python-ts-mode . "python")
-										(gfm-view-mode . "markdown")
-										(rust-mode . "rust")
-										(rustic-mode . "rust")
-										(rust-ts-mode . "rust")
-										(css-mode . "css")
-										(sass-mode . "sass")
-										(xml-mode . "xml")
-										(c-mode . "c")
-										(c++-mode . "cpp")
-										(objc-mode . "objective-c")
-										(web-mode . "html")
-										(html-mode . "html")
-										(sgml-mode . "html")
-										(mhtml-mode . "html")
-										(go-mode . "go")
-										(haskell-mode . "haskell")
-										(php-mode . "php")
-										(json-mode . "json")
-										(js-ts-mode . "javascript")
-										(js-mode . "javascript")
-										(rjsx-mode . "javascript")
-										(javascript-mode . "javascript")
-										(typescript-mode . "typescript")
-										(typescript-ts-mode . "typescript")
-										(tsx-ts-mode . "typescript")
-										(prisma-mode . "prisma")
-										(typescriptreact-mode . "typescriptreact")
-										(ruby-mode . "ruby")
+                                        (gfm-view-mode . "markdown")
+                                        (rust-mode . "rust")
+                                        (rustic-mode . "rust")
+                                        (rust-ts-mode . "rust")
+                                        (css-mode . "css")
+                                        (sass-mode . "sass")
+                                        (xml-mode . "xml")
+                                        (c-mode . "c")
+                                        (c++-mode . "cpp")
+                                        (objc-mode . "objective-c")
+                                        (web-mode . "html")
+                                        (html-mode . "html")
+                                        (sgml-mode . "html")
+                                        (mhtml-mode . "html")
+                                        (go-mode . "go")
+                                        (haskell-mode . "haskell")
+                                        (php-mode . "php")
+                                        (json-mode . "json")
+                                        (js-ts-mode . "javascript")
+                                        (js-mode . "javascript")
+                                        (rjsx-mode . "javascript")
+                                        (javascript-mode . "javascript")
+                                        (typescript-mode . "typescript")
+                                        (typescript-ts-mode . "typescript")
+                                        (tsx-ts-mode . "typescript")
+                                        (prisma-mode . "prisma")
+                                        (typescriptreact-mode . "typescriptreact")
+                                        (ruby-mode . "ruby")
                     (emacs-lisp-mode . nil)
-										))
-
+                                        ))
   ;; LSP debugging
   ;;(setq lsp-print-io t)
   ;;(setq lsp-trace t)
@@ -1026,6 +1075,21 @@
   :defer t
   :ensure t
   :after (:all lsp)
+  :custom
+  (lsp-ui-doc-max-width 100)
+  (lsp-ui-peek-always-show nil)
+  (lsp-ui-doc-alignment 'window)
+  (lsp-ui-doc-position 'top) ;; 'at-point 'top 'bottom
+  ;; (lsp-ui-doc-show-with-cursor t)
+  ;; (lsp-ui-doc-enable t)
+  ;; (lsp-ui-sideline-show-hover t)
+  (lsp-ui-sideline-diagnostic-max-line-length 100)
+  (lsp-ui-sideline-ignore-duplicate t)
+  (lsp-ui-sideline-show-code-actions nil)
+  :bind
+  (("M-3" . 'lsp-ui-peek-find-implementation)
+   ("M-4" . 'lsp-ui-peek-find-references)
+   ("M-5" . 'lsp-ui-doc-toggle))
   :config)
 
 (use-package ellama
@@ -1035,8 +1099,8 @@
   (setopt ellama-language "English")
   (require 'llm-ollama)
   (setopt ellama-provider
-		  (make-llm-ollama
-		    :chat-model "codellama" :embedding-model "codellama")))
+          (make-llm-ollama
+            :chat-model "codellama" :embedding-model "codellama")))
 
 (exec-path-from-shell-initialize)
 
@@ -1067,8 +1131,8 @@
   (setq erc-hide-list '("JOIN" "PART" "QUIT"))
   (setq erc-timestamp-format "[%H:%M]")
   (add-hook 'window-configuration-change-hook
-			(lambda ()
-			  (setq erc-fill-column (- (window-width) 2))))
+            (lambda ()
+              (setq erc-fill-column (- (window-width) 2))))
   (setq erc-autojoin-channels-alist '((".*\\.libera\\.chat" "#emacs"))))
 
 (defun my-toggle-vterm-buffer ()
@@ -1086,7 +1150,7 @@
       (select-window (window-in-direction 'above))
       (enlarge-window window-height)
       (select-window (window-in-direction 'below))
-	  )))
+      )))
 
 (defun my-duplicate-line-or-region (&optional n)
   "Duplicate current line, or region if active.
@@ -1094,21 +1158,21 @@ With argument N, make N copies.
 negative N, comment out original line and use the absolute value."
   (interactive "*p")
   (let ((use-region (use-region-p)))
-	(save-excursion
-	  (let ((text (if use-region        ;Get region if active, otherwise line
-					  (buffer-substring (region-beginning) (region-end))
-					(prog1 (thing-at-point 'line)
-					  (end-of-line)
-					  (if (< 0 (forward-line 1)) ;Go to beginning of next line, or make a new one
-						  (newline))))))
-	    (dotimes (i (abs (or n 1)))     ;Insert N times, or once if not specified
-	      (insert text))))
-	(if use-region nil                  ;Only if we're working with a line (not a region)
-	  (let ((pos (- (point) (line-beginning-position)))) ;Save column
-	    (if (> 0 n)                             ;Comment out original with negative arg
-			(comment-region (line-beginning-position) (line-end-position)))
-	    (forward-line 1)
-	    (forward-char pos)))))
+    (save-excursion
+      (let ((text (if use-region        ;Get region if active, otherwise line
+                      (buffer-substring (region-beginning) (region-end))
+                    (prog1 (thing-at-point 'line)
+                      (end-of-line)
+                      (if (< 0 (forward-line 1)) ;Go to beginning of next line, or make a new one
+                          (newline))))))
+        (dotimes (i (abs (or n 1)))     ;Insert N times, or once if not specified
+          (insert text))))
+    (if use-region nil                  ;Only if we're working with a line (not a region)
+      (let ((pos (- (point) (line-beginning-position)))) ;Save column
+        (if (> 0 n)                             ;Comment out original with negative arg
+            (comment-region (line-beginning-position) (line-end-position)))
+        (forward-line 1)
+        (forward-char pos)))))
 
 (defun my-set-terminal-transparency ()
   "Set transparency on terminal.
@@ -1130,9 +1194,9 @@ Also terminal emulator must be already configured to support it."
 (defun my-setup-outline-mode-elisp ()
   "Automatically load outline mode on elisp files."
   (defun my-elisp-mode-hook ()
-	(interactive)
-	(outline-minor-mode 1)
-	(outline-hide-sublevels 1))
+    (interactive)
+    (outline-minor-mode 1)
+    (outline-hide-sublevels 1))
   (add-hook 'emacs-lisp-mode-hook #'my-elisp-mode-hook))
 
 (defun my-first-install ()
@@ -1158,68 +1222,38 @@ Also terminal emulator must be already configured to support it."
      (message "LEmacs failed to install, run 'emacs -nw --debug-init'"))))
 
 
-;;; --------------------------------- GENERAL KEYBINDINGS
-(global-set-key (kbd "M-1") 'er/expand-region)
-(global-set-key (kbd "M-2") 'vc-msg-show)
-(global-set-key (kbd "M-3") 'lsp-ui-peek-find-implementation)
-(global-set-key (kbd "M-4") 'lsp-ui-peek-find-references)
-(global-set-key (kbd "M-5") 'lsp-ui-doc-toggle)
-(global-set-key (kbd "M-/") 'comment-or-uncomment-region)
-(global-set-key (kbd "M-z") 'undo)
-(global-set-key (kbd "M-D") 'my-duplicate-line-or-region)
-(global-set-key (kbd "C-v") (lambda ()
-			      (interactive)
-			      (scroll-up-command)
-			      (recenter)
-			      ))
-(global-set-key (kbd "M-v") (lambda ()
-			      (interactive)
-			      (scroll-down-command)
-			      (unless (= (window-start) (point-min))
-			        (recenter))
-			      (when (= (window-start) (point-min))
-			        (let ((midpoint (/ (window-height) 2)))
-			          (goto-char (window-start))
-			          (forward-line midpoint)
-			          (recenter midpoint)))))
-(global-set-key (kbd "M-t") 'my-toggle-vterm-buffer)
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "M-9") 'diff-hl-previous-hunk)
-(global-set-key (kbd "M-0") 'diff-hl-next-hunk)
-
 ;;; --------------------------------- AFTER INIT HOOK
 (add-hook 'emacs-startup-hook
           (lambda ()
             (message "Emacs has fully loaded. This code runs after startup.")
 
-			;; Performance Hack 02.1 --- Quickier filename handling, resetted after load
-			(setq file-name-handler-alist default-file-name-handler-alist)
+            ;; Performance Hack 02.1 --- Quickier filename handling, resetted after load
+            (setq file-name-handler-alist default-file-name-handler-alist)
 
-			;; macOS specials
-			(when (eq system-type 'darwin)
-			  (setq mac-option-key-is-meta nil)
-			  (setq mac-option-modifier nil)
-			  (setq mac-command-key-is-meta t)
-			  (setq mac-command-modifier 'meta))
+            ;; macOS specials
+            (when (eq system-type 'darwin)
+              (setq mac-option-key-is-meta nil)
+              (setq mac-option-modifier nil)
+              (setq mac-command-key-is-meta t)
+              (setq mac-command-modifier 'meta))
 
-			(xclip-mode 1)
-			(delete-selection-mode 1)
-			;; (global-company-mode)
-			;; (global-tree-sitter-mode)
-			(global-diff-hl-mode)
-			(diff-hl-flydiff-mode)
-			(my-setup-outline-mode-elisp)
+            (xclip-mode 1)
+            (delete-selection-mode 1)
+            ;; (global-company-mode)
+            (global-diff-hl-mode)
+            (diff-hl-flydiff-mode)
+            (my-setup-outline-mode-elisp)
 
-			(add-hook 'prog-mode-hook 'hl-todo-mode +1)
-			(add-hook 'prog-mode-hook 'smartparens-mode +1)
-			(add-hook 'prog-mode-hook 'indent-guide-mode +1)
-			(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-			(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+            (add-hook 'prog-mode-hook 'hl-todo-mode +1)
+            (add-hook 'prog-mode-hook 'smartparens-mode +1)
+            (add-hook 'prog-mode-hook 'indent-guide-mode +1)
+            (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+            (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
-			(treemacs)
-			(treemacs)
-			(which-key-mode)
-			
+            (treemacs)
+            (treemacs)
+            (which-key-mode)
+            
       ;; (my-load-dashboard-customization)
 
       ;; (profiler-report)
@@ -1240,52 +1274,11 @@ Also terminal emulator must be already configured to support it."
 "
         (emacs-init-time)
         (number-to-string (length package-activated-list)))))
-	))
+    ))
 
-
-
-;;; --------------------------------- INIT FUNCTION
-(defun my-init ()
-  "Inits everything in the right order."
-  
-  (when (fboundp 'pixel-scroll-precision-mode)
-    (pixel-scroll-precision-mode 1))
-  (setq pixel-scroll-precision-use-momentum nil)
-
-  ;; Activate global on init
-  (global-undo-tree-mode)
-  
-  ;; General customizations
-  ;; (my-setup-outline-mode-elisp)
-  (set-default 'truncate-lines t)
-  (desktop-save-mode 1)
-
-  (setq ring-bell-function 'ignore)
-  (setq-default line-spacing 1)
-  (setq-default ident-tabs-mode nil)
-  (setq initial-scratch-message "")
- 
-  (setq ibuffer-show-empty-filter-groups nil)
-
-  (setq gnus-init-file "~/.gnus.el")
-
-  (setq warning-minimum-level :emergency)
-  (setq read-process-output-max (* 1024 1024)) ;; 1mb
-  (setq make-backup-files nil)
-  (setq auto-save-default nil)
-  (setq create-lockfiles nil)
-  (setq window-combination-resize t
-		split-width-threshold 300)
-
-  ;; Starts packages
-  (doom-modeline-mode 1))
 
 
 ;;; --------------------------------- INIT/PROVIDE THIS CONFIG
-(my-init)
-
-(provide '.emacs)
 
 (provide 'init)
-
 ;;; init.el ends here

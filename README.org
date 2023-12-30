@@ -86,7 +86,7 @@ rm -rf ~/.emacs.d ~/.emacs
 Now, let's get you set up:
 
 #+BEGIN_SRC bash
-git clone https://github.com/LionyxML/dotemacs ~/.emacs.d
+git clone https://github.com/LionyxML/LEmacs ~/.emacs.d
 emacs -nw --eval="(my-first-install)"
 #+END_SRC
 
