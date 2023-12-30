@@ -1254,8 +1254,6 @@ Also terminal emulator must be already configured to support it."
             (treemacs)
             (which-key-mode)
             
-      ;; (my-load-dashboard-customization)
-
       ;; (profiler-report)
       ;; (profiler-stop)
 
