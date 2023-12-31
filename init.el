@@ -885,7 +885,8 @@
 
 (use-package emacs
   :bind
-  (("M-D" . 'my-duplicate-line-or-region))
+  (("M-D" . 'my-duplicate-line-or-region)
+   ("C-x C-b" . 'ibuffer))
   :init
   ;; TAB cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
