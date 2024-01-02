@@ -3,7 +3,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.1
+;; Version: 0.1.2
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -266,6 +266,10 @@
  '(w3m-default-display-inline-images t)
  '(xterm-mouse-mode t))
 (custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(default ((t (:height 130 :family "Hack Nerd Font" :embolden true))))
  '(term ((t (:background "black" :foreground "gray100")))))
 
