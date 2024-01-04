@@ -3,7 +3,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.2
+;; Version: 0.1.3
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -695,8 +695,8 @@
 (use-package vertico
   :ensure t
   :custom
-  (vertico-count 13)                    ; Number of candidates to display
-  (vertico-resize t)
+  (vertico-count 10)                    ; Number of candidates to display
+  (vertico-resize nil)
   (vertico-cycle nil)                   ; Go from last to first candidate and first to last (cycle)?
   :config
   (vertico-mode)
