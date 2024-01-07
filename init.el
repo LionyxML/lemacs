@@ -1,5 +1,4 @@
 ;; init.el --- LEmacs (Lionyx Emacs)
-
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
@@ -24,6 +23,7 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Code:
+
 ;;; --------------------------------- USE-PACKAGE INIT
 
 
@@ -209,7 +209,7 @@
 						   expand-region flycheck gh-md
 						   gnu-elpa-keyring-update handlebars-mode
 						   hl-indent hl-todo ibuffer-project
-						   indent-guide lsp-mode lsp-ui magit
+						   indent-guide kkp lsp-mode lsp-ui magit
 						   magit-stats maple-minibuffer marginalia
 						   markdown-mode mmm-mode multi-vterm
 						   nerd-icons-completion nerd-icons-corfu
@@ -410,6 +410,12 @@
   :defer t
   :ensure t
   :config)
+
+(use-package kkp
+  :ensure t
+  :config
+  ;; (setq kkp-alt-modifier 'alt) ;; use this if you want to map the Alt keyboard modifier to Alt in Emacs (and not to Meta)
+  (global-kkp-mode +1))
 
 (use-package handlebars-mode
   :defer t
