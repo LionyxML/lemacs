@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.3
+;; Version: 0.1.4
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -694,7 +694,7 @@
   :ensure t
   :custom
   (marginalia-max-relative-age 0)
-  (marginalia-align 'right)
+  (marginalia-align 'left)
   :init
   (marginalia-mode))
 
