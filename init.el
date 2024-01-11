@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.5
+;; Version: 0.1.6
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -129,10 +129,6 @@
  '(emms-mode-line-icon-image-cache
    '(image :type xpm :ascent center :data
 		   "/* XPM */\12static char *note[] = {\12/* width height num_colors chars_per_pixel */\12\"    10   11        2            1\",\12/* colors */\12\". c #358d8d\",\12\"# c None s None\",\12/* pixels */\12\"###...####\",\12\"###.#...##\",\12\"###.###...\",\12\"###.#####.\",\12\"###.#####.\",\12\"#...#####.\",\12\"....#####.\",\12\"#..######.\",\12\"#######...\",\12\"######....\",\12\"#######..#\" };") t)
- '(eshell-visual-commands
-   '("vi" "screen" "top" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
-	 "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer"
-	 "ncmpcpp" "newsbeuter" "nethack" "mutt"))
  '(exec-path
    '("/bin" "/usr/bin" "/usr/local/bin" "/usr/local/sbin" "/usr/sbin"))
  '(flycheck-checker-error-threshold nil)
@@ -899,6 +895,14 @@
   (("M-D" . 'my-duplicate-line-or-region)
    ("C-x C-b" . 'ibuffer))
   :init
+
+  ;; E-Shell
+  (add-hook 'eshell-mode-hook (lambda () (setenv "TERM" "xterm-256color")))
+  (setq eshell-visual-commands
+		'("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
+		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
+		  "ncmpcpp" "newsbeuter" "nethack" "mutt"))
+
   ;; TAB cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
   ;; Enable indentation+completion using the TAB key.
@@ -940,7 +944,6 @@
 									(goto-char (window-start))
 									(forward-line midpoint)
 									(recenter midpoint)))))
-
   ;; Inits everything in the right order
   (when (fboundp 'pixel-scroll-precision-mode)
     (pixel-scroll-precision-mode 1))
