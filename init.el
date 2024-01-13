@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.6
+;; Version: 0.1.7
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -177,17 +177,10 @@
  '(jdee-db-active-breakpoint-face-colors (cons "#0d0d0d" "#5DD8FF"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#0d0d0d" "#67B7A4"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#0d0d0d" "#6C7986"))
- '(magit-diff-use-overlays nil)
- '(magit-ediff-dwim-show-on-hunks t)
  '(make-backup-files nil)
  '(mm-text-html-renderer 'shr)
  '(native-comp-async-report-warnings-errors 'silent)
- '(nnreddit-python-command "python3")
- '(nrepl-message-colors
-   '("#9d0006" "#af3a03" "#b57614" "#747400" "#c6c148" "#004858"
-	 "#689d6a" "#d3869b" "#8f3f71"))
  '(objed-cursor-color "#FC6A5D")
- '(org-agenda-files '("/Users/rmj/notas/gaveta/gcal.org"))
  '(org-babel-load-languages '((emacs-lisp . t) (python . t) (ruby . t) (shell . t)))
  '(org-export-backends '(ascii html icalendar latex md odt))
  '(org-fontify-done-headline nil)
@@ -438,12 +431,14 @@
   :defer t
   :ensure t
   :config
-  (setq magit-executable "/usr/local/bin/git")
-  (setq magit-diff-refine-hunk 'all)
-  (setq ediff-diff-options "")
   (setq ediff-custom-diff-options "-u")
+  (setq ediff-diff-options "")
+  (setq ediff-split-window-function 'split-window-horizontally)
   (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-  (setq ediff-split-window-function 'split-window-horizontally))
+  (setq magit-diff-refine-hunk 'all)
+  (setq magit-diff-use-overlays nil)
+  (setq magit-ediff-dwim-show-on-hunks t)
+  (setq magit-executable "/usr/local/bin/git"))
 
 (use-package magit-stats
   :defer t
