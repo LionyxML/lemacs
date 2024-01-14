@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.7
+;; Version: 0.1.8
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -43,6 +43,7 @@
 ;;(add-to-list 'default-frame-alist '(undecorated . t))
 (menu-bar-mode -1)
 (tool-bar-mode -1)
+(scroll-bar-mode -1)
 
 
 ;; Native compilation settings
@@ -221,7 +222,6 @@
  '(python-indent-guess-indent-offset nil)
  '(python-indent-offset 4)
  '(python-shell-interpreter "/usr/bin/python3")
- '(scroll-bar-mode nil)
  '(scss-output-directory "../css/")
  '(scss-sass-options '("--no-source-map"))
  '(send-mail-function 'smtpmail-send-it)
@@ -541,6 +541,7 @@
   :ensure t
   :config
   (setq rustic-analyzer-command '("~/.cargo/bin/rust-analyzer"))
+  (setq rustic-rustfmt-config-alist '((edition . "2018"))) ;; If not forced here, rustfmt complains
   (setq rustic-format-on-save t))
 
 (use-package sass-mode
@@ -719,6 +720,8 @@
 (use-package company
   :defer t
   :ensure t
+  :bind
+  ("C-j" . company-complete)
   :config
   (setq company-tooltip-align-annotations t))
 
