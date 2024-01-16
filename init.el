@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.9
+;; Version: 0.1.10
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -894,6 +894,39 @@
   :init
 
   ;; E-Shell
+  (setq eshell-prompt-function
+		(lambda ()
+          (concat
+           "┌─("
+		   (if (> eshell-last-command-status 0)
+			   (nerd-icons-faicon "nf-fa-close")
+		     (nerd-icons-faicon "nf-fa-check"))
+		   " "
+		   (number-to-string eshell-last-command-status)
+           ")──("
+		   (nerd-icons-faicon "nf-fa-user")
+		   " "
+		   (user-login-name)
+           ")──("
+		   (nerd-icons-mdicon "nf-md-clock")
+		   " "
+           (format-time-string "%H:%M:%S" (current-time))
+           ")──("
+		   (nerd-icons-faicon "nf-fa-folder")
+		   " "
+           (concat (if (>= (length (eshell/pwd)) 40)
+					   (concat "..." (car (last (butlast (split-string (eshell/pwd) "/") 0))))
+					 (abbreviate-file-name (eshell/pwd))))
+           ")\n"
+		   (if (magit-get-current-branch)
+			   (concat
+				"├─("
+				(nerd-icons-devicon "nf-dev-git_branch")
+				" "
+				(magit-get-current-branch)
+				")\n"
+				))
+           "└─➜ ")))
   (add-hook 'eshell-mode-hook (lambda () (setenv "TERM" "xterm-256color")))
   (setq eshell-visual-commands
 		'("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
