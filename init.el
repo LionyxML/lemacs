@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.8
+;; Version: 0.1.9
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -248,11 +248,8 @@
 	 (typescript-ts-mode . typescript) (tsx-ts-mode . typescript)
 	 (tsx-js-mode . typescript) (typescript-mode . typescript)
 	 (verilog-mode . verilog) (yaml-mode . yaml) (zig-mode . zig)))
- '(treemacs-no-png-images nil)
- '(treemacs-width 40)
  '(treesit-font-lock-level 4)
  '(truncate-lines t)
- '(w3m-default-display-inline-images t)
  '(xterm-mouse-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -609,6 +606,8 @@
   :config
   (setq treemacs-show-hidden-files t)
   ;; (setq treemacs-resize-icons 44)
+  (setq treemacs-no-png-images nil)
+  (setq treemacs-width 40)
   (setq treemacs-filewatch-mode t)
   (setq treemacs-icons nil)
   (treemacs-project-follow-mode +1))
