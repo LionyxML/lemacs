@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.10
+;; Version: 0.1.11
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -918,12 +918,12 @@
 					   (concat "..." (car (last (butlast (split-string (eshell/pwd) "/") 0))))
 					 (abbreviate-file-name (eshell/pwd))))
            ")\n"
-		   (if (magit-get-current-branch)
+		   (if (car (vc-git-branches))
 			   (concat
 				"├─("
 				(nerd-icons-devicon "nf-dev-git_branch")
 				" "
-				(magit-get-current-branch)
+				(car (vc-git-branches))
 				")\n"
 				))
            "└─➜ ")))
