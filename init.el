@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.11
+;; Version: 0.1.12
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -288,7 +288,10 @@
   :custom
   (diff-hl-margin-mode t)
   (diff-hl-margin-symbols-alist
-   '((insert . " ") (delete . " ") (change . " ") (unknown . " ")
+   '((insert . " ")
+	 (delete . " ")
+	 (change . " ")
+	 (unknown . " ")
 	 (ignored . " ")))
   :bind
   (("M-9" . 'diff-hl-previous-hunk)
