@@ -87,91 +87,25 @@
  '(ansi-color-faces-vector
    [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
-   ["#4F4F4F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3"
-	"#6F6F6F"])
+   ["#4F4F4F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3" "#6F6F6F"])
  '(column-number-mode t)
  '(cursor-type '(bar . 3))
  '(custom-enabled-themes '(catppuccin))
  '(custom-safe-themes
-   '("6cff32351bcb1726accf9dcf9c400367971eaa8bb1d163409b78ea9c9a6ae8d0"
-	 "714394050e703db8a773ed350ca6f9cb6636d4bf2e348514804a48929aafc762"
-	 "8390abb2cc504d44f0c9dfdaf79d4e943f0328a933e20ceec74c74d17d65834f"
-	 "2cc1ac47eed7ac51d79d1aaf6218d52ec84d9c6eb8a448f221f592bddfe51550"
-	 "dc2e1b0abb9a5d2033f6d881618932dcdb9af7633d8fa44336f9c9a3484379bd"
-	 "eb0f822891b90a730f3331959311439f01bb39da3cdf998b5693ecec877858d0"
-	 "e1990eeea39781f009b7f4634ca52a770d05bb7ce423a8fbbcd8a4f327efb626"
-	 "4f6dc03105f64cd7e5a3f555ea7c6bac7d9447141473ef9ff3c23b63858066da"
-	 "1b8df5c4f3364ebfbe9c0d3d859f6c31ab652ba518612ec27b12e462ce677731"
-	 "82b43e48862ecc7e3af29838ed843227e331b187865828dc4915021c5a74baa1"
-	 "51f3fb81f9233280cb28ee3023e43e82c9307d59d158626881ca14f964d2abeb"
-	 "242f33ba517c05f45e075d8ed3d13c0a7b7d1392e0c95d66830029e561607085"
-	 "45e409674661674c12070af5f8ef71741599eeb9fccd84557f1b822509f3b100"
-	 "e6b0ec96166bb3bb2843d83e56c0292308aab10ee5b79fb921d16ad2dbea5d5f"
-	 "38457f8afb329ce87e1a41d31e155acb4dcdf5ee6a1ea703d401f2042747a69f"
-	 "2459d6e7e96aefaed9cebaf7fde590f64e76c96f48632d8310cfea5d10ec2bb1"
-	 "50bb891011dfe0c30cd463c65e898523788d4ac4e6df141eed75030a33da1135"
-	 "7f34e5ab75ec580aff579b3b0f40379d280f8441e424b7a04322524ed7f348b6"
-	 "31804a8ea314e76b68f8b1c454212c3d9710c4294b8cfbaa008dd338c8d91773"
-	 "0018c218377a0f234066cd01eb9b636d3739b0b614c7b2c0b8e37a306b7bf8ef"
-	 "e871f44a640f98523876f77dccdbf0e20747ca7e111f9f147fe23c9d5f4937c1"
-	 "406d7c11a38d7b0e6c305ea91515cbd0c89cd73c55d041da9545338df98f1db4"
-	 "2fcd2b44646836f0f4acbd42a13fa85123dac744628f0105a5e9f0f7dbbc936a"
-	 "80214de566132bf2c844b9dee3ec0599f65c5a1f2d6ff21a2c8309e6e70f9242"
-	 "d23073a9616156a16aecbd3d38e1c3a1f006fc5d920e3fbcb681411e35d2a096"
-	 "c191ad8745b348656877bb8fd54cf8398911add379c7d0fdb235f755123c8c15"
-	 "801c56b8fb127b8b8ce20b31b493690f86fb13e7bd51ad911f5bb1a0f4310c14"
-	 "35f1be3b2bda0b91473107f455c54cf5ff74a8a9371e13a11a0a75d8d06825a6"
-	 "46aa01ed69cef28b48aaa49053a6f987f9c12c06cf9f88a028b249dcc5a48157"
-	 "0527c20293f587f79fc1544a2472c8171abcc0fa767074a0d3ebac74793ab117"
-	 default))
+   '("df42062cdd672acecac9b5a1229c45f74c0cc2bc0362f9ad41054af6ac355021" "7ca04d620046f5807d0740f265844d45e53b864138c246f48f663bea8fba5c5d" "ca934a76aae4ff950288e082be75a68eb7bac6e8d3dd58b28649993540412ed6" "6cff32351bcb1726accf9dcf9c400367971eaa8bb1d163409b78ea9c9a6ae8d0" "714394050e703db8a773ed350ca6f9cb6636d4bf2e348514804a48929aafc762" "8390abb2cc504d44f0c9dfdaf79d4e943f0328a933e20ceec74c74d17d65834f" "2cc1ac47eed7ac51d79d1aaf6218d52ec84d9c6eb8a448f221f592bddfe51550" "dc2e1b0abb9a5d2033f6d881618932dcdb9af7633d8fa44336f9c9a3484379bd" "eb0f822891b90a730f3331959311439f01bb39da3cdf998b5693ecec877858d0" "e1990eeea39781f009b7f4634ca52a770d05bb7ce423a8fbbcd8a4f327efb626" "4f6dc03105f64cd7e5a3f555ea7c6bac7d9447141473ef9ff3c23b63858066da" "1b8df5c4f3364ebfbe9c0d3d859f6c31ab652ba518612ec27b12e462ce677731" "82b43e48862ecc7e3af29838ed843227e331b187865828dc4915021c5a74baa1" "51f3fb81f9233280cb28ee3023e43e82c9307d59d158626881ca14f964d2abeb" "242f33ba517c05f45e075d8ed3d13c0a7b7d1392e0c95d66830029e561607085" "45e409674661674c12070af5f8ef71741599eeb9fccd84557f1b822509f3b100" "e6b0ec96166bb3bb2843d83e56c0292308aab10ee5b79fb921d16ad2dbea5d5f" "38457f8afb329ce87e1a41d31e155acb4dcdf5ee6a1ea703d401f2042747a69f" "2459d6e7e96aefaed9cebaf7fde590f64e76c96f48632d8310cfea5d10ec2bb1" "50bb891011dfe0c30cd463c65e898523788d4ac4e6df141eed75030a33da1135" "7f34e5ab75ec580aff579b3b0f40379d280f8441e424b7a04322524ed7f348b6" "31804a8ea314e76b68f8b1c454212c3d9710c4294b8cfbaa008dd338c8d91773" "0018c218377a0f234066cd01eb9b636d3739b0b614c7b2c0b8e37a306b7bf8ef" "e871f44a640f98523876f77dccdbf0e20747ca7e111f9f147fe23c9d5f4937c1" "406d7c11a38d7b0e6c305ea91515cbd0c89cd73c55d041da9545338df98f1db4" "2fcd2b44646836f0f4acbd42a13fa85123dac744628f0105a5e9f0f7dbbc936a" "80214de566132bf2c844b9dee3ec0599f65c5a1f2d6ff21a2c8309e6e70f9242" "d23073a9616156a16aecbd3d38e1c3a1f006fc5d920e3fbcb681411e35d2a096" "c191ad8745b348656877bb8fd54cf8398911add379c7d0fdb235f755123c8c15" "801c56b8fb127b8b8ce20b31b493690f86fb13e7bd51ad911f5bb1a0f4310c14" "35f1be3b2bda0b91473107f455c54cf5ff74a8a9371e13a11a0a75d8d06825a6" "46aa01ed69cef28b48aaa49053a6f987f9c12c06cf9f88a028b249dcc5a48157" "0527c20293f587f79fc1544a2472c8171abcc0fa767074a0d3ebac74793ab117" default))
  '(dired-kill-when-opening-new-dired-buffer t)
  '(dired-listing-switches "-lh")
  '(doc-view-continuous t)
  '(emms-mode-line-icon-image-cache
-   '(image :type xpm :ascent center :data
-		   "/* XPM */\12static char *note[] = {\12/* width height num_colors chars_per_pixel */\12\"    10   11        2            1\",\12/* colors */\12\". c #358d8d\",\12\"# c None s None\",\12/* pixels */\12\"###...####\",\12\"###.#...##\",\12\"###.###...\",\12\"###.#####.\",\12\"###.#####.\",\12\"#...#####.\",\12\"....#####.\",\12\"#..######.\",\12\"#######...\",\12\"######....\",\12\"#######..#\" };") t)
+   '(image :type xpm :ascent center :data "/* XPM */\12static char *note[] = {\12/* width height num_colors chars_per_pixel */\12\"    10   11        2            1\",\12/* colors */\12\". c #358d8d\",\12\"# c None s None\",\12/* pixels */\12\"###...####\",\12\"###.#...##\",\12\"###.###...\",\12\"###.#####.\",\12\"###.#####.\",\12\"#...#####.\",\12\"....#####.\",\12\"#..######.\",\12\"#######...\",\12\"######....\",\12\"#######..#\" };") t)
  '(exec-path
    '("/bin" "/usr/bin" "/usr/local/bin" "/usr/local/sbin" "/usr/sbin"))
  '(flycheck-checker-error-threshold nil)
  '(flycheck-checkers
-   '(rustic-clippy lsp ada-gnat asciidoctor asciidoc awk-gawk
-				   bazel-build-buildifier bazel-module-buildifier
-				   bazel-starlark-buildifier
-				   bazel-workspace-buildifier c/c++-clang c/c++-gcc
-				   c/c++-cppcheck cfengine chef-foodcritic coffee
-				   coffee-coffeelint coq css-csslint css-stylelint
-				   cuda-nvcc cwl d-dmd dockerfile-hadolint
-				   elixir-credo emacs-lisp emacs-lisp-checkdoc
-				   ember-template erlang-rebar3 erlang eruby-erubis
-				   eruby-ruumba fortran-gfortran go-gofmt go-golint
-				   go-vet go-build go-test go-errcheck go-unconvert
-				   go-staticcheck groovy haml handlebars
-				   haskell-stack-ghc haskell-ghc haskell-hlint
-				   html-tidy javascript-eslint javascript-jshint
-				   javascript-standard json-jsonlint json-python-json
-				   json-jq jsonnet less less-stylelint llvm-llc
-				   lua-luacheck lua markdown-markdownlint-cli
-				   markdown-mdl nix nix-linter opam perl
-				   perl-perlcritic php php-phpmd php-phpcs processing
-				   proselint protobuf-protoc protobuf-prototool pug
-				   puppet-parser puppet-lint python-flake8
-				   python-pylint python-pycompile python-pyright
-				   python-mypy r-lintr racket rpm-rpmlint rst-sphinx
-				   rst ruby-rubocop ruby-standard ruby-reek
-				   ruby-rubylint ruby ruby-jruby rust-cargo rust
-				   rust-clippy scala scala-scalastyle scheme-chicken
-				   scss-lint scss-stylelint sass/scss-sass-lint sass
-				   scss sh-bash sh-posix-dash sh-posix-bash sh-zsh
-				   sh-shellcheck slim slim-lint sql-sqlint
-				   systemd-analyze tcl-nagelfar terraform
-				   terraform-tflint tex-chktex tex-lacheck texinfo
-				   textlint typescript-tslint verilog-verilator
-				   vhdl-ghdl xml-xmlstarlet xml-xmllint yaml-jsyaml
-				   yaml-ruby yaml-yamllint))
+   '(rustic-clippy lsp ada-gnat asciidoctor asciidoc awk-gawk bazel-build-buildifier bazel-module-buildifier bazel-starlark-buildifier bazel-workspace-buildifier c/c++-clang c/c++-gcc c/c++-cppcheck cfengine chef-foodcritic coffee coffee-coffeelint coq css-csslint css-stylelint cuda-nvcc cwl d-dmd dockerfile-hadolint elixir-credo emacs-lisp emacs-lisp-checkdoc ember-template erlang-rebar3 erlang eruby-erubis eruby-ruumba fortran-gfortran go-gofmt go-golint go-vet go-build go-test go-errcheck go-unconvert go-staticcheck groovy haml handlebars haskell-stack-ghc haskell-ghc haskell-hlint html-tidy javascript-eslint javascript-jshint javascript-standard json-jsonlint json-python-json json-jq jsonnet less less-stylelint llvm-llc lua-luacheck lua markdown-markdownlint-cli markdown-mdl nix nix-linter opam perl perl-perlcritic php php-phpmd php-phpcs processing proselint protobuf-protoc protobuf-prototool pug puppet-parser puppet-lint python-flake8 python-pylint python-pycompile python-pyright python-mypy r-lintr racket rpm-rpmlint rst-sphinx rst ruby-rubocop ruby-standard ruby-reek ruby-rubylint ruby ruby-jruby rust-cargo rust rust-clippy scala scala-scalastyle scheme-chicken scss-lint scss-stylelint sass/scss-sass-lint sass scss sh-bash sh-posix-dash sh-posix-bash sh-zsh sh-shellcheck slim slim-lint sql-sqlint systemd-analyze tcl-nagelfar terraform terraform-tflint tex-chktex tex-lacheck texinfo textlint typescript-tslint verilog-verilator vhdl-ghdl xml-xmlstarlet xml-xmllint yaml-jsyaml yaml-ruby yaml-yamllint))
  '(flycheck-indication-mode-line-symbol '<)
  '(grep-find-ignored-directories
-   '("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN"
-	 "_darcs" "{arch}" "node_modules" "build" "dist"))
+   '("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "node_modules" "build" "dist"))
  '(hkey-init nil)
  '(inhibit-startup-buffer-menu nil)
  '(ispell-dictionary "pt_BR")
@@ -189,30 +123,7 @@
  '(org-safe-remote-resources
    '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
  '(package-selected-packages
-   '(add-node-modules-path catppuccin-theme company consult
-						   consult-flycheck corfu-terminal
-						   css-in-js-mode diff-hl docker
-						   dockerfile-mode doom-modeline dotenv-mode
-						   ef-themes eldoc-box ellama
-						   emacs-ibuffer-project embark embark-consult
-						   emms erc-hl-nicks exec-path-from-shell
-						   expand-region flycheck gh-md
-						   gnu-elpa-keyring-update handlebars-mode
-						   hl-indent hl-todo ibuffer-project
-						   indent-guide kkp lsp-mode lsp-ui magit
-						   magit-stats maple-minibuffer marginalia
-						   markdown-mode mmm-mode multi-vterm
-						   nerd-icons-completion nerd-icons-corfu
-						   nerd-icons-dired nerd-icons-ibuffer
-						   orderless org-ros package-lint prettier
-						   python-black pyvenv rainbow-delimiters
-						   restclient rust-mode rustic sass-mode
-						   scss-mode smartparens transmission
-						   transpose-frame tree-sitter
-						   tree-sitter-langs treemacs
-						   treemacs-icons-dired treemacs-magit
-						   treemacs-nerd-icons undo-tree vc-msg
-						   vertico wgrep which-key xclip yaml-mode))
+   '(add-node-modules-path catppuccin-theme company consult consult-flycheck corfu-terminal css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ef-themes eldoc-box ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode mmm-mode multi-vterm nerd-icons-completion nerd-icons-corfu nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient rust-mode rustic sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(pos-tip-background-color "#4F4F4F")
  '(pos-tip-foreground-color "#FFFFEF")
@@ -227,27 +138,62 @@
  '(send-mail-function 'smtpmail-send-it)
  '(tab-width 4)
  '(tree-sitter-major-mode-language-alist
-   '((typescriptreact-mode . tsx) (agda2-mode . agda) (sh-mode . bash)
-	 (c-mode . c) (caml-mode . ocaml) (clojure-mode . clojure)
-	 (csharp-mode . c-sharp) (c++-mode . cpp) (d-mode . d)
-	 (css-mode . css) (elm-mode . elm) (elixir-mode . elixir)
-	 (erlang-mode . erlang) (ess-r-mode . r) (fennel-mode . fennel)
-	 (go-mode . go) (haskell-mode . haskell) (hcl-mode . hcl)
-	 (terraform-mode . hcl) (html-mode . html)
-	 (markdown-mode . markdown) (mhtml-mode . html) (nix-mode . nix)
-	 (java-mode . java) (javascript-mode . javascript)
-	 (js-mode . javascript) (js2-mode . javascript)
-	 (js3-mode . javascript) (js-ts-mode . javascript)
-	 (json-mode . json) (jsonc-mode . json) (julia-mode . julia)
-	 (lua-mode . lua) (meson-mode . meson) (ocaml-mode . ocaml)
-	 (perl-mode . perl) (php-mode . php) (prisma-mode . prisma)
-	 (python-mode . python) (pygn-mode . pgn) (rjsx-mode . javascript)
-	 (ruby-mode . ruby) (rust-mode . rust) (rustic-mode . rust)
-	 (scala-mode . scala) (scheme-mode . scheme) (swift-mode . swift)
-	 (toml-mode . toml) (tuareg-mode . ocaml)
-	 (typescript-ts-mode . typescript) (tsx-ts-mode . typescript)
-	 (tsx-js-mode . typescript) (typescript-mode . typescript)
-	 (verilog-mode . verilog) (yaml-mode . yaml) (zig-mode . zig)))
+   '((typescriptreact-mode . tsx)
+	 (agda2-mode . agda)
+	 (sh-mode . bash)
+	 (c-mode . c)
+	 (caml-mode . ocaml)
+	 (clojure-mode . clojure)
+	 (csharp-mode . c-sharp)
+	 (c++-mode . cpp)
+	 (d-mode . d)
+	 (css-mode . css)
+	 (elm-mode . elm)
+	 (elixir-mode . elixir)
+	 (erlang-mode . erlang)
+	 (ess-r-mode . r)
+	 (fennel-mode . fennel)
+	 (go-mode . go)
+	 (haskell-mode . haskell)
+	 (hcl-mode . hcl)
+	 (terraform-mode . hcl)
+	 (html-mode . html)
+	 (markdown-mode . markdown)
+	 (mhtml-mode . html)
+	 (nix-mode . nix)
+	 (java-mode . java)
+	 (javascript-mode . javascript)
+	 (js-mode . javascript)
+	 (js2-mode . javascript)
+	 (js3-mode . javascript)
+	 (js-ts-mode . javascript)
+	 (json-mode . json)
+	 (jsonc-mode . json)
+	 (julia-mode . julia)
+	 (lua-mode . lua)
+	 (meson-mode . meson)
+	 (ocaml-mode . ocaml)
+	 (perl-mode . perl)
+	 (php-mode . php)
+	 (prisma-mode . prisma)
+	 (python-mode . python)
+	 (pygn-mode . pgn)
+	 (rjsx-mode . javascript)
+	 (ruby-mode . ruby)
+	 (rust-mode . rust)
+	 (rustic-mode . rust)
+	 (scala-mode . scala)
+	 (scheme-mode . scheme)
+	 (swift-mode . swift)
+	 (toml-mode . toml)
+	 (tuareg-mode . ocaml)
+	 (typescript-ts-mode . typescript)
+	 (tsx-ts-mode . typescript)
+	 (tsx-js-mode . typescript)
+	 (typescript-mode . typescript)
+	 (verilog-mode . verilog)
+	 (yaml-mode . yaml)
+	 (zig-mode . zig)))
  '(treesit-font-lock-level 4)
  '(truncate-lines t)
  '(xterm-mouse-mode t))
@@ -256,7 +202,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:height 110 :family "Hack" :embolden true))))
+ '(default ((t (:height 100 :family "Hack" :embolden true))))
  '(term ((t (:background "black" :foreground "gray100")))))
 
 ;;; --------------------------------- GENERAL FACES
@@ -267,7 +213,7 @@
 
 (unless (eq system-type 'darwin)
 (custom-set-faces
- '(default ((t (:height 110 :family "Hack" :embolden true))))
+ '(default ((t (:height 100 :family "Hack" :embolden true))))
   '(term ((t (:background "black" :foreground "gray100"))))))
 
 
@@ -323,14 +269,14 @@
   (unless (eq system-type 'darwin)
     (if (facep 'mode-line-active)
         (set-face-attribute 'mode-line-active nil
-                            :family "Hack Nerd Font"
-                            :height 110) ; For 29+
+                            :family "Hack"
+                            :height 100) ; For 29+
       (set-face-attribute 'mode-line nil
-                          :family "Hack Nerd Font"
-                          :height 110))
+                          :family "Hack"
+                          :height 100))
     (set-face-attribute 'mode-line-inactive nil
-                        :family "Hack Nerd Font"
-                        :height 110))
+                        :family "Hack"
+                        :height 100))
 
   (when (eq system-type 'darwin)
     (if (facep 'mode-line-active)
