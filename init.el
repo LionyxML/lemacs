@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.13
+;; Version: 0.1.14
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -882,6 +882,7 @@
 		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
 		  "ncmpcpp" "newsbeuter" "nethack" "mutt"))
 
+  (setq indent-tabs-mode nil)
   ;; TAB cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
   ;; Enable indentation+completion using the TAB key.
