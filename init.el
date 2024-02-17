@@ -87,9 +87,10 @@
  '(ansi-color-faces-vector
    [default bold shadow italic underline bold bold-italic bold])
  '(ansi-color-names-vector
-   ["#4F4F4F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3"
-	"#6F6F6F"])
+   ["#4F4F4F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3" "#6F6F6F"])
  '(column-number-mode t)
+ '(company-quickhelp-delay 0)
+ '(company-tooltip-maximum-width 50)
  '(cursor-type '(bar . 3))
  '(custom-enabled-themes '(catppuccin))
  '(custom-safe-themes
@@ -98,50 +99,15 @@
  '(dired-listing-switches "-lh")
  '(doc-view-continuous t)
  '(emms-mode-line-icon-image-cache
-   '(image :type xpm :ascent center :data
-		   "/* XPM */\12static char *note[] = {\12/* width height num_colors chars_per_pixel */\12\"    10   11        2            1\",\12/* colors */\12\". c #358d8d\",\12\"# c None s None\",\12/* pixels */\12\"###...####\",\12\"###.#...##\",\12\"###.###...\",\12\"###.#####.\",\12\"###.#####.\",\12\"#...#####.\",\12\"....#####.\",\12\"#..######.\",\12\"#######...\",\12\"######....\",\12\"#######..#\" };") t)
+   '(image :type xpm :ascent center :data "/* XPM */\12static char *note[] = {\12/* width height num_colors chars_per_pixel */\12\"    10   11        2            1\",\12/* colors */\12\". c #358d8d\",\12\"# c None s None\",\12/* pixels */\12\"###...####\",\12\"###.#...##\",\12\"###.###...\",\12\"###.#####.\",\12\"###.#####.\",\12\"#...#####.\",\12\"....#####.\",\12\"#..######.\",\12\"#######...\",\12\"######....\",\12\"#######..#\" };") t)
  '(exec-path
    '("/bin" "/usr/bin" "/usr/local/bin" "/usr/local/sbin" "/usr/sbin"))
  '(flycheck-checker-error-threshold nil)
  '(flycheck-checkers
-   '(rustic-clippy lsp ada-gnat asciidoctor asciidoc awk-gawk
-				   bazel-build-buildifier bazel-module-buildifier
-				   bazel-starlark-buildifier
-				   bazel-workspace-buildifier c/c++-clang c/c++-gcc
-				   c/c++-cppcheck cfengine chef-foodcritic coffee
-				   coffee-coffeelint coq css-csslint css-stylelint
-				   cuda-nvcc cwl d-dmd dockerfile-hadolint
-				   elixir-credo emacs-lisp emacs-lisp-checkdoc
-				   ember-template erlang-rebar3 erlang eruby-erubis
-				   eruby-ruumba fortran-gfortran go-gofmt go-golint
-				   go-vet go-build go-test go-errcheck go-unconvert
-				   go-staticcheck groovy haml handlebars
-				   haskell-stack-ghc haskell-ghc haskell-hlint
-				   html-tidy javascript-eslint javascript-jshint
-				   javascript-standard json-jsonlint json-python-json
-				   json-jq jsonnet less less-stylelint llvm-llc
-				   lua-luacheck lua markdown-markdownlint-cli
-				   markdown-mdl nix nix-linter opam perl
-				   perl-perlcritic php php-phpmd php-phpcs processing
-				   proselint protobuf-protoc protobuf-prototool pug
-				   puppet-parser puppet-lint python-flake8
-				   python-pylint python-pycompile python-pyright
-				   python-mypy r-lintr racket rpm-rpmlint rst-sphinx
-				   rst ruby-rubocop ruby-standard ruby-reek
-				   ruby-rubylint ruby ruby-jruby rust-cargo rust
-				   rust-clippy scala scala-scalastyle scheme-chicken
-				   scss-lint scss-stylelint sass/scss-sass-lint sass
-				   scss sh-bash sh-posix-dash sh-posix-bash sh-zsh
-				   sh-shellcheck slim slim-lint sql-sqlint
-				   systemd-analyze tcl-nagelfar terraform
-				   terraform-tflint tex-chktex tex-lacheck texinfo
-				   textlint typescript-tslint verilog-verilator
-				   vhdl-ghdl xml-xmlstarlet xml-xmllint yaml-jsyaml
-				   yaml-ruby yaml-yamllint))
+   '(rustic-clippy lsp ada-gnat asciidoctor asciidoc awk-gawk bazel-build-buildifier bazel-module-buildifier bazel-starlark-buildifier bazel-workspace-buildifier c/c++-clang c/c++-gcc c/c++-cppcheck cfengine chef-foodcritic coffee coffee-coffeelint coq css-csslint css-stylelint cuda-nvcc cwl d-dmd dockerfile-hadolint elixir-credo emacs-lisp emacs-lisp-checkdoc ember-template erlang-rebar3 erlang eruby-erubis eruby-ruumba fortran-gfortran go-gofmt go-golint go-vet go-build go-test go-errcheck go-unconvert go-staticcheck groovy haml handlebars haskell-stack-ghc haskell-ghc haskell-hlint html-tidy javascript-eslint javascript-jshint javascript-standard json-jsonlint json-python-json json-jq jsonnet less less-stylelint llvm-llc lua-luacheck lua markdown-markdownlint-cli markdown-mdl nix nix-linter opam perl perl-perlcritic php php-phpmd php-phpcs processing proselint protobuf-protoc protobuf-prototool pug puppet-parser puppet-lint python-flake8 python-pylint python-pycompile python-pyright python-mypy r-lintr racket rpm-rpmlint rst-sphinx rst ruby-rubocop ruby-standard ruby-reek ruby-rubylint ruby ruby-jruby rust-cargo rust rust-clippy scala scala-scalastyle scheme-chicken scss-lint scss-stylelint sass/scss-sass-lint sass scss sh-bash sh-posix-dash sh-posix-bash sh-zsh sh-shellcheck slim slim-lint sql-sqlint systemd-analyze tcl-nagelfar terraform terraform-tflint tex-chktex tex-lacheck texinfo textlint typescript-tslint verilog-verilator vhdl-ghdl xml-xmlstarlet xml-xmllint yaml-jsyaml yaml-ruby yaml-yamllint))
  '(flycheck-indication-mode-line-symbol '<)
  '(grep-find-ignored-directories
-   '("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN"
-	 "_darcs" "{arch}" "node_modules" "build" "dist"))
+   '("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "node_modules" "build" "dist"))
  '(hkey-init nil)
  '(inhibit-startup-buffer-menu nil)
  '(ispell-dictionary "pt_BR")
@@ -159,7 +125,7 @@
  '(org-safe-remote-resources
    '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
  '(package-selected-packages
-   '(company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck corfu-terminal css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ef-themes eldoc-box ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode mmm-mode multi-vterm nerd-icons-completion nerd-icons-corfu nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient rust-mode rustic sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
+   '(company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck corfu-terminal css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ef-themes eldoc-box ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode mmm-mode multi-vterm nerd-icons-completion nerd-icons-corfu nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient rust-mode rustic sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(pos-tip-background-color "#4F4F4F")
  '(pos-tip-foreground-color "#FFFFEF")
@@ -174,27 +140,62 @@
  '(send-mail-function 'smtpmail-send-it)
  '(tab-width 4)
  '(tree-sitter-major-mode-language-alist
-   '((typescriptreact-mode . tsx) (agda2-mode . agda) (sh-mode . bash)
-	 (c-mode . c) (caml-mode . ocaml) (clojure-mode . clojure)
-	 (csharp-mode . c-sharp) (c++-mode . cpp) (d-mode . d)
-	 (css-mode . css) (elm-mode . elm) (elixir-mode . elixir)
-	 (erlang-mode . erlang) (ess-r-mode . r) (fennel-mode . fennel)
-	 (go-mode . go) (haskell-mode . haskell) (hcl-mode . hcl)
-	 (terraform-mode . hcl) (html-mode . html)
-	 (markdown-mode . markdown) (mhtml-mode . html) (nix-mode . nix)
-	 (java-mode . java) (javascript-mode . javascript)
-	 (js-mode . javascript) (js2-mode . javascript)
-	 (js3-mode . javascript) (js-ts-mode . javascript)
-	 (json-mode . json) (jsonc-mode . json) (julia-mode . julia)
-	 (lua-mode . lua) (meson-mode . meson) (ocaml-mode . ocaml)
-	 (perl-mode . perl) (php-mode . php) (prisma-mode . prisma)
-	 (python-mode . python) (pygn-mode . pgn) (rjsx-mode . javascript)
-	 (ruby-mode . ruby) (rust-mode . rust) (rustic-mode . rust)
-	 (scala-mode . scala) (scheme-mode . scheme) (swift-mode . swift)
-	 (toml-mode . toml) (tuareg-mode . ocaml)
-	 (typescript-ts-mode . typescript) (tsx-ts-mode . typescript)
-	 (tsx-js-mode . typescript) (typescript-mode . typescript)
-	 (verilog-mode . verilog) (yaml-mode . yaml) (zig-mode . zig)))
+   '((typescriptreact-mode . tsx)
+	 (agda2-mode . agda)
+	 (sh-mode . bash)
+	 (c-mode . c)
+	 (caml-mode . ocaml)
+	 (clojure-mode . clojure)
+	 (csharp-mode . c-sharp)
+	 (c++-mode . cpp)
+	 (d-mode . d)
+	 (css-mode . css)
+	 (elm-mode . elm)
+	 (elixir-mode . elixir)
+	 (erlang-mode . erlang)
+	 (ess-r-mode . r)
+	 (fennel-mode . fennel)
+	 (go-mode . go)
+	 (haskell-mode . haskell)
+	 (hcl-mode . hcl)
+	 (terraform-mode . hcl)
+	 (html-mode . html)
+	 (markdown-mode . markdown)
+	 (mhtml-mode . html)
+	 (nix-mode . nix)
+	 (java-mode . java)
+	 (javascript-mode . javascript)
+	 (js-mode . javascript)
+	 (js2-mode . javascript)
+	 (js3-mode . javascript)
+	 (js-ts-mode . javascript)
+	 (json-mode . json)
+	 (jsonc-mode . json)
+	 (julia-mode . julia)
+	 (lua-mode . lua)
+	 (meson-mode . meson)
+	 (ocaml-mode . ocaml)
+	 (perl-mode . perl)
+	 (php-mode . php)
+	 (prisma-mode . prisma)
+	 (python-mode . python)
+	 (pygn-mode . pgn)
+	 (rjsx-mode . javascript)
+	 (ruby-mode . ruby)
+	 (rust-mode . rust)
+	 (rustic-mode . rust)
+	 (scala-mode . scala)
+	 (scheme-mode . scheme)
+	 (swift-mode . swift)
+	 (toml-mode . toml)
+	 (tuareg-mode . ocaml)
+	 (typescript-ts-mode . typescript)
+	 (tsx-ts-mode . typescript)
+	 (tsx-js-mode . typescript)
+	 (typescript-mode . typescript)
+	 (verilog-mode . verilog)
+	 (yaml-mode . yaml)
+	 (zig-mode . zig)))
  '(treesit-font-lock-level 4)
  '(truncate-lines t)
  '(xterm-mouse-mode t))
@@ -680,6 +681,15 @@
   :defer t
   :ensure t
   :config)
+
+(use-package company-quickhelp-terminal
+  :defer t
+  :ensure t
+  :custom
+  (company-quickhelp-use-propertized-text nil)  
+  :config
+  (with-eval-after-load 'company-quickhelp
+	(company-quickhelp-terminal-mode 1)))
 
 ;; NOTE TO SELF: Corfu is not yet mature, meaning it needs A LOT of effort to make
 ;;               it work on both TUI and GUI, and auto doc for TUI is now broken...
