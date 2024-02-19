@@ -854,13 +854,14 @@
 (use-package wgrep
   :ensure t)
 
-(use-package emacs
-  :bind
-  (("M-D" . 'my-duplicate-line-or-region)
-   ("C-x C-b" . 'ibuffer))
-  :init
+(use-package eshell
+  :config
+  (defun my-eshell-keybindings ()
+	"Define custom key bindings for eshell mode."
+	(define-key eshell-mode-map (kbd "C-p") 'eshell-previous-input)
+	(define-key eshell-mode-map (kbd "C-n") 'eshell-next-input))
+  (add-hook 'eshell-mode-hook 'my-eshell-keybindings)
 
-  ;; E-Shell
   (setq eshell-prompt-function
 		(lambda ()
           (concat
@@ -898,8 +899,13 @@
   (setq eshell-visual-commands
 		'("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
 		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
-		  "ncmpcpp" "newsbeuter" "nethack" "mutt"))
+		  "ncmpcpp" "newsbeuter" "nethack" "mutt")))
 
+(use-package emacs
+  :bind
+  (("M-D" . 'my-duplicate-line-or-region)
+   ("C-x C-b" . 'ibuffer))
+  :init
   (setq indent-tabs-mode nil)
   ;; TAB cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
