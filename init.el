@@ -1252,7 +1252,7 @@ Also terminal emulator must be already configured to support it."
 
             (xclip-mode 1)
             (delete-selection-mode 1)
-            ;; (global-company-mode)
+            (global-company-mode)
             (global-diff-hl-mode)
             (diff-hl-flydiff-mode)
             (my-setup-outline-mode-elisp)
