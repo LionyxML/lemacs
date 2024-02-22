@@ -89,8 +89,6 @@
  '(ansi-color-names-vector
    ["#4F4F4F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3" "#6F6F6F"])
  '(column-number-mode t)
- '(company-quickhelp-delay 0)
- '(company-tooltip-maximum-width 50)
  '(cursor-type '(bar . 3))
  '(custom-enabled-themes '(catppuccin))
  '(custom-safe-themes
@@ -336,7 +334,11 @@
   :ensure t
   :bind
   (("M-1" . 'er/expand-region))
-  :config)
+  :config
+  (add-to-list 'load-path "~/.emacs.d/site-lisp/treesit-er-expansions")
+  (when (and (functionp 'treesit-available-p)
+			 (treesit-available-p))
+	(require 'treesit-er-expansions)))
 
 (use-package gh-md
   :defer t
@@ -674,13 +676,18 @@
   :bind
   ("C-j" . company-complete)
   :config
+  (setq company-tooltip-maximum-width 50)
   (setq company-tooltip-align-annotations t)
+  (setq company-idle-delay 0)
   (company-quickhelp-mode t))
 
 (use-package company-quickhelp
   :defer t
   :ensure t
-  :config)
+  :config
+   (setq company-quickhelp-color-background "#313244")
+   (setq company-quickhelp-color-foreground "#cdd6f4")
+   (setq company-quickhelp-delay 0))
 
 (use-package company-quickhelp-terminal
   :defer t
