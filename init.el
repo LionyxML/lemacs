@@ -438,6 +438,8 @@
 (use-package org-ros
   :defer t
   :ensure t
+  :bind
+  (("C-S-p" . org-ros))
   :config)
 
 (use-package package-lint
