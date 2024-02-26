@@ -123,7 +123,7 @@
  '(org-safe-remote-resources
    '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
  '(package-selected-packages
-   '(company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck corfu-terminal css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ef-themes eldoc-box ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode mmm-mode multi-vterm nerd-icons-completion nerd-icons-corfu nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient rust-mode rustic sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
+   '(typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck corfu-terminal css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ef-themes eldoc-box ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode mmm-mode multi-vterm nerd-icons-completion nerd-icons-corfu nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient rust-mode rustic sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(pos-tip-background-color "#4F4F4F")
  '(pos-tip-foreground-color "#FFFFEF")
@@ -396,9 +396,11 @@
   :config)
 
 (use-package markdown-mode
-  :defer t
   :ensure t
-  :config)
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown")
+  :bind (:map markdown-mode-map
+         ("C-c C-e" . markdown-do)))
 
 (use-package multi-vterm
   :defer t
@@ -507,6 +509,11 @@
   :config)
 
 (use-package smartparens
+  :defer t
+  :ensure t
+  :config)
+
+(use-package typescript-mode
   :defer t
   :ensure t
   :config)
@@ -945,7 +952,10 @@ targets."
 (use-package emacs
   :bind
   (("M-D" . 'my-duplicate-line-or-region)
-   ("C-x C-b" . 'ibuffer))
+   ("C-x C-b" . 'ibuffer)
+   ("M-3" . 'lsp-ui-peek-find-implementation)
+   ("M-4" . 'lsp-ui-peek-find-references)
+   ("M-5" . 'lsp-ui-doc-toggle))
   :init
   (setq indent-tabs-mode nil)
   ;; TAB cycle if there are only few candidates
@@ -1064,6 +1074,8 @@ targets."
   (setq lsp-headerline-arrow "▶")
   (setq lsp-headerline-breadcrumb-enable-diagnostics nil)
   (setq lsp-headerline-breadcrumb-icons-enable nil)
+
+  (setq lsp-ui-doc-use-childframe t)
   
   (setq lsp-log-io nil) ;; Don't log everything = speed
   (setq lsp-idle-delay 0.5)
@@ -1093,7 +1105,7 @@ targets."
   ;; LSP Mapping on what mode uses what LSP server
   (setq lsp-language-id-configuration '((java-mode . "java")
                                         (python-mode . "python")
-                    (python-ts-mode . "python")
+										(python-ts-mode . "python")
                                         (gfm-view-mode . "markdown")
                                         (rust-mode . "rust")
                                         (rustic-mode . "rust")
@@ -1122,12 +1134,12 @@ targets."
                                         (prisma-mode . "prisma")
                                         (typescriptreact-mode . "typescriptreact")
                                         (ruby-mode . "ruby")
-                    (emacs-lisp-mode . nil)
+										(emacs-lisp-mode . nil)
                                         ))
   ;; LSP debugging
-  ;;(setq lsp-print-io t)
-  ;;(setq lsp-trace t)
-  ;;(setq lsp-print-performance t)
+  ;; (setq lsp-print-io t)
+  ;; (setq lsp-trace t)
+  ;; (setq lsp-print-performance t)
 
   )
 
@@ -1146,10 +1158,6 @@ targets."
   (lsp-ui-sideline-diagnostic-max-line-length 100)
   (lsp-ui-sideline-ignore-duplicate t)
   (lsp-ui-sideline-show-code-actions nil)
-  :bind
-  (("M-3" . 'lsp-ui-peek-find-implementation)
-   ("M-4" . 'lsp-ui-peek-find-references)
-   ("M-5" . 'lsp-ui-doc-toggle))
   :config)
 
 (use-package ellama
