@@ -1170,6 +1170,13 @@ targets."
           (make-llm-ollama
             :chat-model "codellama" :embedding-model "codellama")))
 
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-reload-all)
+  (add-hook 'prog-mode-hook #'yas-minor-mode))
+
+
 (exec-path-from-shell-initialize)
 
 ;;; --------------------------------- DIRED
