@@ -943,7 +943,12 @@ targets."
 				")\n"
 				))
            "└─➜ ")))
+
+  (setq eshell-prompt-regexp "└─➜ ")
+
   (add-hook 'eshell-mode-hook (lambda () (setenv "TERM" "xterm-256color")))
+  (add-hook 'eshell-mode-hook (lambda () (company-mode -1)) 'append)
+
   (setq eshell-visual-commands
 		'("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
 		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
