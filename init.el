@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.15
+;; Version: 0.1.16
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -644,10 +644,9 @@
   :config)
 
 (use-package marginalia
-  ;; :general
-  ;; (:keymaps 'minibuffer-local-map
-  ;;  "M-A" 'marginalia-cycle)
   :ensure t
+  :bind (:map minibuffer-local-map
+         ("M-A" . marginalia-cycle))  
   :custom
   (marginalia-max-relative-age 0)
   (marginalia-align 'left)
