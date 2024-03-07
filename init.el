@@ -958,10 +958,7 @@ targets."
 (use-package emacs
   :bind
   (("M-D" . 'my-duplicate-line-or-region)
-   ("C-x C-b" . 'ibuffer)
-   ("M-3" . 'lsp-ui-peek-find-implementation)
-   ("M-4" . 'lsp-ui-peek-find-references)
-   ("M-5" . 'lsp-ui-doc-toggle))
+   ("C-x C-b" . 'ibuffer))
   :init
   (setq indent-tabs-mode nil)
   ;; TAB cycle if there are only few candidates
@@ -1088,6 +1085,10 @@ targets."
   (setq lsp-keep-workspace-alive nil)
   (setq lsp-keymap-prefix "C-c l")
   (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
+
+  (global-set-key (kbd "M-3") 'lsp-ui-peek-find-implementation)
+  (global-set-key (kbd "M-4") 'lsp-ui-peek-find-references)
+  (global-set-key (kbd "M-5") 'lsp-ui-doc-toggle)
 
 
   ;; ESLINT is hell...
