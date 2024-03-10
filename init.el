@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.16
+;; Version: 0.1.17
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -333,12 +333,22 @@
   :defer t
   :ensure t
   :bind
-  (("M-1" . 'er/expand-region))
+  (("M-1" . my/expand-region-wrapper))
   :config
+  ;; This extends expand-region to also expand from treesit nodes
   (add-to-list 'load-path "~/.emacs.d/site-lisp/treesit-er-expansions")
   (when (and (functionp 'treesit-available-p)
 			 (treesit-available-p))
-	(require 'treesit-er-expansions)))
+	(require 'treesit-er-expansions))
+
+  (defun my/expand-region-wrapper ()
+	"Wrapper function for expand-region in Tree-sitter mode."
+	(interactive)
+	(condition-case nil
+		(er/treesit-er-parent-node)
+      (error
+       (er/expand-region 1)))))
+
 
 (use-package gh-md
   :defer t
@@ -602,6 +612,25 @@
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/.cache/undo")))
   )
 
+(use-package vc
+  :ensure t
+  :config
+  (setq vc-annotate-color-map
+        '((20 . "#f5e0dc")
+          (40 . "#f2cdcd")
+          (60 . "#f5c2e7")
+          (80 . "#cba6f7")
+          (100 . "#f38ba8")
+          (120 . "#eba0ac")
+          (140 . "#fab387")
+          (160 . "#f9e2af")
+          (180 . "#a6e3a1")
+          (200 . "#94e2d5")
+          (220 . "#89dceb")
+          (240 . "#74c7ec")
+          (260 . "#89b4fa")
+          (280 . "#b4befe"))))
+
 (use-package vc-msg
   :defer t
   :ensure t
@@ -756,8 +785,7 @@
          ("M-s g" . consult-grep)
          ("M-s G" . consult-git-grep)
          ("M-s r" . consult-ripgrep)
-         ;; ("M-s l" . consult-line)
-         ("M-s l" . my-consult-line-current-selection-or-word)
+         ("M-s l" . consult-line)
          ("M-s L" . consult-line-multi)
          ("M-s k" . consult-keep-lines)
          ("M-s u" . consult-focus-lines)
