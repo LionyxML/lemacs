@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.17
+;; Version: 0.1.18
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -89,6 +89,8 @@
  '(ansi-color-names-vector
    ["#4F4F4F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3" "#6F6F6F"])
  '(column-number-mode t)
+ '(company-posframe-mode t nil (company-posframe))
+ '(company-posframe-quickhelp-delay 0)
  '(cursor-type '(bar . 3))
  '(custom-enabled-themes '(catppuccin))
  '(custom-safe-themes
@@ -123,7 +125,7 @@
  '(org-safe-remote-resources
    '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
  '(package-selected-packages
-   '(yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck corfu-terminal css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ef-themes eldoc-box ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode mmm-mode multi-vterm nerd-icons-completion nerd-icons-corfu nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient rust-mode rustic sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
+   '(company-posframe yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck corfu-terminal css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ef-themes eldoc-box ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode mmm-mode multi-vterm nerd-icons-completion nerd-icons-corfu nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient rust-mode rustic sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(pos-tip-background-color "#4F4F4F")
  '(pos-tip-foreground-color "#FFFFEF")
@@ -461,8 +463,18 @@
 
 (use-package prettier
   :ensure t
+  :hook
+  (find-file . my-enable-prettier-for-file)
   :defer t
-  :config)
+  :config
+  (defun my-enable-prettier-for-file ()
+    "Enable prettier-mode for specific file types after a delay."
+    (interactive)
+    (when (and buffer-file-name
+               (string-match-p "\\.\\(html\\|js\\|jsx\\|ts\\|tsx\\|css\\|sass\\|scss\\|json\\|yml\\)\\'" buffer-file-name))
+      (run-at-time 2 nil (lambda ()
+                           (prettier-mode 1)
+                           (message "Prettier mode is ON"))))))
 
 (use-package prisma-mode
   :defer t
@@ -720,22 +732,11 @@
   (setq company-idle-delay 0)
   (company-quickhelp-mode t))
 
-(use-package company-quickhelp
+(use-package company-posframe
   :defer t
   :ensure t
   :config
-   (setq company-quickhelp-color-background "#313244")
-   (setq company-quickhelp-color-foreground "#cdd6f4")
-   (setq company-quickhelp-delay 0))
-
-(use-package company-quickhelp-terminal
-  :defer t
-  :ensure t
-  :custom
-  (company-quickhelp-use-propertized-text nil)  
-  :config
-  (with-eval-after-load 'company-quickhelp
-	(company-quickhelp-terminal-mode 1)))
+  (setq company-tooltip-minimum-width 40))
 
 ;; NOTE TO SELF: Corfu is not yet mature, meaning it needs A LOT of effort to make
 ;;               it work on both TUI and GUI, and auto doc for TUI is now broken...
