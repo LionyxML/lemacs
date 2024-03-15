@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.18
+;; Version: 0.1.19
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -220,6 +220,11 @@
 
 
 ;;; --------------------------------- EXTERNAL PACKAGES
+(use-package ace-window
+  :defer t
+  :bind
+  ("M-o" . ace-window))
+
 (use-package add-node-modules-path
   :defer t
   :ensure t
