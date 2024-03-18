@@ -49,6 +49,7 @@ var/
 /.extension/
 /eshell
 /elpa
+/tree-sitter/
 /tree-sitter/bin/*
 !/tree-sitter/bin/
 gnus.el

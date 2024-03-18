@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.21
+;; Version: 0.1.22
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -123,7 +123,7 @@
  '(org-safe-remote-resources
    '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
  '(package-selected-packages
-   '(company-box yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode multi-vterm nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient rust-mode rustic sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
+   '(treesit-auto company-box yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode multi-vterm nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient rust-mode rustic sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(pos-tip-background-color "#4F4F4F")
  '(pos-tip-foreground-color "#FFFFEF")
@@ -196,6 +196,8 @@
 	 (zig-mode . zig)))
  '(treesit-font-lock-level 4)
  '(truncate-lines t)
+ '(tsx-ts-mode-indent-offset 4)
+ '(typescript-ts-mode-indent-offset 4)
  '(xterm-mouse-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -556,9 +558,28 @@
   :ensure t
   :config)
 
+;; NOTE:
+;;   Tree-sitter is still a bit messy on Emacs.
+;;   We basically still install the 3rd party package just to have the nicer
+;;  more colorful sintax higlighting.
+;;   Problem is when grepping or peeking a file, such as with lsp peek or
+;;  consult-grep, sintax higlighting is not loaded by default. For that we use
+;;  the internal treesit mode, configured via treesit-auto.
+;;   If we had nicier syntax highlighting (.tsx is the benchmark here), we could
+;;  drop tree-sitter and tree-sitter-langs. But still, not the time to do so.
+(use-package treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+
 (use-package tree-sitter
   :ensure t
   :config
+
+  (setq tree-sitter-load-path (list (expand-file-name "tree-sitter" user-emacs-directory)))
+  
   (setq major-mode-remap-alist
         '((yaml-mode . yaml-ts-mode)
           (bash-mode . bash-ts-mode)
@@ -584,7 +605,21 @@
   :defer t
   :ensure t
   :config
-  (setq-default tree-sitter-langs-grammar-dir (expand-file-name "tree-sitter" user-emacs-directory)))
+  (setq-default tree-sitter-langs-grammar-dir (expand-file-name "tree-sitter" user-emacs-directory))
+  
+  (defun create-tree-sitter-links ()
+	"Create links from .emacs.d/tree-sitter/bin* to .emacs.d/tree-sitter/* files.
+Since tree-sitter-mode uses the format provided by /bin and the built-in
+uses the files with the prefix libtree-sitter-."
+  (interactive)
+  (let ((bin-dir (expand-file-name "tree-sitter/bin" user-emacs-directory))
+        (lib-dir (expand-file-name "tree-sitter" user-emacs-directory)))
+    (dolist (file (directory-files bin-dir nil "\\.so$"))
+      (let ((link-name (concat lib-dir "/libtree-sitter-" (file-name-nondirectory file))))
+        (unless (file-exists-p link-name)
+          (make-symbolic-link (concat bin-dir "/" file) link-name t))))))
+
+  (create-tree-sitter-links))
 
 (use-package treemacs
   :defer t
@@ -724,6 +759,10 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
+;; NOTE:
+;;   We use company-quickhelp + company-quickhelp-terminal on CLI
+;;   And company-box on GUI (company quickhelp on GUI is toolkit dependent
+;;   and altough it works ok with Emacs Lucid, it does not with GTK and macOS).
 (use-package company
   :defer t
   :ensure t
@@ -1187,7 +1226,7 @@ targets."
                                         (javascript-mode . "javascript")
                                         (typescript-mode . "typescript")
                                         (typescript-ts-mode . "typescript")
-                                        (tsx-ts-mode . "typescript")
+                                        (tsx-ts-mode . "typescriptreact")
                                         (prisma-mode . "prisma")
                                         (typescriptreact-mode . "typescriptreact")
                                         (ruby-mode . "ruby")
