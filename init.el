@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.24
+;; Version: 0.1.25
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -123,7 +123,7 @@
  '(org-safe-remote-resources
    '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
  '(package-selected-packages
-   '(treesit-auto company-box yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode multi-vterm nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient rust-mode rustic sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
+   '(dashboard treesit-auto company-box yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode multi-vterm nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient rust-mode rustic sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(pos-tip-background-color "#4F4F4F")
  '(pos-tip-foreground-color "#FFFFEF")
@@ -234,6 +234,32 @@
   :defer t
   :ensure t
   :config)
+
+(use-package dashboard
+  :ensure t
+  :config
+  (setq dashboard-banner-logo-title "Welcome to LEMACS")
+  ;; (setq dashboard-startup-banner (".....logo.png" . ".....logo.txt"))
+  ;; (setq dashboard-startup-banner 'logo)
+  (setq dashboard-startup-banner
+		(cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
+              (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))
+
+  
+
+  (setq dashboard-center-content t)
+  (setq dashboard-vertically-center-content t)
+  (setq dashboard-display-icons-p t)
+  (setq dashboard-icon-type 'nerd-icons)
+
+  (setq dashboard-items '((recents   . 5)
+                        (bookmarks . 5)
+                        (projects  . 5)
+                        ;; (agenda    . 5)
+                        ;; (registers . 5)
+						))
+
+  (dashboard-setup-startup-hook))
 
 (use-package diff-hl
   :defer t
