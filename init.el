@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.25
+;; Version: 0.1.26
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -662,6 +662,7 @@ uses the files with the prefix libtree-sitter-."
   (setq treemacs-icons nil)
   (setq treemacs-file-event-delay 100)
   (setq treemacs-silent-refresh t)
+  (setq treemacs--project-follow-delay 0.1)
   (treemacs-project-follow-mode +1))
 
 (use-package treemacs-icons-dired
