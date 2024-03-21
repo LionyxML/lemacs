@@ -280,6 +280,7 @@
 (use-package docker
   :defer t
   :ensure t
+  :bind ("C-c d" . docker)
   :config)
 
 (use-package dockerfile-mode
@@ -1028,6 +1029,15 @@ targets."
 
 (use-package eshell
   :config
+  (add-hook 'eshell-mode-hook
+			(lambda ()
+              (local-set-key (kbd "C-l")
+							 (lambda ()
+                               (interactive)
+                               (eshell/clear 1)
+							   (eshell-send-input)
+							   ))))
+
   (setq eshell-prompt-function
 		(lambda ()
           (concat
