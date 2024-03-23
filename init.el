@@ -30,6 +30,9 @@
 ;; Performance Hack 01 --- GC buffer before all
 (setq gc-cons-threshold #x40000000)
 
+;; Performance Hack 01.1 --- GC buffer before all
+(setq read-process-output-max (* 1024 1024 4)) ;; 4mb
+
 ;; Performance Hack 02 --- Quickier filename handling, resetted after load
 (defvar default-file-name-handler-alist file-name-handler-alist)
 (setq file-name-handler-alist nil)
@@ -1152,7 +1155,6 @@ targets."
   (setq gnus-init-file "~/.gnus.el")
 
   (setq warning-minimum-level :emergency)
-  (setq read-process-output-max (* 1024 1024)) ;; 1mb
   (setq make-backup-files nil)
   (setq auto-save-default nil)
   (setq create-lockfiles nil)
