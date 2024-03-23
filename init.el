@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.26
+;; Version: 0.1.27
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -248,7 +248,7 @@
 		(cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
               (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))
 
-  
+
 
   (setq dashboard-center-content t)
   (setq dashboard-vertically-center-content t)
@@ -302,7 +302,7 @@
   ()
   :config
   (setq inhibit-compacting-font-caches t) ;; Don´t compact font caches during GC
-  
+
   (unless (eq system-type 'darwin)
     (if (facep 'mode-line-active)
         (set-face-attribute 'mode-line-active nil
@@ -610,7 +610,7 @@
   :config
 
   (setq tree-sitter-load-path (list (expand-file-name "tree-sitter" user-emacs-directory)))
-  
+
   (setq major-mode-remap-alist
         '((yaml-mode . yaml-ts-mode)
           (bash-mode . bash-ts-mode)
@@ -637,7 +637,7 @@
   :ensure t
   :config
   (setq-default tree-sitter-langs-grammar-dir (expand-file-name "tree-sitter" user-emacs-directory))
-  
+
   (defun create-tree-sitter-links ()
 	"Create links from .emacs.d/tree-sitter/bin* to .emacs.d/tree-sitter/* files.
 Since tree-sitter-mode uses the format provided by /bin and the built-in
@@ -757,7 +757,7 @@ uses the files with the prefix libtree-sitter-."
 (use-package marginalia
   :ensure t
   :bind (:map minibuffer-local-map
-         ("M-A" . marginalia-cycle))  
+         ("M-A" . marginalia-cycle))
   :custom
   (marginalia-max-relative-age 0)
   (marginalia-align 'left)
@@ -772,7 +772,7 @@ uses the files with the prefix libtree-sitter-."
   (vertico-cycle nil)                   ; Go from last to first candidate and first to last (cycle)?
   :config
   (vertico-mode)
-  
+
   ;; Prefix the current candidate with “» ”. From
   ;; https://github.com/minad/vertico/wiki#prefix-current-candidate-with-arrow
   (advice-add #'vertico--format-candidate :around
@@ -803,10 +803,11 @@ uses the files with the prefix libtree-sitter-."
   :config
   (setq company-tooltip-maximum-width 50)
   (setq company-tooltip-align-annotations t)
+  (setq company-minimum-prefix-length 2)
   (setq company-idle-delay 0))
 
 (use-package company-quickhelp
-  :if (not window-system)  
+  :if (not window-system)
   :custom
   (company-quickhelp-use-propertized-text nil)
   :config
@@ -823,7 +824,7 @@ uses the files with the prefix libtree-sitter-."
 
 
 (use-package company-box
-  :if (window-system)  
+  :if (window-system)
   :hook (company-mode . company-box-mode)
   :config
   (setq company-box-scrollbar nil))
@@ -1208,9 +1209,9 @@ targets."
   (setq lsp-headerline-breadcrumb-icons-enable nil)
 
   (setq lsp-ui-doc-use-childframe t)
-  
-  (setq lsp-log-io nil) ;; Don't log everything = speed
-  (setq lsp-idle-delay 0.5)
+
+  (setq lsp-log-io nil)   ;; Don't log everything = speed
+  (setq lsp-idle-delay 0) ;; If needed, increase to 0.5...
   (setq lsp-keep-workspace-alive nil)
   (setq lsp-keymap-prefix "C-c l")
   (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
@@ -1464,7 +1465,7 @@ Also terminal emulator must be already configured to support it."
             (treemacs)
             (treemacs)
             (which-key-mode)
-            
+
       ;; (profiler-report)
       ;; (profiler-stop)
 
