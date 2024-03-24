@@ -227,6 +227,12 @@
                  (const :tag "lsp-mode" lsp-mode))
   :group 'lemacs)
 
+(defcustom lemacs_in_buffer_completion 'corfu
+  "The in-buffer completion to use."
+  :type '(choice (const :tag "corfu" corfu)
+                 (const :tag "company" company))
+  :group 'lemacs)
+
 ;;; --------------------------------- EXTERNAL PACKAGES
 (use-package ace-window
   :defer t
@@ -845,43 +851,91 @@ uses the files with the prefix libtree-sitter-."
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
-;; NOTE:
-;;   We use company-quickhelp + company-quickhelp-terminal on CLI
-;;   And company-box on GUI (company quickhelp on GUI is toolkit dependent
-;;   and altough it works ok with Emacs Lucid, it does not with GTK and macOS).
-(use-package company
-  :defer t
-  :ensure t
-  :bind
-  ("C-j" . company-complete)
-  :config
-  (setq company-tooltip-maximum-width 50)
-  (setq company-tooltip-align-annotations t)
-  (setq company-minimum-prefix-length 2)
-  (setq company-idle-delay 0))
+(when (eq lemacs_in_buffer_completion 'corfu)
+  (use-package corfu
+	;; Optional customizations
+	:custom
+	;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+	(corfu-auto t)                 ;; Enable auto completion
+	(corfu-auto-delay 0)
+	(corfu-auto-prefix 1)
+	;; (corfu-separator ?\s)          ;; Orderless field separator
+	;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+	;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+	(corfu-quit-no-match t)
+	;; (corfu-preview-current nil)    ;; Disable current candidate preview
+	;; (corfu-preselect 'prompt)      ;; Preselect the prompt
+	;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+	(corfu-scroll-margin 5)        ;; Use scroll margin
+	(corfu-max-width 50)
+	(corfu-popupinfo-mode t)
+	(corfu-popupinfo-delay 0)
 
-(use-package company-quickhelp
-  :if (not window-system)
-  :custom
-  (company-quickhelp-use-propertized-text nil)
-  :config
-  (eval-after-load 'company
-	'(define-key company-active-map (kbd "C-h") #'company-quickhelp-manual-begin)))
+	;; Enable Corfu only for certain modes.
+	;; :hook ((prog-mode . corfu-mode)
+	;;        (shell-mode . corfu-mode)
+	;;        (eshell-mode . corfu-mode))
 
-(use-package company-quickhelp-terminal
-  :if (not window-system)
-  :custom
-  (company-quickhelp-use-propertized-text nil)
-  :config
-  (with-eval-after-load 'company-quickhelp
-    (company-quickhelp-terminal-mode 1)))
+	;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
+	;; be used globally (M-/).  See also the customization variable
+	;; `global-corfu-modes' to exclude certain modes.
+
+	:config
+	(add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)
+
+	:init
+	(global-corfu-mode))
 
 
-(use-package company-box
-  :if (window-system)
-  :hook (company-mode . company-box-mode)
-  :config
-  (setq company-box-scrollbar nil))
+  (when (not window-system)
+	(add-to-list 'load-path "~/.emacs.d/site-lisp/corfu-terminal/")
+	(require 'corfu-terminal)
+	(corfu-terminal-mode))
+
+  (use-package nerd-icons-corfu
+	:ensure t
+	:after (:all corfu)
+	:config))
+
+
+(when (eq lemacs_in_buffer_completion 'company)
+  ;; NOTE:
+  ;;   We use company-quickhelp + company-quickhelp-terminal on CLI
+  ;;   And company-box on GUI (company quickhelp on GUI is toolkit dependent
+  ;;   and altough it works ok with Emacs Lucid, it does not with GTK and macOS).
+  (use-package company
+	:defer t
+	:ensure t
+	:bind
+	("C-j" . company-complete)
+	:config
+	(setq company-tooltip-maximum-width 50)
+	(setq company-tooltip-align-annotations t)
+	(setq company-minimum-prefix-length 2)
+	(setq company-idle-delay 0))
+
+  (use-package company-quickhelp
+	:if (not window-system)
+	:custom
+	(company-quickhelp-use-propertized-text nil)
+	:config
+	(eval-after-load 'company
+	  '(define-key company-active-map (kbd "C-h") #'company-quickhelp-manual-begin)))
+
+  (use-package company-quickhelp-terminal
+	:if (not window-system)
+	:custom
+	(company-quickhelp-use-propertized-text nil)
+	:config
+	(with-eval-after-load 'company-quickhelp
+      (company-quickhelp-terminal-mode 1)))
+
+
+  (use-package company-box
+	:if (window-system)
+	:hook (company-mode . company-box-mode)
+	:config
+	(setq company-box-scrollbar nil)))
 
 
 ;; NOTE TO SELF: Corfu is not yet mature, meaning it needs A LOT of effort to make
@@ -1537,7 +1591,10 @@ Also terminal emulator must be already configured to support it."
 
             (xclip-mode 1)
             (delete-selection-mode 1)
-            (global-company-mode)
+
+			(when (eq lemacs_in_buffer_completion 'company)
+              (global-company-mode))
+			
             (global-diff-hl-mode)
             (diff-hl-flydiff-mode)
             (my-setup-outline-mode-elisp)
