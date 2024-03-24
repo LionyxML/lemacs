@@ -126,7 +126,7 @@
  '(org-safe-remote-resources
    '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
  '(package-selected-packages
-   '(eldoc-box dashboard treesit-auto company-box yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode multi-vterm nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
+   '(flymake-eslint eldoc-box dashboard treesit-auto company-box yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode multi-vterm nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(pos-tip-background-color "#4F4F4F")
  '(pos-tip-foreground-color "#FFFFEF")
@@ -384,7 +384,17 @@
       (add-hook 'css-mode-hook #'eglot-ensure)
       (add-hook 'sass-mode-hook #'eglot-ensure)
       (add-hook 'web-mode-hook #'eglot-ensure)
-      (add-hook 'prisma-mode-hook #'eglot-ensure))))
+      (add-hook 'prisma-mode-hook #'eglot-ensure)))
+
+  (defun my-enable-flymake-eslint ()
+	"Enable eslint if typescript mode"
+	(when (or (eq major-mode 'tsx-ts-mode)
+			  (eq major-mode 'typescript-ts-mode)
+			  (eq major-mode 'javascript-ts-mode)
+			  (eq major-mode 'typescriptreact-mode))
+	  (flymake-eslint-enable)))
+
+  (add-hook 'eglot-managed-mode-hook #'my-enable-flymake-eslint))
 
 (use-package eldoc
   :defer t
@@ -1208,6 +1218,11 @@ targets."
         split-width-threshold 300)
 
   (doom-modeline-mode 1))
+
+(use-package flymake-eslint
+  :defer t
+  :ensure t
+  :config)
 
 (use-package flymake
   :defer t

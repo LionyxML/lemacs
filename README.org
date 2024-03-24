@@ -70,6 +70,7 @@ You need to Install globally (and for every every asdf plugin shim if you're usi
 #+BEGIN_SRC bash
 npm i -g vscode-langservers-extracted prettier@2.8.8
 npm i -g typescript-language-server typescript
+npm i -g eslint
 #+END_SRC 
 
 **** Backup your config
