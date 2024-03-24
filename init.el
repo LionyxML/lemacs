@@ -126,7 +126,7 @@
  '(org-safe-remote-resources
    '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
  '(package-selected-packages
-   '(dashboard treesit-auto company-box yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode multi-vterm nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient rust-mode rustic sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
+   '(eldoc-box dashboard treesit-auto company-box yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode multi-vterm nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(pos-tip-background-color "#4F4F4F")
  '(pos-tip-foreground-color "#FFFFEF")
@@ -184,7 +184,6 @@
 	 (rjsx-mode . javascript)
 	 (ruby-mode . ruby)
 	 (rust-mode . rust)
-	 (rustic-mode . rust)
 	 (scala-mode . scala)
 	 (scheme-mode . scheme)
 	 (swift-mode . swift)
@@ -221,6 +220,12 @@
  '(default ((t (:height 100 :family "Hack" :embolden true))))
   '(term ((t (:background "black" :foreground "gray100"))))))
 
+;;; --------------------------------- LEMACS CUSTOM OPTIONS
+(defcustom lemacs_lsp_client 'eglot
+  "The LSP implementation to use."
+  :type '(choice (const :tag "eglot" eglot)
+                 (const :tag "lsp-mode" lsp-mode))
+  :group 'lemacs)
 
 ;;; --------------------------------- EXTERNAL PACKAGES
 (use-package ace-window
@@ -360,6 +365,43 @@
   :ensure t
   :config
   :after (:all erc))
+
+(use-package eglot
+  :if (eq lemacs_lsp_client 'eglot)
+  :ensure t
+  :preface
+  :custom
+  (eglot-autoshutdown t)
+  (eglot-events-buffer-size 0)
+  :config
+  (when (eq lemacs_lsp_client 'eglot)
+    (progn
+      (add-hook 'python-ts-mode-hook #'eglot-ensure)
+      (add-hook 'js-ts-mode-hook #'eglot-ensure)
+      (add-hook 'typescript-ts-mode-hook #'eglot-ensure)
+      (add-hook 'tsx-ts-mode-hook #'eglot-ensure)
+      (add-hook 'rust-ts-mode-hook #'eglot-ensure)
+      (add-hook 'css-mode-hook #'eglot-ensure)
+      (add-hook 'sass-mode-hook #'eglot-ensure)
+      (add-hook 'web-mode-hook #'eglot-ensure)
+      (add-hook 'prisma-mode-hook #'eglot-ensure))))
+
+(use-package eldoc
+  :defer t
+  :ensure t
+  :config
+  (if (display-graphic-p)
+    (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point)
+  (global-set-key (kbd "C-h C-.") #'eldoc-doc-buffer))
+  
+  (setq eldoc-echo-area-use-multiline-p nil))
+
+(use-package eldoc-box
+  :if (window-system)  
+  :defer t
+  :ensure t
+  :after (:all eldoc)
+  :config)
 
 (use-package exec-path-from-shell
   :defer t
@@ -542,18 +584,20 @@
   :ensure t
   :config)
 
-(use-package rust-mode
-  :defer t
-  :ensure t
-  :config)
+;; NOTE: disabled in favor of tree-sitter, rustic seems abandoned :(
+;;
+;; (use-package rust-mode
+;;   :defer t
+;;   :ensure t
+;;   :config)
 
-(use-package rustic
-  :defer t
-  :ensure t
-  :config
-  (setq rustic-analyzer-command '("~/.cargo/bin/rust-analyzer"))
-  (setq rustic-rustfmt-config-alist '((edition . "2018"))) ;; If not forced here, rustfmt complains
-  (setq rustic-format-on-save t))
+;; (use-package rustic
+;;   :defer t
+;;   :ensure t
+;;   :config
+;;   (setq rustic-analyzer-command '("~/.cargo/bin/rust-analyzer"))
+;;   (setq rustic-rustfmt-config-alist '((edition . "2018"))) ;; If not forced here, rustfmt complains
+;;   (setq rustic-format-on-save t))
 
 (use-package sass-mode
   :defer t
@@ -602,7 +646,7 @@
   (treesit-auto-install 'prompt)
   :config
   ;; all minus: rust (I prefer rustic)
-  (treesit-auto-add-to-auto-mode-alist '(awk bash bibtex c c-sharp clojure cmake commonlisp cpp css dart dockerfile elixir go gomod heex html java javascript json julia kotlin latex lua magik make markdown nu proto python r ruby toml tsx typescript typst verilog vhdl wat wast yaml))
+  (treesit-auto-add-to-auto-mode-alist '(awk bash bibtex c c-sharp clojure cmake commonlisp cpp css dart dockerfile elixir go gomod heex html java javascript json julia kotlin latex lua magik make markdown nu proto python r ruby toml tsx typescript typst verilog vhdl wat wast yaml rust))
   (global-treesit-auto-mode))
 
 (use-package tree-sitter
@@ -865,7 +909,8 @@ uses the files with the prefix libtree-sitter-."
          ("M-y" . consult-yank-pop)                ;; orig. yank-pop
          ;; M-g bindings in `goto-map'
          ("M-g e" . consult-compile-error)
-         ("M-g f" . consult-flycheck)               ;; Alternative: consult-flycheck
+		 ("M-g f" . consult-flymake)
+         ("M-g F" . consult-flycheck)
          ("M-g g" . consult-goto-line)             ;; orig. goto-line
          ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
          ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
@@ -1164,6 +1209,27 @@ targets."
 
   (doom-modeline-mode 1))
 
+(use-package flymake
+  :defer t
+  :ensure t
+  :config
+  (advice-add #'flymake--fringe-overlay-spec :override
+              (lambda (bitmap &optional recursed)
+                (if (and (symbolp bitmap)
+                         (boundp bitmap)
+                         (not recursed))
+                    (flymake--fringe-overlay-spec
+                     (symbol-value bitmap) t)
+                  (and flymake-fringe-indicator-position
+                       bitmap
+                       (propertize "!" 'display
+                                   `((margin left-margin)
+                                     ,bitmap))))))
+
+  (put 'flymake-error 'flymake-bitmap (propertize "!" 'face `(:inherit (error default) :underline nil)))
+  (put 'flymake-warning 'flymake-bitmap (propertize "W" 'face `(:inherit (warning default) :underline nil)))
+  (put 'flymake-note 'flymake-bitmap (propertize "?" 'face `(:inherit (success default) :underline nil))))
+
 (use-package flycheck
   :defer t
   :ensure t
@@ -1183,102 +1249,107 @@ targets."
 
   (add-hook 'flycheck-mode-hook #'my-set-flycheck-margins))
 
-(use-package lsp-mode
-  :defer t
-  :hook
-  ((python-ts-mode . lsp)
-   (js-ts-mode . lsp)
-   (typescript-ts-mode . lsp)
-   (tsx-ts-mode . lsp)
-   (css-mode . lsp)
-   (sass-mode . lsp)
-   (web-mode . lsp)
-   (prisma-mode . lsp))
-  :ensure t
-  :config
-  (lsp-inlay-hints-mode)
-  (setq lsp-inlay-hint-enable t)
 
-  (setq lsp-enable-links nil)
-  (setq lsp-eldoc-enable-hover nil)
-  (setq lsp-python-ms-python-executable "/usr/bin/python3")
+;; This is ugly but the only way I managed to work, manuall hooks didnt do the trick :/
+(when (eq lemacs_lsp_client 'lsp-mode)
+  (use-package lsp-mode
+	:if (eq lemacs_lsp_client 'lsp-mode)
+	:defer t
+	:hook
+	((python-ts-mode . lsp)
+	 (js-ts-mode . lsp)
+	 (typescript-ts-mode . lsp)
+	 (rust-ts-mode . lsp)	 
+	 (tsx-ts-mode . lsp)
+	 (css-mode . lsp)
+	 (sass-mode . lsp)
+	 (web-mode . lsp)
+	 (prisma-mode . lsp))
+	:ensure t
+	:config
+	(lsp-inlay-hints-mode)
+	(setq lsp-inlay-hint-enable t)
 
-  (setq lsp-headerline-breadcrumb-enable-symbol-numbers t)
-  (setq lsp-headerline-arrow "▶")
-  (setq lsp-headerline-breadcrumb-enable-diagnostics nil)
-  (setq lsp-headerline-breadcrumb-icons-enable nil)
+	(setq lsp-enable-links nil)
+	(setq lsp-eldoc-enable-hover nil)
+	(setq lsp-python-ms-python-executable "/usr/bin/python3")
 
-  (setq lsp-ui-doc-use-childframe t)
+	(setq lsp-headerline-breadcrumb-enable-symbol-numbers t)
+	(setq lsp-headerline-arrow "▶")
+	(setq lsp-headerline-breadcrumb-enable-diagnostics nil)
+	(setq lsp-headerline-breadcrumb-icons-enable nil)
 
-  (setq lsp-log-io nil)   ;; Don't log everything = speed
-  (setq lsp-idle-delay 0) ;; If needed, increase to 0.5...
-  (setq lsp-keep-workspace-alive nil)
-  (setq lsp-keymap-prefix "C-c l")
-  (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
+	(setq lsp-ui-doc-use-childframe t)
 
-  (global-set-key (kbd "M-3") 'lsp-ui-peek-find-implementation)
-  (global-set-key (kbd "M-4") 'lsp-ui-peek-find-references)
-  (global-set-key (kbd "M-5") 'lsp-ui-doc-toggle)
+	(setq lsp-log-io nil)   ;; Don't log everything = speed
+	(setq lsp-idle-delay 0) ;; If needed, increase to 0.5...
+	(setq lsp-keep-workspace-alive nil)
+	(setq lsp-keymap-prefix "C-c l")
+	(define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
+
+	(global-set-key (kbd "M-3") 'lsp-ui-peek-find-implementation)
+	(global-set-key (kbd "M-4") 'lsp-ui-peek-find-references)
+	(global-set-key (kbd "M-5") 'lsp-ui-doc-toggle)
 
 
-  ;; ESLINT is hell...
-  ;; Install it globally (taking in consideration node is the same version as above)
-  (setq lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
-  ;; (setq lsp-eslint-server-command '("/Users/rmj/.nvm/versions/node/v16.15.0/bin/vscode-eslint-language-server" "--stdio"))
-  ;; (setq lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
+	;; ESLINT is hell...
+	;; Install it globally (taking in consideration node is the same version as above)
+	(setq lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
+	;; (setq lsp-eslint-server-command '("/Users/rmj/.nvm/versions/node/v16.15.0/bin/vscode-eslint-language-server" "--stdio"))
+	;; (setq lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
 
-  ;; LSP Custom for: Prisma
-  (add-to-list 'load-path "~/.emacs.d/site-lisp/prisma-mode/")
-  (require 'prisma-mode)
-  (require 'lsp-prisma)
+	;; LSP Custom for: Prisma
+	(add-to-list 'load-path "~/.emacs.d/site-lisp/prisma-mode/")
+	(require 'prisma-mode)
+	(require 'lsp-prisma)
 
-  (add-hook 'before-save-hook #'(lambda () (when (eq major-mode 'prisma-mode)
-                                             (lsp-format-buffer))))
-  (add-hook 'prisma-mode-hook #'lsp-deferred)
+	(add-hook 'before-save-hook #'(lambda () (when (eq major-mode 'prisma-mode)
+                                               (lsp-format-buffer))))
+	(add-hook 'prisma-mode-hook #'lsp-deferred)
 
-  ;; LSP requirements on the server
-  ;; sudo npm i -g typescript-language-server; sudo npm i -g typescript
+	;; LSP requirements on the server
+	;; sudo npm i -g typescript-language-server; sudo npm i -g typescript
 
-  ;; LSP Mapping on what mode uses what LSP server
-  (setq lsp-language-id-configuration '((java-mode . "java")
-                                        (python-mode . "python")
-										(python-ts-mode . "python")
-                                        (gfm-view-mode . "markdown")
-                                        (rust-mode . "rust")
-                                        (rustic-mode . "rust")
-                                        (rust-ts-mode . "rust")
-                                        (css-mode . "css")
-                                        (sass-mode . "sass")
-                                        (xml-mode . "xml")
-                                        (c-mode . "c")
-                                        (c++-mode . "cpp")
-                                        (objc-mode . "objective-c")
-                                        (web-mode . "html")
-                                        (html-mode . "html")
-                                        (sgml-mode . "html")
-                                        (mhtml-mode . "html")
-                                        (go-mode . "go")
-                                        (haskell-mode . "haskell")
-                                        (php-mode . "php")
-                                        (json-mode . "json")
-                                        (js-ts-mode . "javascript")
-                                        (js-mode . "javascript")
-                                        (rjsx-mode . "javascript")
-                                        (javascript-mode . "javascript")
-                                        (typescript-mode . "typescript")
-                                        (typescript-ts-mode . "typescript")
-                                        (tsx-ts-mode . "typescriptreact")
-                                        (prisma-mode . "prisma")
-                                        (typescriptreact-mode . "typescriptreact")
-                                        (ruby-mode . "ruby")
-										(emacs-lisp-mode . nil)
-                                        ))
-  ;; LSP debugging
-  ;; (setq lsp-print-io t)
-  ;; (setq lsp-trace t)
-  ;; (setq lsp-print-performance t)
+	;; LSP Mapping on what mode uses what LSP server
+	(setq lsp-language-id-configuration '((java-mode . "java")
+                                          (python-mode . "python")
+										  (python-ts-mode . "python")
+                                          (gfm-view-mode . "markdown")
+                                          (rust-mode . "rust")
+                                          (rustic-mode . "rust")
+                                          (rust-ts-mode . "rust")
+                                          (css-mode . "css")
+                                          (sass-mode . "sass")
+                                          (xml-mode . "xml")
+                                          (c-mode . "c")
+                                          (c++-mode . "cpp")
+                                          (objc-mode . "objective-c")
+                                          (web-mode . "html")
+                                          (html-mode . "html")
+                                          (sgml-mode . "html")
+                                          (mhtml-mode . "html")
+                                          (go-mode . "go")
+                                          (haskell-mode . "haskell")
+                                          (php-mode . "php")
+                                          (json-mode . "json")
+                                          (js-ts-mode . "javascript")
+                                          (js-mode . "javascript")
+                                          (rjsx-mode . "javascript")
+                                          (javascript-mode . "javascript")
+                                          (typescript-mode . "typescript")
+                                          (typescript-ts-mode . "typescript")
+                                          (tsx-ts-mode . "typescriptreact")
+                                          (prisma-mode . "prisma")
+                                          (typescriptreact-mode . "typescriptreact")
+                                          (ruby-mode . "ruby")
+										  (emacs-lisp-mode . nil)
+                                          ))
+	;; LSP debugging
+	;; (setq lsp-print-io t)
+	;; (setq lsp-trace t)
+	;; (setq lsp-print-performance t)
 
-  )
+	))
 
 (use-package lsp-ui
   :defer t
