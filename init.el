@@ -279,7 +279,7 @@
   :defer t
   :ensure t
   :custom
-  (diff-hl-margin-mode t)
+  (diff-hl-margin-mode nil) ;; Awaiting discussion here: https://github.com/dgutov/diff-hl/issues/215 to get back to t
   (diff-hl-margin-symbols-alist
    '((insert . " ")
 	 (delete . " ")
@@ -1282,22 +1282,27 @@ targets."
   :defer t
   :ensure t
   :config
-  (advice-add #'flymake--fringe-overlay-spec :override
-              (lambda (bitmap &optional recursed)
-                (if (and (symbolp bitmap)
-                         (boundp bitmap)
-                         (not recursed))
-                    (flymake--fringe-overlay-spec
-                     (symbol-value bitmap) t)
-                  (and flymake-fringe-indicator-position
-                       bitmap
-                       (propertize "!" 'display
-                                   `((margin left-margin)
-                                     ,bitmap))))))
+  (setq-default left-margin-width 2)
+  (modify-all-frames-parameters '((left-fringe . left-margin)))
 
-  (put 'flymake-error 'flymake-bitmap (propertize "!" 'face `(:inherit (error default) :underline nil)))
+  ;; Magic in order to display markings on margin, not the fringe
+  (advice-add #'flymake--fringe-overlay-spec :override
+    (lambda (bitmap &optional recursed)
+      (if (and (symbolp bitmap)
+            (boundp bitmap)
+            (not recursed))
+        (flymake--fringe-overlay-spec
+          (symbol-value bitmap) t)
+        (and flymake-fringe-indicator-position
+          bitmap
+          (propertize "!" 'display
+            `((margin left-margin)
+               ,bitmap))))))
+
+  (put 'flymake-error 'flymake-bitmap (propertize "E" 'face `(:inherit (error default) :underline nil)))
   (put 'flymake-warning 'flymake-bitmap (propertize "W" 'face `(:inherit (warning default) :underline nil)))
-  (put 'flymake-note 'flymake-bitmap (propertize "?" 'face `(:inherit (success default) :underline nil))))
+  (put 'flymake-note 'flymake-bitmap (propertize "I" 'face `(:inherit (success default) :underline nil)))
+  )
 
 (use-package flycheck
   :defer t
@@ -1592,9 +1597,9 @@ Also terminal emulator must be already configured to support it."
             (xclip-mode 1)
             (delete-selection-mode 1)
 
-			(when (eq lemacs_in_buffer_completion 'company)
+            (when (eq lemacs_in_buffer_completion 'company)
               (global-company-mode))
-			
+
             (global-diff-hl-mode)
             (diff-hl-flydiff-mode)
             (my-setup-outline-mode-elisp)
