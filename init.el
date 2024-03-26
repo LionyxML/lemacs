@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.27
+;; Version: 0.1.28
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -95,7 +95,7 @@
  '(cursor-type '(bar . 3))
  '(custom-enabled-themes '(catppuccin))
  '(custom-safe-themes
-   '("46a843168cc83b28b740735516e6eea4f97769d848c79b5acab32f7a278f793a" "5e05db868f138062a3aedcccefe623eee18ec703ae25d4e5aebd65f892ac5bcc" "73c55f5fd22b6fd44f1979b6374ca7cc0a1614ee8ca5d4f1366a0f67da255627" "65af8e8d704bcd9745a4f191db756995de6b1fdd15cf2eb41befaae75f7b045d" "7dc1c6210efe106a8c6cd47009a2ffd0069826b550dda379e8e4ef6105384cba" "4c326abbf8b85c85e114691d3892cbbfe889b2b064dadd284cf5eccca3eecbff" "e546768f3da4b394adc8c460106a7d220af130a3a2a0518d265c832d015a4385" "df42062cdd672acecac9b5a1229c45f74c0cc2bc0362f9ad41054af6ac355021" "7ca04d620046f5807d0740f265844d45e53b864138c246f48f663bea8fba5c5d" "ca934a76aae4ff950288e082be75a68eb7bac6e8d3dd58b28649993540412ed6" "6cff32351bcb1726accf9dcf9c400367971eaa8bb1d163409b78ea9c9a6ae8d0" "714394050e703db8a773ed350ca6f9cb6636d4bf2e348514804a48929aafc762" "8390abb2cc504d44f0c9dfdaf79d4e943f0328a933e20ceec74c74d17d65834f" "2cc1ac47eed7ac51d79d1aaf6218d52ec84d9c6eb8a448f221f592bddfe51550" "dc2e1b0abb9a5d2033f6d881618932dcdb9af7633d8fa44336f9c9a3484379bd" "eb0f822891b90a730f3331959311439f01bb39da3cdf998b5693ecec877858d0" "e1990eeea39781f009b7f4634ca52a770d05bb7ce423a8fbbcd8a4f327efb626" "4f6dc03105f64cd7e5a3f555ea7c6bac7d9447141473ef9ff3c23b63858066da" "1b8df5c4f3364ebfbe9c0d3d859f6c31ab652ba518612ec27b12e462ce677731" "82b43e48862ecc7e3af29838ed843227e331b187865828dc4915021c5a74baa1" "51f3fb81f9233280cb28ee3023e43e82c9307d59d158626881ca14f964d2abeb" "242f33ba517c05f45e075d8ed3d13c0a7b7d1392e0c95d66830029e561607085" "45e409674661674c12070af5f8ef71741599eeb9fccd84557f1b822509f3b100" "e6b0ec96166bb3bb2843d83e56c0292308aab10ee5b79fb921d16ad2dbea5d5f" "38457f8afb329ce87e1a41d31e155acb4dcdf5ee6a1ea703d401f2042747a69f" "2459d6e7e96aefaed9cebaf7fde590f64e76c96f48632d8310cfea5d10ec2bb1" "50bb891011dfe0c30cd463c65e898523788d4ac4e6df141eed75030a33da1135" "7f34e5ab75ec580aff579b3b0f40379d280f8441e424b7a04322524ed7f348b6" "31804a8ea314e76b68f8b1c454212c3d9710c4294b8cfbaa008dd338c8d91773" "0018c218377a0f234066cd01eb9b636d3739b0b614c7b2c0b8e37a306b7bf8ef" "e871f44a640f98523876f77dccdbf0e20747ca7e111f9f147fe23c9d5f4937c1" "406d7c11a38d7b0e6c305ea91515cbd0c89cd73c55d041da9545338df98f1db4" "2fcd2b44646836f0f4acbd42a13fa85123dac744628f0105a5e9f0f7dbbc936a" "80214de566132bf2c844b9dee3ec0599f65c5a1f2d6ff21a2c8309e6e70f9242" "d23073a9616156a16aecbd3d38e1c3a1f006fc5d920e3fbcb681411e35d2a096" "c191ad8745b348656877bb8fd54cf8398911add379c7d0fdb235f755123c8c15" "801c56b8fb127b8b8ce20b31b493690f86fb13e7bd51ad911f5bb1a0f4310c14" "35f1be3b2bda0b91473107f455c54cf5ff74a8a9371e13a11a0a75d8d06825a6" "46aa01ed69cef28b48aaa49053a6f987f9c12c06cf9f88a028b249dcc5a48157" "0527c20293f587f79fc1544a2472c8171abcc0fa767074a0d3ebac74793ab117" default))
+   '("d77d6ba33442dd3121b44e20af28f1fae8eeda413b2c3d3b9f1315fbda021992" "46a843168cc83b28b740735516e6eea4f97769d848c79b5acab32f7a278f793a" "5e05db868f138062a3aedcccefe623eee18ec703ae25d4e5aebd65f892ac5bcc" "73c55f5fd22b6fd44f1979b6374ca7cc0a1614ee8ca5d4f1366a0f67da255627" "65af8e8d704bcd9745a4f191db756995de6b1fdd15cf2eb41befaae75f7b045d" "7dc1c6210efe106a8c6cd47009a2ffd0069826b550dda379e8e4ef6105384cba" "4c326abbf8b85c85e114691d3892cbbfe889b2b064dadd284cf5eccca3eecbff" "e546768f3da4b394adc8c460106a7d220af130a3a2a0518d265c832d015a4385" "df42062cdd672acecac9b5a1229c45f74c0cc2bc0362f9ad41054af6ac355021" "7ca04d620046f5807d0740f265844d45e53b864138c246f48f663bea8fba5c5d" "ca934a76aae4ff950288e082be75a68eb7bac6e8d3dd58b28649993540412ed6" "6cff32351bcb1726accf9dcf9c400367971eaa8bb1d163409b78ea9c9a6ae8d0" "714394050e703db8a773ed350ca6f9cb6636d4bf2e348514804a48929aafc762" "8390abb2cc504d44f0c9dfdaf79d4e943f0328a933e20ceec74c74d17d65834f" "2cc1ac47eed7ac51d79d1aaf6218d52ec84d9c6eb8a448f221f592bddfe51550" "dc2e1b0abb9a5d2033f6d881618932dcdb9af7633d8fa44336f9c9a3484379bd" "eb0f822891b90a730f3331959311439f01bb39da3cdf998b5693ecec877858d0" "e1990eeea39781f009b7f4634ca52a770d05bb7ce423a8fbbcd8a4f327efb626" "4f6dc03105f64cd7e5a3f555ea7c6bac7d9447141473ef9ff3c23b63858066da" "1b8df5c4f3364ebfbe9c0d3d859f6c31ab652ba518612ec27b12e462ce677731" "82b43e48862ecc7e3af29838ed843227e331b187865828dc4915021c5a74baa1" "51f3fb81f9233280cb28ee3023e43e82c9307d59d158626881ca14f964d2abeb" "242f33ba517c05f45e075d8ed3d13c0a7b7d1392e0c95d66830029e561607085" "45e409674661674c12070af5f8ef71741599eeb9fccd84557f1b822509f3b100" "e6b0ec96166bb3bb2843d83e56c0292308aab10ee5b79fb921d16ad2dbea5d5f" "38457f8afb329ce87e1a41d31e155acb4dcdf5ee6a1ea703d401f2042747a69f" "2459d6e7e96aefaed9cebaf7fde590f64e76c96f48632d8310cfea5d10ec2bb1" "50bb891011dfe0c30cd463c65e898523788d4ac4e6df141eed75030a33da1135" "7f34e5ab75ec580aff579b3b0f40379d280f8441e424b7a04322524ed7f348b6" "31804a8ea314e76b68f8b1c454212c3d9710c4294b8cfbaa008dd338c8d91773" "0018c218377a0f234066cd01eb9b636d3739b0b614c7b2c0b8e37a306b7bf8ef" "e871f44a640f98523876f77dccdbf0e20747ca7e111f9f147fe23c9d5f4937c1" "406d7c11a38d7b0e6c305ea91515cbd0c89cd73c55d041da9545338df98f1db4" "2fcd2b44646836f0f4acbd42a13fa85123dac744628f0105a5e9f0f7dbbc936a" "80214de566132bf2c844b9dee3ec0599f65c5a1f2d6ff21a2c8309e6e70f9242" "d23073a9616156a16aecbd3d38e1c3a1f006fc5d920e3fbcb681411e35d2a096" "c191ad8745b348656877bb8fd54cf8398911add379c7d0fdb235f755123c8c15" "801c56b8fb127b8b8ce20b31b493690f86fb13e7bd51ad911f5bb1a0f4310c14" "35f1be3b2bda0b91473107f455c54cf5ff74a8a9371e13a11a0a75d8d06825a6" "46aa01ed69cef28b48aaa49053a6f987f9c12c06cf9f88a028b249dcc5a48157" "0527c20293f587f79fc1544a2472c8171abcc0fa767074a0d3ebac74793ab117" default))
  '(dired-kill-when-opening-new-dired-buffer t)
  '(dired-listing-switches "-lh")
  '(doc-view-continuous t)
@@ -126,7 +126,7 @@
  '(org-safe-remote-resources
    '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
  '(package-selected-packages
-   '(flymake-eslint eldoc-box dashboard treesit-auto company-box yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode multi-vterm nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
+   '(xterm-color nerd-icons-corfu corfu flymake-eslint eldoc-box dashboard treesit-auto company-box yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode multi-vterm nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(pos-tip-background-color "#4F4F4F")
  '(pos-tip-foreground-color "#FFFFEF")
@@ -207,6 +207,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:height 100 :family "Hack" :embolden true))))
+ '(tab-bar-tab ((t (:underline t))))
  '(term ((t (:background "black" :foreground "gray100")))))
 
 ;;; --------------------------------- GENERAL FACES
@@ -221,19 +222,33 @@
   '(term ((t (:background "black" :foreground "gray100"))))))
 
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
-(defcustom lemacs_lsp_client 'eglot
+(defcustom lemacs-lsp-client 'eglot
   "The LSP implementation to use."
   :type '(choice (const :tag "eglot" eglot)
                  (const :tag "lsp-mode" lsp-mode))
   :group 'lemacs)
 
-(defcustom lemacs_in_buffer_completion 'corfu
+(defcustom lemacs-in-buffer-completion 'corfu
   "The in-buffer completion to use."
   :type '(choice (const :tag "corfu" corfu)
                  (const :tag "company" company))
   :group 'lemacs)
 
 ;;; --------------------------------- EXTERNAL PACKAGES
+(use-package add-node-modules-path
+  :defer t
+  :custom
+  ;; Makes sure you are using the local bin for your
+  ;; node project. Local eslint, typescript server...
+  (eval-after-load 'typescript-ts-mode
+	'(add-hook 'typescript-ts-mode-hook #'add-node-modules-path))
+  (eval-after-load 'tsx-ts-mode
+	'(add-hook 'tsx-ts-mode-hook #'add-node-modules-path))
+  (eval-after-load 'typescriptreact-mode
+	'(add-hook 'typescriptreact-mode-hook #'add-node-modules-path))
+  (eval-after-load 'js-mode
+	'(add-hook 'js-mode-hook #'add-node-modules-path)))
+
 (use-package ace-window
   :defer t
   :bind
@@ -280,6 +295,7 @@
   :ensure t
   :custom
   (diff-hl-margin-mode nil) ;; Awaiting discussion here: https://github.com/dgutov/diff-hl/issues/215 to get back to t
+  (diff-hl-side 'left)
   (diff-hl-margin-symbols-alist
    '((insert . " ")
 	 (delete . " ")
@@ -373,24 +389,31 @@
   :after (:all erc))
 
 (use-package eglot
-  :if (eq lemacs_lsp_client 'eglot)
+  :if (eq lemacs-lsp-client 'eglot)
   :ensure t
   :preface
   :custom
   (eglot-autoshutdown t)
   (eglot-events-buffer-size 0)
   :config
-  (when (eq lemacs_lsp_client 'eglot)
+  (when (eq lemacs-lsp-client 'eglot)
     (progn
       (add-hook 'python-ts-mode-hook #'eglot-ensure)
       (add-hook 'js-ts-mode-hook #'eglot-ensure)
       (add-hook 'typescript-ts-mode-hook #'eglot-ensure)
+      (add-hook 'typescriptreact-mode-hook #'eglot-ensure)
       (add-hook 'tsx-ts-mode-hook #'eglot-ensure)
       (add-hook 'rust-ts-mode-hook #'eglot-ensure)
       (add-hook 'css-mode-hook #'eglot-ensure)
       (add-hook 'sass-mode-hook #'eglot-ensure)
       (add-hook 'web-mode-hook #'eglot-ensure)
-      (add-hook 'prisma-mode-hook #'eglot-ensure)))
+      (add-hook 'prisma-mode-hook #'eglot-ensure)
+
+	  (bind-keys :map eglot-mode-map
+				 ("C-c l a" . eglot-code-actions)
+				 ("C-c l o" . eglot-code-action-organize-imports)
+				 ("C-c l r" . eglot-rename)
+				 ("C-c l f" . eglot-format))))
 
   (defun my-enable-flymake-eslint ()
 	"Enable eslint if typescript mode"
@@ -413,7 +436,7 @@
   (setq eldoc-echo-area-use-multiline-p nil))
 
 (use-package eldoc-box
-  :if (window-system)  
+  :if (window-system)
   :defer t
   :ensure t
   :after (:all eldoc)
@@ -851,7 +874,7 @@ uses the files with the prefix libtree-sitter-."
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
-(when (eq lemacs_in_buffer_completion 'corfu)
+(when (eq lemacs-in-buffer-completion 'corfu)
   (use-package corfu
 	;; Optional customizations
 	:custom
@@ -898,7 +921,7 @@ uses the files with the prefix libtree-sitter-."
 	:config))
 
 
-(when (eq lemacs_in_buffer_completion 'company)
+(when (eq lemacs-in-buffer-completion 'company)
   ;; NOTE:
   ;;   We use company-quickhelp + company-quickhelp-terminal on CLI
   ;;   And company-box on GUI (company quickhelp on GUI is toolkit dependent
@@ -1282,10 +1305,21 @@ targets."
   :defer t
   :ensure t
   :config
-  (setq-default left-margin-width 2)
+  (setq-default right-margin-width 1)
+  (modify-all-frames-parameters '((left-fringe . right-margin)))
+
+  (setq-default left-margin-width 1)
   (modify-all-frames-parameters '((left-fringe . left-margin)))
 
-  ;; Magic in order to display markings on margin, not the fringe
+  (bind-keys :map flymake-mode-map
+			 ("C-c ! l" . flymake-show-buffer-diagnostics)
+			 ("C-c ! P" . flymake-show-project-diagnostics)
+			 ("C-c ! n" . flymake-goto-next-error)
+			 ("C-c ! p" . flymake-goto-prev-error))
+
+  (add-hook 'prog-mode-hook #'flymake-mode)
+
+  ;; ;; Magic in order to display markings on margin, not the fringe
   (advice-add #'flymake--fringe-overlay-spec :override
     (lambda (bitmap &optional recursed)
       (if (and (symbolp bitmap)
@@ -1296,7 +1330,7 @@ targets."
         (and flymake-fringe-indicator-position
           bitmap
           (propertize "!" 'display
-            `((margin left-margin)
+            `((margin right-margin)
                ,bitmap))))))
 
   (put 'flymake-error 'flymake-bitmap (propertize "E" 'face `(:inherit (error default) :underline nil)))
@@ -1325,15 +1359,15 @@ targets."
 
 
 ;; This is ugly but the only way I managed to work, manuall hooks didnt do the trick :/
-(when (eq lemacs_lsp_client 'lsp-mode)
+(when (eq lemacs-lsp-client 'lsp-mode)
   (use-package lsp-mode
-	:if (eq lemacs_lsp_client 'lsp-mode)
+	:if (eq lemacs-lsp-client 'lsp-mode)
 	:defer t
 	:hook
 	((python-ts-mode . lsp)
 	 (js-ts-mode . lsp)
 	 (typescript-ts-mode . lsp)
-	 (rust-ts-mode . lsp)	 
+	 (rust-ts-mode . lsp)
 	 (tsx-ts-mode . lsp)
 	 (css-mode . lsp)
 	 (sass-mode . lsp)
@@ -1597,7 +1631,7 @@ Also terminal emulator must be already configured to support it."
             (xclip-mode 1)
             (delete-selection-mode 1)
 
-            (when (eq lemacs_in_buffer_completion 'company)
+            (when (eq lemacs-in-buffer-completion 'company)
               (global-company-mode))
 
             (global-diff-hl-mode)
