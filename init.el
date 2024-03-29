@@ -126,7 +126,7 @@
  '(org-safe-remote-resources
    '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
  '(package-selected-packages
-   '(xterm-color nerd-icons-corfu corfu flymake-eslint eldoc-box dashboard treesit-auto company-box yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode multi-vterm nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
+   '(ace-window xterm-color nerd-icons-corfu corfu flymake-eslint eldoc-box dashboard treesit-auto company-box yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode multi-vterm nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
  '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
  '(pos-tip-background-color "#4F4F4F")
  '(pos-tip-foreground-color "#FFFFEF")
@@ -294,7 +294,7 @@
   :defer t
   :ensure t
   :custom
-  (diff-hl-margin-mode nil) ;; Awaiting discussion here: https://github.com/dgutov/diff-hl/issues/215 to get back to t
+  (diff-hl-margin-mode t)
   (diff-hl-side 'left)
   (diff-hl-margin-symbols-alist
    '((insert . " ")
@@ -305,7 +305,11 @@
   :bind
   (("M-9" . 'diff-hl-previous-hunk)
    ("M-0" . 'diff-hl-next-hunk))
-  :config)
+  :config
+  (set-face-attribute 'diff-hl-change nil :background "#89b4fa")
+  (set-face-attribute 'diff-hl-delete nil :background "#f38ba8")
+  (set-face-attribute 'diff-hl-insert nil :background "#a6e3a1")
+  )
 
 (use-package docker
   :defer t
@@ -322,7 +326,8 @@
   :defer t
   :ensure t
   :custom
-  (doom-modeline-buffer-file-name-style 'truncate-upto-root)
+  (doom-modeline-buffer-file-name-style 'auto)
+  (doom-modeline-project-detection 'project)
   (doom-modeline-buffer-name t)
   (doom-modeline-vcs-max-length 25)
   (doom-modeline-icon t)
@@ -1294,7 +1299,8 @@ targets."
   (setq window-combination-resize t
         split-width-threshold 300)
 
-  (doom-modeline-mode 1))
+  (doom-modeline-mode 1)
+  )
 
 (use-package flymake-eslint
   :defer t
@@ -1305,11 +1311,8 @@ targets."
   :defer t
   :ensure t
   :config
-  (setq-default right-margin-width 1)
-  (modify-all-frames-parameters '((left-fringe . right-margin)))
-
-  (setq-default left-margin-width 1)
-  (modify-all-frames-parameters '((left-fringe . left-margin)))
+  (set-window-margins nil 2 2)
+  (set-window-fringes nil 0 0)
 
   (bind-keys :map flymake-mode-map
 			 ("C-c ! l" . flymake-show-buffer-diagnostics)
@@ -1319,9 +1322,15 @@ targets."
 
   (add-hook 'prog-mode-hook #'flymake-mode)
 
-  ;; ;; Magic in order to display markings on margin, not the fringe
+  ;; Magic in order to display markings on margin, not the fringe
+  ;; Probably when this becomes ready, we wont need it to display
+  ;; flymake on the margin:
+  ;; https://mail.gnu.org/archive/html/emacs-devel/2024-03/msg00715.html
   (advice-add #'flymake--fringe-overlay-spec :override
-    (lambda (bitmap &optional recursed)
+	  (lambda (bitmap &optional recursed)
+		(set-window-margins nil 2 2)
+		(set-window-fringes nil 0 0)
+
       (if (and (symbolp bitmap)
             (boundp bitmap)
             (not recursed))
@@ -1330,12 +1339,12 @@ targets."
         (and flymake-fringe-indicator-position
           bitmap
           (propertize "!" 'display
-            `((margin right-margin)
+            `((margin left-margin)
                ,bitmap))))))
 
-  (put 'flymake-error 'flymake-bitmap (propertize "E" 'face `(:inherit (error default) :underline nil)))
-  (put 'flymake-warning 'flymake-bitmap (propertize "W" 'face `(:inherit (warning default) :underline nil)))
-  (put 'flymake-note 'flymake-bitmap (propertize "I" 'face `(:inherit (success default) :underline nil)))
+  (put 'flymake-error 'flymake-bitmap (propertize "»" 'face `(:inherit (error default) :underline nil)))
+  (put 'flymake-warning 'flymake-bitmap (propertize "»" 'face `(:inherit (warning default) :underline nil)))
+  (put 'flymake-note 'flymake-bitmap (propertize "»" 'face `(:inherit (success default) :underline nil)))
   )
 
 (use-package flycheck
