@@ -274,10 +274,8 @@
 		(cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
               (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))
 
-
-
   (setq dashboard-center-content t)
-  (setq dashboard-vertically-center-content t)
+  (setq dashboard-vertically-center-content nil)
   (setq dashboard-display-icons-p t)
   (setq dashboard-icon-type 'nerd-icons)
 
