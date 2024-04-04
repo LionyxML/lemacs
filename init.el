@@ -47,6 +47,7 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+(winner-mode 1) ;; Enables C-c left arrow / C-c right arrow to restore windows layouts
 
 
 ;; Native compilation settings
@@ -1168,6 +1169,12 @@ targets."
 
 (use-package eshell
   :config
+  (add-to-list 'display-buffer-alist
+	       '("\\*.*e?shell\\*" display-buffer-in-direction
+		 (direction . bottom)
+		 (window . root)
+		 (window-height . 0.3)))
+
   (add-hook 'eshell-mode-hook
 			(lambda ()
               (local-set-key (kbd "C-l")
@@ -1313,7 +1320,8 @@ targets."
   (set-window-fringes nil 0 0)
 
   (bind-keys :map flymake-mode-map
-			 ("C-c ! l" . flymake-show-buffer-diagnostics)
+			 ;; ("C-c ! l" . flymake-show-buffer-diagnostics)
+			 ("C-c ! l" . consult-flymake)
 			 ("C-c ! P" . flymake-show-project-diagnostics)
 			 ("C-c ! n" . flymake-goto-next-error)
 			 ("C-c ! p" . flymake-goto-prev-error))
