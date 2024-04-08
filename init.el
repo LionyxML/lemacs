@@ -250,6 +250,26 @@
   (eval-after-load 'js-mode
 	'(add-hook 'js-mode-hook #'add-node-modules-path)))
 
+(use-package window
+  :ensure nil
+  :custom
+  (display-buffer-alist
+   '(("\\*.*e?shell\\*"
+      (display-buffer-in-side-window)
+      (window-height . 0.25)
+      (side . bottom)
+      (slot . -1))
+     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|[Hh]elp\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\)\\*"
+      (display-buffer-in-side-window)
+      (window-height . 0.25)
+      (side . bottom)
+      (slot . 0))
+     ("\\*\\(Flymake diagnostics\\|Flycheck\\|prettier er\\|xref\\|EGLOT\\|Completions\\)"
+      (display-buffer-in-side-window)
+      (window-height . 0.25)
+      (side . bottom)
+      (slot . 1)))))
+
 (use-package ace-window
   :defer t
   :bind
@@ -1169,12 +1189,6 @@ targets."
 
 (use-package eshell
   :config
-  (add-to-list 'display-buffer-alist
-	       '("\\*.*e?shell\\*" display-buffer-in-direction
-		 (direction . bottom)
-		 (window . root)
-		 (window-height . 0.3)))
-
   (add-hook 'eshell-mode-hook
 			(lambda ()
               (local-set-key (kbd "C-l")
