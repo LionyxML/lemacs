@@ -493,7 +493,7 @@ negative N, comment out original line and use the absolute value."
   :defer t
   :ensure t
   :custom
-  (doom-modeline-buffer-file-name-style 'auto)
+  (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-project-detection 'project)
   (doom-modeline-buffer-name t)
   (doom-modeline-vcs-max-length 25)
@@ -553,12 +553,6 @@ negative N, comment out original line and use the absolute value."
   (setq emms-info-functions '(emms-info-tinytag)) ;; When using Tinytag
   ;; Load cover images
   (setq emms-browser-covers 'emms-browser-cache-thumbnail-async))
-
-(use-package erc-hl-nicks
-  :defer t
-  :ensure t
-  :config
-  :after (:all erc))
 
 (use-package eglot
   :if (eq lemacs-lsp-client 'eglot)
