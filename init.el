@@ -303,11 +303,8 @@ negative N, comment out original line and use the absolute value."
   (global-diff-hl-mode 1)
   (global-tree-sitter-mode)
   (diff-hl-flydiff-mode 1)
-  (treemacs)
-  (treemacs)
   (which-key-mode)
-
-  (catppuccin-reload))
+  (global-undo-tree-mode))
 
 ;;; --------------------------------- DIRED
 (use-package dired
@@ -933,9 +930,7 @@ uses the files with the prefix libtree-sitter-."
   :config)
 
 (use-package treemacs-nerd-icons
-  :defer t
   :ensure t
-  :after (:all treemacs nerd-icons)
   :config
   (treemacs-load-theme "nerd-icons"))
 
@@ -943,8 +938,7 @@ uses the files with the prefix libtree-sitter-."
   :defer t
   :ensure t
   :config
-  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/.cache/undo")))
-  (global-undo-tree-mode))
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/.cache/undo"))))
 
 (use-package vc
   :ensure t
