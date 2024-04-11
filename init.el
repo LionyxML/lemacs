@@ -301,6 +301,7 @@ negative N, comment out original line and use the absolute value."
   (delete-selection-mode 1)
   (doom-modeline-mode 1)
   (global-diff-hl-mode 1)
+  (global-tree-sitter-mode)
   (diff-hl-flydiff-mode 1)
   (treemacs)
   (treemacs)
@@ -881,7 +882,6 @@ negative N, comment out original line and use the absolute value."
   ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx))
 
-  (global-tree-sitter-mode)
   (add-hook 'tree-sitter-after-on-hook 'tree-sitter-hl-mode))
 
 (use-package tree-sitter-langs
