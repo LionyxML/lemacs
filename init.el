@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.28
+;; Version: 0.1.29
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -25,8 +25,6 @@
 ;;; Code:
 
 ;;; --------------------------------- USE-PACKAGE INIT
-
-
 ;; Performance Hack 01 --- GC buffer before all
 (setq gc-cons-threshold #x40000000)
 
@@ -40,16 +38,6 @@
 ;; Performance Hack 03 --- The basic fundamental mode for begin with
 (setq initial-major-mode 'fundamental-mode)
 
-;; (profiler-start 'cpu)
-
-;; Removes the titlebar from GUI Emacs
-;;(add-to-list 'default-frame-alist '(undecorated . t))
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(winner-mode 1) ;; Enables C-c left arrow / C-c right arrow to restore windows layouts
-
-
 ;; Native compilation settings
 (when (featurep 'native-compile)
   ;; Set the right directory to store the native compilation cache
@@ -60,9 +48,7 @@
       (startup-redirect-eln-cache path)))
   (setq-default native-comp-async-report-warnings-errors nil  ;; Silence compiler warnings as they can be pretty disruptive
                 native-comp-deferred-compilation         t    ;; Make native compilation happens asynchronously
-                package-native-compile                   t)   ;; Compile installed packages
-  )
-
+                package-native-compile                   t))  ;; Compile installed packages
 
 (eval-when-compile
   (require 'use-package))
@@ -82,146 +68,6 @@
   (setq use-package-always-ensure t
         use-package-expand-minimally t))
 
-;;; --------------------------------- CUSTOM SET VARIABLES
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default bold shadow italic underline bold bold-italic bold])
- '(ansi-color-names-vector
-   ["#4F4F4F" "#CC9393" "#7F9F7F" "#F0DFAF" "#8CD0D3" "#DC8CC3" "#93E0E3" "#6F6F6F"])
- '(column-number-mode t)
- '(cursor-type '(bar . 3))
- '(custom-enabled-themes '(catppuccin))
- '(custom-safe-themes
-   '("d77d6ba33442dd3121b44e20af28f1fae8eeda413b2c3d3b9f1315fbda021992" "46a843168cc83b28b740735516e6eea4f97769d848c79b5acab32f7a278f793a" "5e05db868f138062a3aedcccefe623eee18ec703ae25d4e5aebd65f892ac5bcc" "73c55f5fd22b6fd44f1979b6374ca7cc0a1614ee8ca5d4f1366a0f67da255627" "65af8e8d704bcd9745a4f191db756995de6b1fdd15cf2eb41befaae75f7b045d" "7dc1c6210efe106a8c6cd47009a2ffd0069826b550dda379e8e4ef6105384cba" "4c326abbf8b85c85e114691d3892cbbfe889b2b064dadd284cf5eccca3eecbff" "e546768f3da4b394adc8c460106a7d220af130a3a2a0518d265c832d015a4385" "df42062cdd672acecac9b5a1229c45f74c0cc2bc0362f9ad41054af6ac355021" "7ca04d620046f5807d0740f265844d45e53b864138c246f48f663bea8fba5c5d" "ca934a76aae4ff950288e082be75a68eb7bac6e8d3dd58b28649993540412ed6" "6cff32351bcb1726accf9dcf9c400367971eaa8bb1d163409b78ea9c9a6ae8d0" "714394050e703db8a773ed350ca6f9cb6636d4bf2e348514804a48929aafc762" "8390abb2cc504d44f0c9dfdaf79d4e943f0328a933e20ceec74c74d17d65834f" "2cc1ac47eed7ac51d79d1aaf6218d52ec84d9c6eb8a448f221f592bddfe51550" "dc2e1b0abb9a5d2033f6d881618932dcdb9af7633d8fa44336f9c9a3484379bd" "eb0f822891b90a730f3331959311439f01bb39da3cdf998b5693ecec877858d0" "e1990eeea39781f009b7f4634ca52a770d05bb7ce423a8fbbcd8a4f327efb626" "4f6dc03105f64cd7e5a3f555ea7c6bac7d9447141473ef9ff3c23b63858066da" "1b8df5c4f3364ebfbe9c0d3d859f6c31ab652ba518612ec27b12e462ce677731" "82b43e48862ecc7e3af29838ed843227e331b187865828dc4915021c5a74baa1" "51f3fb81f9233280cb28ee3023e43e82c9307d59d158626881ca14f964d2abeb" "242f33ba517c05f45e075d8ed3d13c0a7b7d1392e0c95d66830029e561607085" "45e409674661674c12070af5f8ef71741599eeb9fccd84557f1b822509f3b100" "e6b0ec96166bb3bb2843d83e56c0292308aab10ee5b79fb921d16ad2dbea5d5f" "38457f8afb329ce87e1a41d31e155acb4dcdf5ee6a1ea703d401f2042747a69f" "2459d6e7e96aefaed9cebaf7fde590f64e76c96f48632d8310cfea5d10ec2bb1" "50bb891011dfe0c30cd463c65e898523788d4ac4e6df141eed75030a33da1135" "7f34e5ab75ec580aff579b3b0f40379d280f8441e424b7a04322524ed7f348b6" "31804a8ea314e76b68f8b1c454212c3d9710c4294b8cfbaa008dd338c8d91773" "0018c218377a0f234066cd01eb9b636d3739b0b614c7b2c0b8e37a306b7bf8ef" "e871f44a640f98523876f77dccdbf0e20747ca7e111f9f147fe23c9d5f4937c1" "406d7c11a38d7b0e6c305ea91515cbd0c89cd73c55d041da9545338df98f1db4" "2fcd2b44646836f0f4acbd42a13fa85123dac744628f0105a5e9f0f7dbbc936a" "80214de566132bf2c844b9dee3ec0599f65c5a1f2d6ff21a2c8309e6e70f9242" "d23073a9616156a16aecbd3d38e1c3a1f006fc5d920e3fbcb681411e35d2a096" "c191ad8745b348656877bb8fd54cf8398911add379c7d0fdb235f755123c8c15" "801c56b8fb127b8b8ce20b31b493690f86fb13e7bd51ad911f5bb1a0f4310c14" "35f1be3b2bda0b91473107f455c54cf5ff74a8a9371e13a11a0a75d8d06825a6" "46aa01ed69cef28b48aaa49053a6f987f9c12c06cf9f88a028b249dcc5a48157" "0527c20293f587f79fc1544a2472c8171abcc0fa767074a0d3ebac74793ab117" default))
- '(dired-kill-when-opening-new-dired-buffer t)
- '(dired-listing-switches "-lh")
- '(doc-view-continuous t)
- '(emms-mode-line-icon-image-cache
-   '(image :type xpm :ascent center :data "/* XPM */\12static char *note[] = {\12/* width height num_colors chars_per_pixel */\12\"    10   11        2            1\",\12/* colors */\12\". c #358d8d\",\12\"# c None s None\",\12/* pixels */\12\"###...####\",\12\"###.#...##\",\12\"###.###...\",\12\"###.#####.\",\12\"###.#####.\",\12\"#...#####.\",\12\"....#####.\",\12\"#..######.\",\12\"#######...\",\12\"######....\",\12\"#######..#\" };") t)
- '(exec-path
-   '("/bin" "/usr/bin" "/usr/local/bin" "/usr/local/sbin" "/usr/sbin"))
- '(flycheck-checker-error-threshold nil)
- '(flycheck-checkers
-   '(rustic-clippy lsp ada-gnat asciidoctor asciidoc awk-gawk bazel-build-buildifier bazel-module-buildifier bazel-starlark-buildifier bazel-workspace-buildifier c/c++-clang c/c++-gcc c/c++-cppcheck cfengine chef-foodcritic coffee coffee-coffeelint coq css-csslint css-stylelint cuda-nvcc cwl d-dmd dockerfile-hadolint elixir-credo emacs-lisp emacs-lisp-checkdoc ember-template erlang-rebar3 erlang eruby-erubis eruby-ruumba fortran-gfortran go-gofmt go-golint go-vet go-build go-test go-errcheck go-unconvert go-staticcheck groovy haml handlebars haskell-stack-ghc haskell-ghc haskell-hlint html-tidy javascript-eslint javascript-jshint javascript-standard json-jsonlint json-python-json json-jq jsonnet less less-stylelint llvm-llc lua-luacheck lua markdown-markdownlint-cli markdown-mdl nix nix-linter opam perl perl-perlcritic php php-phpmd php-phpcs processing proselint protobuf-protoc protobuf-prototool pug puppet-parser puppet-lint python-flake8 python-pylint python-pycompile python-pyright python-mypy r-lintr racket rpm-rpmlint rst-sphinx rst ruby-rubocop ruby-standard ruby-reek ruby-rubylint ruby ruby-jruby rust-cargo rust rust-clippy scala scala-scalastyle scheme-chicken scss-lint scss-stylelint sass/scss-sass-lint sass scss sh-bash sh-posix-dash sh-posix-bash sh-zsh sh-shellcheck slim slim-lint sql-sqlint systemd-analyze tcl-nagelfar terraform terraform-tflint tex-chktex tex-lacheck texinfo textlint typescript-tslint verilog-verilator vhdl-ghdl xml-xmlstarlet xml-xmllint yaml-jsyaml yaml-ruby yaml-yamllint))
- '(flycheck-indication-mode-line-symbol '<)
- '(grep-find-ignored-directories
-   '("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "node_modules" "build" "dist"))
- '(hkey-init nil)
- '(inhibit-startup-buffer-menu nil)
- '(ispell-dictionary "pt_BR")
- '(jdee-db-active-breakpoint-face-colors (cons "#0d0d0d" "#5DD8FF"))
- '(jdee-db-requested-breakpoint-face-colors (cons "#0d0d0d" "#67B7A4"))
- '(jdee-db-spec-breakpoint-face-colors (cons "#0d0d0d" "#6C7986"))
- '(make-backup-files nil)
- '(mm-text-html-renderer 'shr)
- '(native-comp-async-report-warnings-errors 'silent)
- '(objed-cursor-color "#FC6A5D")
- '(org-babel-load-languages '((emacs-lisp . t) (python . t) (ruby . t) (shell . t)))
- '(org-export-backends '(ascii html icalendar latex md odt))
- '(org-fontify-done-headline nil)
- '(org-fontify-todo-headline nil)
- '(org-safe-remote-resources
-   '("\\`https://fniessen\\.github\\.io/org-html-themes/org/theme-readtheorg\\.setup\\'"))
- '(package-selected-packages
-   '(ace-window xterm-color nerd-icons-corfu corfu flymake-eslint eldoc-box dashboard treesit-auto company-box yasnippet typescript-mode typescript company-quickhelp-terminal company-quickhelp add-node-modules-path catppuccin-theme company consult consult-flycheck css-in-js-mode diff-hl docker dockerfile-mode doom-modeline dotenv-mode ellama emacs-ibuffer-project embark embark-consult emms erc-hl-nicks exec-path-from-shell expand-region flycheck gh-md gnu-elpa-keyring-update handlebars-mode hl-indent hl-todo ibuffer-project indent-guide kkp lsp-mode lsp-ui magit magit-stats maple-minibuffer marginalia markdown-mode multi-vterm nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer orderless org-ros package-lint prettier python-black pyvenv rainbow-delimiters restclient sass-mode scss-mode smartparens transmission transpose-frame tree-sitter tree-sitter-langs treemacs treemacs-icons-dired treemacs-magit treemacs-nerd-icons undo-tree vc-msg vertico wgrep which-key xclip yaml-mode))
- '(pdf-view-midnight-colors '("#b2b2b2" . "#292b2e"))
- '(pos-tip-background-color "#4F4F4F")
- '(pos-tip-foreground-color "#FFFFEF")
- '(python-black-extra-args '("--line-length" "79"))
- '(python-guess-indent nil)
- '(python-indent-def-block-scale 4)
- '(python-indent-guess-indent-offset nil)
- '(python-indent-offset 4)
- '(python-shell-interpreter "/usr/bin/python3")
- '(scss-output-directory "../css/")
- '(scss-sass-options '("--no-source-map"))
- '(send-mail-function 'smtpmail-send-it)
- '(tab-width 4)
- '(tree-sitter-major-mode-language-alist
-   '((typescriptreact-mode . tsx)
-	 (agda2-mode . agda)
-	 (sh-mode . bash)
-	 (c-mode . c)
-	 (caml-mode . ocaml)
-	 (clojure-mode . clojure)
-	 (csharp-mode . c-sharp)
-	 (c++-mode . cpp)
-	 (d-mode . d)
-	 (css-mode . css)
-	 (elm-mode . elm)
-	 (elixir-mode . elixir)
-	 (erlang-mode . erlang)
-	 (ess-r-mode . r)
-	 (fennel-mode . fennel)
-	 (go-mode . go)
-	 (haskell-mode . haskell)
-	 (hcl-mode . hcl)
-	 (terraform-mode . hcl)
-	 (html-mode . html)
-	 (markdown-mode . markdown)
-	 (mhtml-mode . html)
-	 (nix-mode . nix)
-	 (java-mode . java)
-	 (javascript-mode . javascript)
-	 (js-mode . javascript)
-	 (js2-mode . javascript)
-	 (js3-mode . javascript)
-	 (js-ts-mode . javascript)
-	 (json-mode . json)
-	 (jsonc-mode . json)
-	 (julia-mode . julia)
-	 (lua-mode . lua)
-	 (meson-mode . meson)
-	 (ocaml-mode . ocaml)
-	 (perl-mode . perl)
-	 (php-mode . php)
-	 (prisma-mode . prisma)
-	 (python-mode . python)
-	 (pygn-mode . pgn)
-	 (rjsx-mode . javascript)
-	 (ruby-mode . ruby)
-	 (rust-mode . rust)
-	 (scala-mode . scala)
-	 (scheme-mode . scheme)
-	 (swift-mode . swift)
-	 (toml-mode . toml)
-	 (tuareg-mode . ocaml)
-	 (typescript-ts-mode . typescript)
-	 (tsx-ts-mode . typescript)
-	 (tsx-js-mode . typescript)
-	 (typescript-mode . typescript)
-	 (verilog-mode . verilog)
-	 (yaml-mode . yaml)
-	 (zig-mode . zig)))
- '(treesit-font-lock-level 4)
- '(truncate-lines t)
- '(tsx-ts-mode-indent-offset 4)
- '(typescript-ts-mode-indent-offset 4)
- '(xterm-mouse-mode t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:height 100 :family "Hack" :embolden true))))
- '(tab-bar-tab ((t (:underline t))))
- '(term ((t (:background "black" :foreground "gray100")))))
-
-;;; --------------------------------- GENERAL FACES
-(when (eq system-type 'darwin)
-(custom-set-faces
- '(default ((t (:height 130 :family "Hack Nerd Font" :embolden true))))
-  '(term ((t (:background "black" :foreground "gray100"))))))
-
-(unless (eq system-type 'darwin)
-(custom-set-faces
- '(default ((t (:height 100 :family "Hack" :embolden true))))
-  '(term ((t (:background "black" :foreground "gray100"))))))
-
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
 (defcustom lemacs-lsp-client 'eglot
   "The LSP implementation to use."
@@ -235,7 +81,333 @@
                  (const :tag "company" company))
   :group 'lemacs)
 
-;;; --------------------------------- EXTERNAL PACKAGES
+;;; --------------------------------- EMACS
+(use-package emacs
+  :custom
+  (column-number-mode t)
+  (create-lockfiles nil)
+  (delete-by-moving-to-trash t)
+  (enable-recursive-minibuffers t) ;; TODO: check if i want it
+  (gnus-init-file "~/.gnus.el")
+  (indent-tabs-mode nil)
+  (inhibit-startup-buffer-menu nil)
+  (initial-scratch-message "")
+  (ispell-dictionary "pt_BR")
+  (line-spacing 1)
+  (make-backup-files nil)
+  (pixel-scroll-precision-mode t)
+  (pixel-scroll-precision-use-momentum nil)
+  (ring-bell-function 'ignore)
+  (switch-to-buffer-obey-display-actions t)
+  (tab-always-indent 'complete) ;; TAB serves as M-TAB to completion
+  (tab-width 4)
+  (treesit-font-lock-level 4)
+  (truncate-lines t)
+  (use-dialog-box nil)
+  (warning-minimum-level :emergency)
+  (xterm-mouse-mode t)
+  (ibuffer-show-empty-filter-groups nil)
+  (auto-save-default nil)
+  (window-combination-resize t)
+  (split-width-threshold 300)
+  (native-comp-async-report-warnings-errors 'silent)
+  (tsx-ts-mode-indent-offset 4)
+  (typescript-ts-mode-indent-offset 4)
+  (org-babel-load-languages '((emacs-lisp . t) (python . t) (ruby . t) (shell . t)))
+  (grep-find-ignored-directories
+   '("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "node_modules" "build" "dist"))
+  :config
+  ;; LEmacs first install function
+  (defun lemacs/first-install ()
+    "Install tree-sitter grammars and nerd-icons fonts on the first run."
+    (interactive)
+    (condition-case err
+        (progn
+          ;; Load necessary packages
+          (require 'tree-sitter)
+          (require 'nerd-icons)
+
+          ;; Install tree-sitter grammars
+          (call-interactively 'tree-sitter-langs-install-grammars)
+
+          ;; Install nerd-icons fonts
+          (call-interactively 'nerd-icons-install-fonts)
+
+          ;; Close Emacs
+          (kill-emacs))
+
+      (error
+       ;; Display error message and suggest running with debugging
+       (message "LEmacs failed to install, run 'emacs -nw --debug-init'"))))
+  
+  ;; Settings per OS
+  (set-face-attribute 'default nil :family "Hack" :height 100)
+  (when (eq system-type 'darwin)
+    (setq insert-directory-program "gls")
+    (setq mac-option-key-is-meta nil
+          mac-option-modifier nil
+          mac-command-key-is-meta t
+          mac-command-modifier 'meta)
+    (set-face-attribute 'default nil :family "Hack" :height 130))
+
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  
+  ;; Set exec path from shell
+  (defun lemacs/set-exec-path-from-shell-PATH ()
+    "Set up Emacs' `exec-path' and PATH environment the same as user Shell."
+    (interactive)
+    (let ((path-from-shell (replace-regexp-in-string
+                            "[ \t\n]*$" "" (shell-command-to-string
+                                            "$SHELL --login -c 'echo $PATH'"
+                                            ))))
+      (setenv "PATH" path-from-shell)
+      (setq exec-path (split-string path-from-shell path-separator))))
+  (lemacs/set-exec-path-from-shell-PATH)
+
+  
+  ;; Enable indent-tabs-mode (no tabs) for all prog-modes
+  (defun lemacs/prefer-tabs ()
+    "Disables indent-tabs-mode, and prefer spaces over tabs."
+    (interactive)
+    (indent-tabs-mode -1))
+  (add-hook 'prog-mode-hook #'lemacs/prefer-tabs)
+
+
+  ;; Add prompt indicator to `completing-read-multiple'.
+  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+  (defun crm-indicator (args)
+    (cons (format "[CRM%s] %s"
+                  (replace-regexp-in-string
+                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+
+  ;; Page down and center
+  (global-set-key (kbd "C-v") (lambda ()
+								(interactive)
+								(scroll-up-command)
+								(recenter)
+								))
+
+  
+  ;; Page up and center if not on beginning of buffer
+  (global-set-key (kbd "M-v") (lambda ()
+								(interactive)
+								(scroll-down-command)
+								(unless (= (window-start) (point-min))
+								  (recenter))
+								(when (= (window-start) (point-min))
+								  (let ((midpoint (/ (window-height) 2)))
+									(goto-char (window-start))
+									(forward-line midpoint)
+									(recenter midpoint)))))
+
+
+  ;; Starts elisp with outline collapsed
+  (defun lemacs/elisp-mode-hook ()
+    (interactive)
+    (outline-minor-mode 1)
+    (outline-hide-sublevels 1))
+  (add-hook 'emacs-lisp-mode-hook #'lemacs/elisp-mode-hook)
+
+
+  ;; Save manual customizations to other file than init.el
+  (setq custom-file (locate-user-emacs-file "custom-vars.el"))
+  (load custom-file 'noerror 'nomessage)
+
+  ;; Duplicate line
+  (defun lemacs/duplicate-line-or-region (&optional n)
+    "Duplicate current line, or region if active.
+With argument N, make N copies.
+negative N, comment out original line and use the absolute value."
+    (interactive "*p")
+    (let ((use-region (use-region-p)))
+      (save-excursion
+        (let ((text (if use-region                 ;Get region if active, otherwise line
+                        (buffer-substring (region-beginning) (region-end))
+                      (prog1 (thing-at-point 'line)
+                        (end-of-line)
+                        (if (< 0 (forward-line 1)) ;Go to beginning of next line, or make a new one
+                            (newline))))))
+          (dotimes (i (abs (or n 1)))               ;Insert N times, or once if not specified
+            (insert text))))
+      (if use-region nil                                   ;Only if we're working with a line (not a region)
+        (let ((pos (- (point) (line-beginning-position)))) ;Save column
+          (if (> 0 n)                                      ;Comment out original with negative arg
+              (comment-region (line-beginning-position) (line-end-position)))
+          (forward-line 1)
+          (forward-char pos)))))
+
+  ;; Prog mode hooks
+  (add-hook 'prog-mode-hook 'hl-todo-mode +1)
+  (add-hook 'prog-mode-hook 'smartparens-mode +1)
+  (add-hook 'prog-mode-hook 'indent-guide-mode +1)
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+
+
+  
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (message "Emacs has fully loaded. This code runs after startup.")
+
+              ;; Performance Hack 02.1 --- Quickier filename handling, resetted after load
+              (setq file-name-handler-alist default-file-name-handler-alist)
+
+              ;; (profiler-report)
+              ;; (profiler-stop)
+
+              (with-current-buffer (get-buffer-create "*scratch*")
+                (insert (format "
+
+  ██╗     ███████╗███╗   ███╗ █████╗  ██████╗███████╗
+  ██║     ██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝
+  ██║     █████╗  ██╔████╔██║███████║██║     ███████╗
+  ██║     ██╔══╝  ██║╚██╔╝██║██╔══██║██║     ╚════██║
+  ███████╗███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║
+  ╚══════╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝
+
+    Loading time : %s
+    Packages     : %s
+"
+                                (emacs-init-time)
+                                (number-to-string (length package-activated-list)))))))
+  :bind
+  (("M-D" . 'my-duplicate-line-or-region)
+   ("C-x C-b" . 'ibuffer))
+  :init
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (load-theme 'catppuccin :no-confirm)
+
+  (when (eq lemacs-in-buffer-completion 'company)
+    (global-company-mode))
+  
+  (winner-mode 1)
+  (global-auto-revert-mode 1)
+  (indent-tabs-mode -1)
+  (recentf-mode 1)
+  (savehist-mode 1)
+  (save-place-mode 1)
+  (desktop-save-mode 1)
+  (xclip-mode 1)
+  (file-name-shadow-mode 1)
+  (delete-selection-mode 1)
+  (doom-modeline-mode 1)
+  (global-diff-hl-mode 1)
+  (diff-hl-flydiff-mode 1)
+  (treemacs)
+  (treemacs)
+  (which-key-mode)
+
+  (catppuccin-reload))
+
+;;; --------------------------------- DIRED
+(use-package dired
+  :custom
+  (dired-dwim-target t)
+  (dired-guess-shell-alist-user
+   '(("\\.\\(png\\|jpe?g\\|tiff\\)" "feh" "xdg-open" "open")
+     ("\\.\\(mp[34]\\|m4a\\|ogg\\|flac\\|webm\\|mkv\\)" "mpv" "xdg-open" "open")
+     (".*" "xdg-open")))
+  (dired-kill-when-opening-new-dired-buffer t)
+  (dired-listing-switches "-al --group-directories-first")
+  :init
+  (defun dired-get-size ()
+    "On hitting ? gets the selected or under cursor file/dir size."
+    (interactive)
+    (let ((files (dired-get-marked-files)))
+      (with-temp-buffer
+        (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
+        (message "Size of all marked files: %s"
+                 (progn
+                   (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
+                   (match-string 1))))))
+
+  (define-key dired-mode-map (kbd "?") 'dired-get-size))
+  
+;;; --------------------------------- ISEARCH
+(use-package isearch
+  :config
+  (setq isearch-lazy-count t)
+  (setq lazy-count-prefix-format "(%s/%s) ")
+  (setq lazy-count-suffix-format nil)
+  (setq search-whitespace-regexp ".*?"))
+
+;;; --------------------------------- ERC
+(use-package erc
+  :defer t
+  :custom
+  (erc-hide-list '("JOIN" "PART" "QUIT"))
+  (erc-timestamp-format "[%H:%M]")
+  (erc-autojoin-channels-alist '((".*\\.libera\\.chat" "#emacs"))))
+
+;;; --------------------------------- ESHELL
+(use-package eshell
+  :config
+  (add-hook 'eshell-mode-hook
+			(lambda ()
+              (local-set-key (kbd "C-l")
+							 (lambda ()
+                               (interactive)
+                               (eshell/clear 1)
+							   (eshell-send-input)
+							   ))))
+
+  (setq eshell-prompt-function
+		(lambda ()
+          (concat
+           "┌─("
+		   (if (> eshell-last-command-status 0)
+			   (nerd-icons-faicon "nf-fa-close")
+		     (nerd-icons-faicon "nf-fa-check"))
+		   " "
+		   (number-to-string eshell-last-command-status)
+           ")──("
+		   (nerd-icons-faicon "nf-fa-user")
+		   " "
+		   (user-login-name)
+           ")──("
+		   (nerd-icons-mdicon "nf-md-clock")
+		   " "
+           (format-time-string "%H:%M:%S" (current-time))
+           ")──("
+		   (nerd-icons-faicon "nf-fa-folder")
+		   " "
+           (concat (if (>= (length (eshell/pwd)) 40)
+					   (concat "..." (car (last (butlast (split-string (eshell/pwd) "/") 0))))
+					 (abbreviate-file-name (eshell/pwd))))
+           ")\n"
+		   (if (car (vc-git-branches))
+			   (concat
+				"├─("
+				(nerd-icons-devicon "nf-dev-git_branch")
+				" "
+				(car (vc-git-branches))
+				")\n"
+				))
+           "└─➜ ")))
+
+  (setq eshell-prompt-regexp "└─➜ ")
+
+  (add-hook 'eshell-mode-hook (lambda () (setenv "TERM" "xterm-256color")))
+  (add-hook 'eshell-mode-hook (lambda () (company-mode -1)) 'append)
+
+  (setq eshell-visual-commands
+		'("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
+		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
+		  "ncmpcpp" "newsbeuter" "nethack" "mutt")))
+
+;;; --------------------------------- PACKAGES
 (use-package add-node-modules-path
   :defer t
   :custom
@@ -249,26 +421,6 @@
 	'(add-hook 'typescriptreact-mode-hook #'add-node-modules-path))
   (eval-after-load 'js-mode
 	'(add-hook 'js-mode-hook #'add-node-modules-path)))
-
-(use-package window
-  :ensure nil
-  :custom
-  (display-buffer-alist
-   '(("\\*.*e?shell\\*"
-      (display-buffer-in-side-window)
-      (window-height . 0.25)
-      (side . bottom)
-      (slot . -1))
-     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|[Hh]elp\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\)\\*"
-      (display-buffer-in-side-window)
-      (window-height . 0.25)
-      (side . bottom)
-      (slot . 0))
-     ("\\*\\(Flymake diagnostics\\|Flycheck\\|prettier er\\|xref\\|EGLOT\\|Completions\\)"
-      (display-buffer-in-side-window)
-      (window-height . 0.25)
-      (side . bottom)
-      (slot . 1)))))
 
 (use-package ace-window
   :defer t
@@ -466,11 +618,6 @@
   :after (:all eldoc)
   :config)
 
-(use-package exec-path-from-shell
-  :defer t
-  :ensure t
-  :config)
-
 (use-package expand-region
   :defer t
   :ensure t
@@ -603,8 +750,6 @@
 
 (use-package prettier
   :ensure t
-  :hook
-  (find-file . my-enable-prettier-for-file)
   :defer t
   :config
   (defun my-enable-prettier-for-file ()
@@ -614,7 +759,8 @@
                (string-match-p "\\.\\(html\\|js\\|jsx\\|ts\\|tsx\\|css\\|sass\\|scss\\|json\\|yml\\)\\'" buffer-file-name))
       (run-at-time 2 nil (lambda ()
                            (prettier-mode 1)
-                           (message "Prettier mode is ON"))))))
+                           (message "Prettier mode is ON")))))
+  (add-hook 'after-change-major-mode #'enable-prettier-mode))
 
 (use-package prisma-mode
   :defer t
@@ -629,7 +775,8 @@
 (use-package python-black
   :defer t
   :ensure t
-  :config)
+  :config
+  (python-black-extra-args '("--line-length" "79")))
 
 (use-package pyvenv
   :defer t
@@ -788,7 +935,7 @@ uses the files with the prefix libtree-sitter-."
   :config)
 
 (use-package treemacs-nerd-icons
-  ;; :defer t
+  :defer t
   :ensure t
   :after (:all treemacs nerd-icons)
   :config
@@ -799,7 +946,7 @@ uses the files with the prefix libtree-sitter-."
   :ensure t
   :config
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/.cache/undo")))
-  )
+  (global-undo-tree-mode))
 
 (use-package vc
   :ensure t
@@ -823,6 +970,9 @@ uses the files with the prefix libtree-sitter-."
 (use-package vc-msg
   :defer t
   :ensure t
+  :config
+  (pos-tip-background-color "#4F4F4F")
+  (pos-tip-foreground-color "#FFFFEF")
   :bind
   (("M-2" . 'vc-msg-show))
   :config
@@ -1187,140 +1337,6 @@ targets."
 (use-package wgrep
   :ensure t)
 
-(use-package eshell
-  :config
-  (add-hook 'eshell-mode-hook
-			(lambda ()
-              (local-set-key (kbd "C-l")
-							 (lambda ()
-                               (interactive)
-                               (eshell/clear 1)
-							   (eshell-send-input)
-							   ))))
-
-  (setq eshell-prompt-function
-		(lambda ()
-          (concat
-           "┌─("
-		   (if (> eshell-last-command-status 0)
-			   (nerd-icons-faicon "nf-fa-close")
-		     (nerd-icons-faicon "nf-fa-check"))
-		   " "
-		   (number-to-string eshell-last-command-status)
-           ")──("
-		   (nerd-icons-faicon "nf-fa-user")
-		   " "
-		   (user-login-name)
-           ")──("
-		   (nerd-icons-mdicon "nf-md-clock")
-		   " "
-           (format-time-string "%H:%M:%S" (current-time))
-           ")──("
-		   (nerd-icons-faicon "nf-fa-folder")
-		   " "
-           (concat (if (>= (length (eshell/pwd)) 40)
-					   (concat "..." (car (last (butlast (split-string (eshell/pwd) "/") 0))))
-					 (abbreviate-file-name (eshell/pwd))))
-           ")\n"
-		   (if (car (vc-git-branches))
-			   (concat
-				"├─("
-				(nerd-icons-devicon "nf-dev-git_branch")
-				" "
-				(car (vc-git-branches))
-				")\n"
-				))
-           "└─➜ ")))
-
-  (setq eshell-prompt-regexp "└─➜ ")
-
-  (add-hook 'eshell-mode-hook (lambda () (setenv "TERM" "xterm-256color")))
-  (add-hook 'eshell-mode-hook (lambda () (company-mode -1)) 'append)
-
-  (setq eshell-visual-commands
-		'("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
-		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
-		  "ncmpcpp" "newsbeuter" "nethack" "mutt")))
-
-(use-package emacs
-  :bind
-  (("M-D" . 'my-duplicate-line-or-region)
-   ("C-x C-b" . 'ibuffer))
-  :init
-  (setq indent-tabs-mode nil)
-  ;; TAB cycle if there are only few candidates
-  (setq completion-cycle-threshold 3)
-  ;; Enable indentation+completion using the TAB key.
-  ;; `completion-at-point' is often bound to M-TAB.
-  (setq tab-always-indent 'complete)
-
-  ;; Add prompt indicator to `completing-read-multiple'.
-  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-  (defun crm-indicator (args)
-    (cons (format "[CRM%s] %s"
-                  (replace-regexp-in-string
-                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                   crm-separator)
-                  (car args))
-          (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-  ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-  ;; Enable recursive minibuffers
-  (setq enable-recursive-minibuffers t)
-
-  ;; Remap scrolling to always center
-  (global-set-key (kbd "C-v") (lambda ()
-								(interactive)
-								(scroll-up-command)
-								(recenter)
-								))
-  (global-set-key (kbd "M-v") (lambda ()
-								(interactive)
-								(scroll-down-command)
-								(unless (= (window-start) (point-min))
-								  (recenter))
-								(when (= (window-start) (point-min))
-								  (let ((midpoint (/ (window-height) 2)))
-									(goto-char (window-start))
-									(forward-line midpoint)
-									(recenter midpoint)))))
-  ;; Inits everything in the right order
-  (when (fboundp 'pixel-scroll-precision-mode)
-    (pixel-scroll-precision-mode 1))
-  (setq pixel-scroll-precision-use-momentum nil)
-
-  ;; Activate global on init
-  (global-undo-tree-mode)
-
-  ;; General customizations
-  ;; (my-setup-outline-mode-elisp)
-  (set-default 'truncate-lines t)
-  (desktop-save-mode 1)
-
-  (setq ring-bell-function 'ignore)
-  (setq-default line-spacing 1)
-  (setq-default ident-tabs-mode nil)
-  (setq initial-scratch-message "")
-
-  (setq ibuffer-show-empty-filter-groups nil)
-
-  (setq gnus-init-file "~/.gnus.el")
-
-  (setq warning-minimum-level :emergency)
-  (setq make-backup-files nil)
-  (setq auto-save-default nil)
-  (setq create-lockfiles nil)
-  (setq window-combination-resize t
-        split-width-threshold 300)
-
-  (doom-modeline-mode 1)
-  )
-
 (use-package flymake-eslint
   :defer t
   :ensure t
@@ -1521,182 +1537,25 @@ targets."
   (yas-reload-all)
   (add-hook 'prog-mode-hook #'yas-minor-mode))
 
-
-(exec-path-from-shell-initialize)
-
-;;; --------------------------------- DIRED
-(defun dired-get-size ()
-  "On hitting ? gets the selected or under cursor file/dir size."
-  (interactive)
-  (let ((files (dired-get-marked-files)))
-    (with-temp-buffer
-      (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
-      (message "Size of all marked files: %s"
-               (progn
-                 (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
-                 (match-string 1))))))
-
-(define-key dired-mode-map (kbd "?") 'dired-get-size)
-
-;;; --------------------------------- I-SEARCH
-(setq isearch-lazy-count t)
-(setq lazy-count-prefix-format "(%s/%s) ")
-(setq lazy-count-suffix-format nil)
-(setq search-whitespace-regexp ".*?")
-
-;;; --------------------------------- MY-FUNCTIONS
-(defun my-erc-global-configs ()
-  "Set ERC overwall configs."
-  (interactive)
-  (setq erc-hide-list '("JOIN" "PART" "QUIT"))
-  (setq erc-timestamp-format "[%H:%M]")
-  (add-hook 'window-configuration-change-hook
-            (lambda ()
-              (setq erc-fill-column (- (window-width) 2))))
-  (setq erc-autojoin-channels-alist '((".*\\.libera\\.chat" "#emacs"))))
-
-(defun my-toggle-vterm-buffer ()
-  "Toggle vterm buffer on the bottom part of the screen."
-  (interactive)
-  (if (get-buffer-window "*vterm*" 'visible)
-      (delete-window (get-buffer-window "*vterm*"))
-    (let ((window-height (truncate (* 0.2 (window-height))))
-          (buf (get-buffer-create "*vterm*")))
-      (split-window-vertically (- window-height))
-      (balance-windows)
-      (set-window-buffer (window-in-direction 'below) buf)
-      (select-window (window-in-direction 'below))
-      (vterm)
-      (select-window (window-in-direction 'above))
-      (enlarge-window window-height)
-      (select-window (window-in-direction 'below))
-      )))
-
-(defun my-duplicate-line-or-region (&optional n)
-  "Duplicate current line, or region if active.
-With argument N, make N copies.
-negative N, comment out original line and use the absolute value."
-  (interactive "*p")
-  (let ((use-region (use-region-p)))
-    (save-excursion
-      (let ((text (if use-region        ;Get region if active, otherwise line
-                      (buffer-substring (region-beginning) (region-end))
-                    (prog1 (thing-at-point 'line)
-                      (end-of-line)
-                      (if (< 0 (forward-line 1)) ;Go to beginning of next line, or make a new one
-                          (newline))))))
-        (dotimes (i (abs (or n 1)))     ;Insert N times, or once if not specified
-          (insert text))))
-    (if use-region nil                  ;Only if we're working with a line (not a region)
-      (let ((pos (- (point) (line-beginning-position)))) ;Save column
-        (if (> 0 n)                             ;Comment out original with negative arg
-            (comment-region (line-beginning-position) (line-end-position)))
-        (forward-line 1)
-        (forward-char pos)))))
-
-(defun my-set-terminal-transparency ()
-  "Set transparency on terminal.
-Also terminal emulator must be already configured to support it."
-  (interactive)
-  (set-face-background 'default "unspecified-bg" (selected-frame))
-  (set-face-background 'line-number "unspecified-bg" (selected-frame)))
-
-(defun my-transparency-set ()
-  "Set frame transparency (Graphical Mode)."
-  (interactive)
-  (set-frame-parameter (selected-frame) 'alpha '(85 50)))
-
-(defun my-transparency-unset ()
-  "Unset frame transparency (Graphical Mode)."
-  (interactive)
-  (set-frame-parameter (selected-frame) 'alpha '(100 100)))
-
-(defun my-setup-outline-mode-elisp ()
-  "Automatically load outline mode on elisp files."
-  (defun my-elisp-mode-hook ()
-    (interactive)
-    (outline-minor-mode 1)
-    (outline-hide-sublevels 1))
-  (add-hook 'emacs-lisp-mode-hook #'my-elisp-mode-hook))
-
-(defun my-first-install ()
-  "Install tree-sitter grammars and nerd-icons fonts on the first run."
-  (interactive)
-  (condition-case err
-      (progn
-        ;; Load necessary packages
-        (require 'tree-sitter)
-        (require 'nerd-icons)
-
-        ;; Install tree-sitter grammars
-        (call-interactively 'tree-sitter-langs-install-grammars)
-
-        ;; Install nerd-icons fonts
-        (call-interactively 'nerd-icons-install-fonts)
-
-        ;; Close Emacs
-        (kill-emacs))
-
-    (error
-     ;; Display error message and suggest running with debugging
-     (message "LEmacs failed to install, run 'emacs -nw --debug-init'"))))
-
-
-;;; --------------------------------- AFTER INIT HOOK
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (message "Emacs has fully loaded. This code runs after startup.")
-
-            ;; Performance Hack 02.1 --- Quickier filename handling, resetted after load
-            (setq file-name-handler-alist default-file-name-handler-alist)
-
-            ;; macOS specials
-            (when (eq system-type 'darwin)
-              (setq mac-option-key-is-meta nil)
-              (setq mac-option-modifier nil)
-              (setq mac-command-key-is-meta t)
-              (setq mac-command-modifier 'meta))
-
-            (xclip-mode 1)
-            (delete-selection-mode 1)
-
-            (when (eq lemacs-in-buffer-completion 'company)
-              (global-company-mode))
-
-            (global-diff-hl-mode)
-            (diff-hl-flydiff-mode)
-            (my-setup-outline-mode-elisp)
-
-            (add-hook 'prog-mode-hook 'hl-todo-mode +1)
-            (add-hook 'prog-mode-hook 'smartparens-mode +1)
-            (add-hook 'prog-mode-hook 'indent-guide-mode +1)
-            (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-            (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-
-            (treemacs)
-            (treemacs)
-            (which-key-mode)
-
-      ;; (profiler-report)
-      ;; (profiler-stop)
-
-      (with-current-buffer (get-buffer-create "*scratch*")
-        (insert (format "
-
-  ██╗     ███████╗███╗   ███╗ █████╗  ██████╗███████╗
-  ██║     ██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝
-  ██║     █████╗  ██╔████╔██║███████║██║     ███████╗
-  ██║     ██╔══╝  ██║╚██╔╝██║██╔══██║██║     ╚════██║
-  ███████╗███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║
-  ╚══════╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝
-
-    Loading time : %s
-    Packages     : %s
-"
-        (emacs-init-time)
-        (number-to-string (length package-activated-list)))))
-    ))
-
+(use-package window
+  :ensure nil
+  :custom
+  (display-buffer-alist
+   '(("\\*.*e?shell\\*"
+      (display-buffer-in-side-window)
+      (window-height . 0.25)
+      (side . bottom)
+      (slot . -1))
+     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|[Hh]elp\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\)\\*"
+      (display-buffer-in-side-window)
+      (window-height . 0.25)
+      (side . bottom)
+      (slot . 0))
+     ("\\*\\(Flymake diagnostics\\|Flycheck\\|prettier er\\|xref\\|EGLOT\\|Completions\\)"
+      (display-buffer-in-side-window)
+      (window-height . 0.25)
+      (side . bottom)
+      (slot . 1)))))
 
 
 ;;; --------------------------------- INIT/PROVIDE THIS CONFIG

@@ -88,7 +88,7 @@ Now, let's get you set up:
 
 #+BEGIN_SRC bash
 git clone https://github.com/LionyxML/LEmacs ~/.emacs.d
-emacs -nw --eval="(my-first-install)"
+emacs -nw --eval="(lemacs/first-install)"
 #+END_SRC
 
 During installation, you'll be prompted to:

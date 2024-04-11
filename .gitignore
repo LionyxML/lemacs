@@ -46,6 +46,8 @@ var/
 /image-dired
 .dap-breakpoints
 .org-id-locations
+custom-vars.el
+history
 /.extension/
 /eshell
 /elpa
