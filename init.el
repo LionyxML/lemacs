@@ -61,9 +61,6 @@
 
 (package-initialize)
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
 (eval-and-compile
   (setq use-package-always-ensure t
         use-package-expand-minimally t))
@@ -313,6 +310,7 @@ negative N, comment out original line and use the absolute value."
 
 ;;; --------------------------------- DIRED
 (use-package dired
+  :ensure nil
   :custom
   (dired-dwim-target t)
   (dired-guess-shell-alist-user
@@ -331,12 +329,11 @@ negative N, comment out original line and use the absolute value."
         (message "Size of all marked files: %s"
                  (progn
                    (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
-                   (match-string 1))))))
-
-  (define-key dired-mode-map (kbd "?") 'dired-get-size))
+                   (match-string 1)))))))
   
 ;;; --------------------------------- ISEARCH
 (use-package isearch
+  :ensure nil
   :config
   (setq isearch-lazy-count t)
   (setq lazy-count-prefix-format "(%s/%s) ")
@@ -345,6 +342,7 @@ negative N, comment out original line and use the absolute value."
 
 ;;; --------------------------------- ERC
 (use-package erc
+  :ensure nil
   :defer t
   :custom
   (erc-hide-list '("JOIN" "PART" "QUIT"))
