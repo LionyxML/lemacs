@@ -49,6 +49,7 @@ var/
 custom-vars.el
 history
 /.extension/
+/dirvish
 /eshell
 /elpa
 /tree-sitter/

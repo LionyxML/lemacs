@@ -401,7 +401,7 @@ negative N, comment out original line and use the absolute value."
   (setq eshell-visual-commands
 		'("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
 		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
-		  "ncmpcpp" "newsbeuter" "nethack" "mutt")))
+		  "ncmpcpp" "newsbeuter" "nethack" "mutt" "podman" "podman-compose")))
 
 ;;; --------------------------------- PACKAGES
 (use-package add-node-modules-path
@@ -475,8 +475,12 @@ negative N, comment out original line and use the absolute value."
   :config
   (set-face-attribute 'diff-hl-change nil :background "#89b4fa")
   (set-face-attribute 'diff-hl-delete nil :background "#f38ba8")
-  (set-face-attribute 'diff-hl-insert nil :background "#a6e3a1")
-  )
+  (set-face-attribute 'diff-hl-insert nil :background "#a6e3a1"))
+
+(use-package dirvish
+  :defer t
+  :ensure t
+  :config)
 
 (use-package docker
   :defer t
@@ -1532,7 +1536,7 @@ targets."
       (window-height . 0.25)
       (side . bottom)
       (slot . -1))
-     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|[Hh]elp\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\)\\*"
+     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|[Hh]elp\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\|python3\\)\\*"
       (display-buffer-in-side-window)
       (window-height . 0.25)
       (side . bottom)
