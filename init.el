@@ -105,6 +105,7 @@
   (pixel-scroll-precision-mode t)
   (pixel-scroll-precision-use-momentum nil)
   (ring-bell-function 'ignore)
+  (shr-use-colors nil)
   (split-width-threshold 300)
   (switch-to-buffer-obey-display-actions t)
   (tab-always-indent 'complete) ;; TAB serves as M-TAB to completion
