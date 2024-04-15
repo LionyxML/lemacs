@@ -493,7 +493,9 @@ negative N, comment out original line and use the absolute value."
   :defer t
   :ensure t
   :bind ("C-c d" . docker)
-  :config)
+  :config
+  (setq docker-command "podman")
+  (setq docker-compose-command "podman-compose"))
 
 (use-package dockerfile-mode
   :defer t
