@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.29
+;; Version: 0.1.30
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -81,36 +81,44 @@
 ;;; --------------------------------- EMACS
 (use-package emacs
   :custom
+  (auto-save-default nil)
   (column-number-mode t)
   (create-lockfiles nil)
   (delete-by-moving-to-trash t)
-  (enable-recursive-minibuffers t) ;; TODO: check if i want it
+  (enable-recursive-minibuffers t)
+  (frame-inhibit-implied-resize t)
+  (frame-resize-pixelwise t)
   (gnus-init-file "~/.gnus.el")
+  (ibuffer-show-empty-filter-groups nil)
   (indent-tabs-mode nil)
-  (inhibit-startup-buffer-menu nil)
+  (inhibit-splash-screen t)
+  (inhibit-startup-buffer-menu t)
+  (inhibit-startup-echo-area-message user-login-name)
+  (inhibit-startup-screen t)
+  (inhibit-x-resources t)
   (initial-scratch-message "")
   (ispell-dictionary "pt_BR")
   (line-spacing 1)
   (make-backup-files nil)
+  (native-comp-async-report-warnings-errors 'silent)
+  (org-babel-load-languages '((emacs-lisp . t) (python . t) (ruby . t) (shell . t)))
   (pixel-scroll-precision-mode t)
   (pixel-scroll-precision-use-momentum nil)
   (ring-bell-function 'ignore)
+  (split-width-threshold 300)
   (switch-to-buffer-obey-display-actions t)
   (tab-always-indent 'complete) ;; TAB serves as M-TAB to completion
   (tab-width 4)
   (treesit-font-lock-level 4)
   (truncate-lines t)
-  (use-dialog-box nil)
-  (warning-minimum-level :emergency)
-  (xterm-mouse-mode t)
-  (ibuffer-show-empty-filter-groups nil)
-  (auto-save-default nil)
-  (window-combination-resize t)
-  (split-width-threshold 300)
-  (native-comp-async-report-warnings-errors 'silent)
   (tsx-ts-mode-indent-offset 4)
   (typescript-ts-mode-indent-offset 4)
-  (org-babel-load-languages '((emacs-lisp . t) (python . t) (ruby . t) (shell . t)))
+  (use-dialog-box nil)
+  (use-file-dialog nil)
+  (use-short-answers t)
+  (warning-minimum-level :emergency)
+  (window-combination-resize t)
+  (xterm-mouse-mode t)
   (grep-find-ignored-directories
    '("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "node_modules" "build" "dist"))
   :config
@@ -249,9 +257,6 @@ negative N, comment out original line and use the absolute value."
   (add-hook 'prog-mode-hook 'indent-guide-mode +1)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-
-
-  
   (add-hook 'emacs-startup-hook
             (lambda ()
               (message "Emacs has fully loaded. This code runs after startup.")
@@ -1538,7 +1543,7 @@ targets."
       (window-height . 0.25)
       (side . bottom)
       (slot . -1))
-     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|[Hh]elp\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\|python3\\)\\*"
+     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\|python3\\)\\*"
       (display-buffer-in-side-window)
       (window-height . 0.25)
       (side . bottom)
@@ -1547,8 +1552,11 @@ targets."
       (display-buffer-in-side-window)
       (window-height . 0.25)
       (side . bottom)
-      (slot . 1)))))
-
+      (slot . 1))
+     ("\\*\\([Hh]elp\\)\\*"
+      (display-buffer-in-side-window)
+      (side . right)
+      (slot . 0)))))
 
 ;;; --------------------------------- INIT/PROVIDE THIS CONFIG
 
