@@ -66,7 +66,7 @@
         use-package-expand-minimally t))
 
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
-(defcustom lemacs-lsp-client 'eglot
+(defcustom lemacs-lsp-client 'lsp-mode
   "The LSP implementation to use."
   :type '(choice (const :tag "eglot" eglot)
                  (const :tag "lsp-mode" lsp-mode))
@@ -257,7 +257,6 @@ negative N, comment out original line and use the absolute value."
   (add-hook 'prog-mode-hook 'smartparens-mode +1)
   (add-hook 'prog-mode-hook 'indent-guide-mode +1)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
   (add-hook 'emacs-startup-hook
             (lambda ()
               (message "Emacs has fully loaded. This code runs after startup.")
@@ -308,9 +307,7 @@ negative N, comment out original line and use the absolute value."
   (doom-modeline-mode 1)
   (global-diff-hl-mode 1)
   (global-tree-sitter-mode)
-  (diff-hl-flydiff-mode 1)
-  (which-key-mode)
-  (global-undo-tree-mode))
+  (diff-hl-flydiff-mode 1))
 
 ;;; --------------------------------- DIRED
 (use-package dired
@@ -358,8 +355,18 @@ negative N, comment out original line and use the absolute value."
 ;;; --------------------------------- ESHELL
 (use-package eshell
   :config
+  (setq eshell-hist-ignoredups t)
+  (setq eshell-cmpl-cycle-completions nil)
+  (setq eshell-cmpl-ignore-case t)
+  (setq eshell-ask-to-save-history (quote always))
+  
   (add-hook 'eshell-mode-hook
 			(lambda ()
+              (progn
+               (define-key eshell-mode-map "\C-a" 'eshell-bol)
+               (define-key eshell-mode-map "\C-r" 'consult-history)
+               (define-key eshell-mode-map [up] 'previous-line)
+               (define-key eshell-mode-map [down] 'next-line))
               (local-set-key (kbd "C-l")
 							 (lambda ()
                                (interactive)
@@ -409,7 +416,7 @@ negative N, comment out original line and use the absolute value."
   (setq eshell-visual-commands
 		'("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
 		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
-		  "ncmpcpp" "newsbeuter" "nethack" "mutt" "podman" "podman-compose")))
+		  "ncmpcpp" "newsbeuter" "nethack" "mutt")))
 
 ;;; --------------------------------- PACKAGES
 (use-package add-node-modules-path
@@ -501,6 +508,7 @@ negative N, comment out original line and use the absolute value."
 (use-package dockerfile-mode
   :defer t
   :ensure t
+  :mode "\\Dockerfile\\'"
   :config)
 
 (use-package doom-modeline
@@ -553,8 +561,6 @@ negative N, comment out original line and use the absolute value."
   (emms-all)
   (emms-default-players)
   (setq-default
-   emms-source-file-default-directory "~/work_music/"
-
    emms-source-playlist-default-format 'm3u
    emms-playlist-mode-center-when-go t
    emms-playlist-default-major-mode 'emms-playlist-mode
@@ -642,6 +648,10 @@ negative N, comment out original line and use the absolute value."
       (error
        (er/expand-region 1)))))
 
+(use-package git-timemachine
+  :defer t
+  :ensure t
+  :bind ("M-g t" . git-timemachine-toggle))
 
 (use-package gh-md
   :defer t
@@ -700,10 +710,13 @@ negative N, comment out original line and use the absolute value."
 
 (use-package markdown-mode
   :ensure t
+  :defer t
+  :bind
+  (:map markdown-mode-map
+        ("C-c C-e" . markdown-do))
   :mode ("README\\.md\\'" . gfm-mode)
-  :init (setq markdown-command "multimarkdown")
-  :bind (:map markdown-mode-map
-         ("C-c C-e" . markdown-do)))
+  :custom
+  (setq markdown-command "multimarkdown"))
 
 (use-package multi-vterm
   :defer t
@@ -791,6 +804,8 @@ negative N, comment out original line and use the absolute value."
 (use-package rainbow-delimiters
   :defer t
   :ensure t
+  :hook
+  (prog-mode . rainbow-delimiters-mode)
   :config)
 
 (use-package restclient
@@ -945,6 +960,8 @@ uses the files with the prefix libtree-sitter-."
 (use-package undo-tree
   :defer t
   :ensure t
+  :hook
+  (after-init . global-undo-tree-mode)
   :config
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/.cache/undo"))))
 
@@ -981,17 +998,16 @@ uses the files with the prefix libtree-sitter-."
 (use-package vterm
   :defer t
   :ensure t
-  :bind
-  (("M-t" . 'my-toggle-vterm-buffer))
   :config
   (add-hook 'vterm-mode-hook (lambda ()
-                               (define-key vterm-mode-map (kbd "M-t") #'my-toggle-vterm-buffer)
                                (setq-local global-hl-line-mode
                                            nil))))
 
 (use-package which-key
   :defer t
   :ensure t
+  :hook
+  (after-init . which-key-mode)
   :config
   (with-eval-after-load 'lsp-mode
     (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)))
@@ -1009,6 +1025,10 @@ uses the files with the prefix libtree-sitter-."
 (use-package yaml-mode
   :defer t
   :ensure t
+  :mode
+  ("\\.yaml\\'" "\\.yml\\'")
+  :custom-face
+  (font-lock-variable-name-face ((t (:foreground "#cba6f7"))))
   :config)
 
 (use-package marginalia
@@ -1139,10 +1159,10 @@ uses the files with the prefix libtree-sitter-."
 ;;               it work on both TUI and GUI, and auto doc for TUI is now broken...
 ;;               getting back to good old company-mode...
 
-
-(use-package consult-flycheck
-  :defer t
-  :ensure t)
+;; TODO: ditch flycheck
+;; (use-package consult-flycheck
+;;   :defer t
+;;   :ensure t)
 
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
@@ -1171,7 +1191,8 @@ uses the files with the prefix libtree-sitter-."
          ;; M-g bindings in `goto-map'
          ("M-g e" . consult-compile-error)
 		 ("M-g f" . consult-flymake)
-         ("M-g F" . consult-flycheck)
+         ;; TODO: ditch flycheck
+         ;; ("M-g F" . consult-flycheck)
          ("M-g g" . consult-goto-line)             ;; orig. goto-line
          ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
          ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
@@ -1335,7 +1356,11 @@ targets."
   (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package wgrep
-  :ensure t)
+  :defer t
+  :ensure t
+  (wgrep-enable-key "e")
+  (wgrep-auto-save-buffer t)
+  (wgrep-change-readonly-file t))
 
 (use-package flymake-eslint
   :defer t
@@ -1383,24 +1408,24 @@ targets."
   (put 'flymake-note 'flymake-bitmap (propertize "»" 'face `(:inherit (success default) :underline nil)))
   )
 
-(use-package flycheck
-  :defer t
-  :ensure t
-  :config
-  (with-eval-after-load 'flycheck
-    (custom-set-variables
-     '(flycheck-indication-mode-line-symbol (quote <))))
+;; (use-package flycheck
+;;   :defer t
+;;   :ensure t
+;;   :config
+;;   (with-eval-after-load 'flycheck
+;;     (custom-set-variables
+;;      '(flycheck-indication-mode-line-symbol (quote <))))
 
-  (setq-default flycheck-indication-mode 'left-margin)
-  (add-hook 'flycheck-mode-hook #'flycheck-set-indication-mode)
+;;   (setq-default flycheck-indication-mode 'left-margin)
+;;   (add-hook 'flycheck-mode-hook #'flycheck-set-indication-mode)
 
-  (defun my-set-flycheck-margins ()
-    (interactive)
-    (setq left-fringe-width 1 right-fringe-width 1
-          left-margin-width 1 right-margin-width 1)
-    (flycheck-refresh-fringes-and-margins))
+;;   (defun my-set-flycheck-margins ()
+;;     (interactive)
+;;     (setq left-fringe-width 1 right-fringe-width 1
+;;           left-margin-width 1 right-margin-width 1)
+;;     (flycheck-refresh-fringes-and-margins))
 
-  (add-hook 'flycheck-mode-hook #'my-set-flycheck-margins))
+;;   (add-hook 'flycheck-mode-hook #'my-set-flycheck-margins))
 
 
 ;; This is ugly but the only way I managed to work, manuall hooks didnt do the trick :/
@@ -1424,7 +1449,7 @@ targets."
 	(setq lsp-inlay-hint-enable t)
 
 	(setq lsp-enable-links nil)
-	(setq lsp-eldoc-enable-hover nil)
+	(setq lsp-eldoc-enable-hover t)
 	(setq lsp-python-ms-python-executable "/usr/bin/python3")
 
 	(setq lsp-headerline-breadcrumb-enable-symbol-numbers t)
@@ -1504,22 +1529,22 @@ targets."
 
 	))
 
-(use-package lsp-ui
-  :defer t
-  :ensure t
-  :after (:all lsp)
-  :custom
-  (lsp-ui-doc-max-width 100)
-  (lsp-ui-peek-always-show nil)
-  (lsp-ui-doc-alignment 'window)
-  (lsp-ui-doc-position 'top) ;; 'at-point 'top 'bottom
-  ;; (lsp-ui-doc-show-with-cursor t)
-  ;; (lsp-ui-doc-enable t)
-  ;; (lsp-ui-sideline-show-hover t)
-  (lsp-ui-sideline-diagnostic-max-line-length 100)
-  (lsp-ui-sideline-ignore-duplicate t)
-  (lsp-ui-sideline-show-code-actions nil)
-  :config)
+;; (use-package lsp-ui
+;;   :defer t
+;;   :ensure t
+;;   :after (:all lsp)
+;;   :custom
+;;   (lsp-ui-doc-max-width 100)
+;;   (lsp-ui-peek-always-show nil)
+;;   (lsp-ui-doc-alignment 'window)
+;;   (lsp-ui-doc-position 'top) ;; 'at-point 'top 'bottom
+;;   ;; (lsp-ui-doc-show-with-cursor t)
+;;   ;; (lsp-ui-doc-enable t)
+;;   ;; (lsp-ui-sideline-show-hover t)
+;;   (lsp-ui-sideline-diagnostic-max-line-length 100)
+;;   (lsp-ui-sideline-ignore-duplicate t)
+;;   (lsp-ui-sideline-show-code-actions nil)
+;;   :config)
 
 (use-package ellama
   :defer t
@@ -1533,9 +1558,12 @@ targets."
 
 (use-package yasnippet
   :ensure t
-  :config
-  (yas-reload-all)
-  (add-hook 'prog-mode-hook #'yas-minor-mode))
+  :defer t
+  :custom
+  (yas-snippet-dirs (expand-file-name "snippets" user-emacs-directory))
+  :hook
+  (after-init . yas-global-mode)
+  :config)
 
 (use-package window
   :ensure nil
@@ -1558,6 +1586,7 @@ targets."
       (slot . 1))
      ("\\*\\([Hh]elp\\)\\*"
       (display-buffer-in-side-window)
+      (window-width . 75)
       (side . right)
       (slot . 0)))))
 
