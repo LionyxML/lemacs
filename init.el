@@ -61,9 +61,65 @@
 
 (package-initialize)
 
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 (eval-and-compile
   (setq use-package-always-ensure t
         use-package-expand-minimally t))
+
+;;; --------------------------------- LEMACS FIRST INSTALL FUNCTION
+(defun lemacs/first-install ()
+  "Install tree-sitter grammars and nerd-icons fonts on the first run."
+  (interactive)
+
+  (switch-to-buffer "*Messages*")
+  (message "\n\n\nInstalling LEmacs...\n\n\n\n")
+
+  (defun extract-use-package-packages ()
+    "Extract use-package packages from init.el and store them."
+    (let ((packages '())
+          (init-file (expand-file-name "init.el" user-emacs-directory)))
+      (with-temp-buffer
+        (insert-file-contents init-file)
+        (goto-char (point-min))
+        (while (re-search-forward "^\\(\\s-*\\)(use-package\\s-+\\(\\(\\sw\\|\\s_\\)+\\)" nil t)
+          (push (intern (match-string 2)) packages)))
+      (reverse packages)))
+
+  (setq lemacs--emacs-builtin-packages '(dired window eshell erc eldoc emacs isearch prisma-mode lsp-prisma))
+  (setq lemacs--install-packages (extract-use-package-packages))
+
+  (defun install-use-package-packages ()
+    "Install packages specified with use-package, excluding built-in packages."
+    (interactive)
+    (let ((to-install (cl-set-difference lemacs--install-packages lemacs--emacs-builtin-packages)))
+      (dolist (pkg to-install)
+        (unless (package-installed-p pkg)
+          (package-install pkg)))))
+
+  (condition-case err
+      (progn
+        ;; Refresh remote packages list and install packages
+        (package-refresh-contents)
+        (install-use-package-packages)
+
+        ;; Load necessary 3rd party packages
+        (require 'tree-sitter)
+        (require 'nerd-icons)
+
+        ;; Install tree-sitter grammars
+        (call-interactively 'tree-sitter-langs-install-grammars)
+
+        ;; Install nerd-icons fonts
+        (call-interactively 'nerd-icons-install-fonts)
+
+        ;; Close Emacs
+        (kill-emacs))
+
+    (error
+     ;; Display error message and suggest running with debugging
+     (message "LEmacs failed to install, run 'emacs -nw --debug-init'"))))
 
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
 (defcustom lemacs-lsp-client 'lsp-mode
@@ -122,30 +178,9 @@
   (xterm-mouse-mode t)
   (grep-find-ignored-directories
    '("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "node_modules" "build" "dist"))
+  :hook
+  (prog-mode . display-line-numbers-mode)
   :config
-  ;; LEmacs first install function
-  (defun lemacs/first-install ()
-    "Install tree-sitter grammars and nerd-icons fonts on the first run."
-    (interactive)
-    (condition-case err
-        (progn
-          ;; Load necessary packages
-          (require 'tree-sitter)
-          (require 'nerd-icons)
-
-          ;; Install tree-sitter grammars
-          (call-interactively 'tree-sitter-langs-install-grammars)
-
-          ;; Install nerd-icons fonts
-          (call-interactively 'nerd-icons-install-fonts)
-
-          ;; Close Emacs
-          (kill-emacs))
-
-      (error
-       ;; Display error message and suggest running with debugging
-       (message "LEmacs failed to install, run 'emacs -nw --debug-init'"))))
-  
   ;; Settings per OS
   (set-face-attribute 'default nil :family "Hack" :height 100)
   (when (eq system-type 'darwin)
@@ -252,11 +287,7 @@ negative N, comment out original line and use the absolute value."
           (forward-line 1)
           (forward-char pos)))))
 
-  ;; Prog mode hooks
-  (add-hook 'prog-mode-hook 'hl-todo-mode +1)
-  (add-hook 'prog-mode-hook 'smartparens-mode +1)
-  (add-hook 'prog-mode-hook 'indent-guide-mode +1)
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  ;; Welcome to LEmacs
   (add-hook 'emacs-startup-hook
             (lambda ()
               (message "Emacs has fully loaded. This code runs after startup.")
@@ -301,13 +332,12 @@ negative N, comment out original line and use the absolute value."
   (savehist-mode 1)
   (save-place-mode 1)
   (desktop-save-mode 1)
-  (xclip-mode 1)
+  (when (eq system-type 'gnu/linux)
+    (xclip-mode 1))
   (file-name-shadow-mode 1)
   (delete-selection-mode 1)
-  (doom-modeline-mode 1)
-  (global-diff-hl-mode 1)
-  (global-tree-sitter-mode)
   (diff-hl-flydiff-mode 1))
+
 
 ;;; --------------------------------- DIRED
 (use-package dired
@@ -475,6 +505,8 @@ negative N, comment out original line and use the absolute value."
 (use-package diff-hl
   :defer t
   :ensure t
+  :hook
+  (after-init . global-diff-hl-mode)
   :custom
   (diff-hl-margin-mode t)
   (diff-hl-side 'left)
@@ -514,6 +546,8 @@ negative N, comment out original line and use the absolute value."
 (use-package doom-modeline
   :defer t
   :ensure t
+  :hook
+  (after-init . doom-modeline-mode)
   :custom
   (doom-modeline-buffer-file-name-style 'buffer-name)
   (doom-modeline-project-detection 'project)
@@ -674,19 +708,18 @@ negative N, comment out original line and use the absolute value."
   :ensure t
   :config)
 
-(use-package hl-indent
-  :defer t
-  :ensure t
-  :config)
-
 (use-package hl-todo
   :defer t
   :ensure t
+  :hook
+  (prog-mode . hl-todo-mode)
   :config)
 
 (use-package indent-guide
   :defer t
   :ensure t
+  :hook
+  (prog-mode . indent-guide-mode)
   :config
   (setq indent-guide-char "│"))
 
@@ -841,6 +874,8 @@ negative N, comment out original line and use the absolute value."
 (use-package smartparens
   :defer t
   :ensure t
+  :hook
+  (prog-mode . smartparens-mode)
   :config)
 
 (use-package typescript-mode
@@ -929,6 +964,8 @@ uses the files with the prefix libtree-sitter-."
   :ensure t
   :bind
   (("M-i" . treemacs))
+  :hook
+  (after-init . global-tree-sitter-mode)
   :config
   (setq treemacs-show-hidden-files t)
   ;; (setq treemacs-resize-icons 44)
@@ -1559,8 +1596,6 @@ targets."
 (use-package yasnippet
   :ensure t
   :defer t
-  :custom
-  (yas-snippet-dirs (expand-file-name "snippets" user-emacs-directory))
   :hook
   (after-init . yas-global-mode)
   :config)
