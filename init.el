@@ -73,11 +73,7 @@
   "Install tree-sitter grammars and nerd-icons fonts on the first run."
   (interactive)
 
-  (switch-to-buffer "*Messages*")
-  (message "\n\n\nInstalling LEmacs...\n\n\n\n")
-
   (defun extract-use-package-packages ()
-    "Extract use-package packages from init.el and store them."
     (let ((packages '())
           (init-file (expand-file-name "init.el" user-emacs-directory)))
       (with-temp-buffer
@@ -87,38 +83,31 @@
           (push (intern (match-string 2)) packages)))
       (reverse packages)))
 
-  (setq lemacs--emacs-builtin-packages '(dired window eshell erc eldoc emacs isearch prisma-mode lsp-prisma))
-  (setq lemacs--install-packages (extract-use-package-packages))
-
-  (defun install-use-package-packages ()
-    "Install packages specified with use-package, excluding built-in packages."
+  (defun install-use-package-packages (packages-builtin packages-external)
     (interactive)
-    (let ((to-install (cl-set-difference lemacs--install-packages lemacs--emacs-builtin-packages)))
+    (let ((to-install (cl-set-difference packages-external packages-builtin)))
       (dolist (pkg to-install)
         (unless (package-installed-p pkg)
           (package-install pkg)))))
 
   (condition-case err
-      (progn
-        ;; Refresh remote packages list and install packages
-        (package-refresh-contents)
-        (install-use-package-packages)
+      (let ((lemacs--emacs-builtin-packages '(dired window eshell erc eldoc emacs isearch prisma-mode lsp-prisma))
+            (lemacs--install-packages (extract-use-package-packages)))
 
-        ;; Load necessary 3rd party packages
+        (switch-to-buffer "*Messages*")
+        (message "\n\n\nInstalling LEmacs...\n\n\n\n")
+
+        (package-refresh-contents)
+        (install-use-package-packages lemacs--emacs-builtin-packages lemacs--install-packages)
+
         (require 'tree-sitter)
         (require 'nerd-icons)
 
-        ;; Install tree-sitter grammars
         (call-interactively 'tree-sitter-langs-install-grammars)
-
-        ;; Install nerd-icons fonts
         (call-interactively 'nerd-icons-install-fonts)
-
-        ;; Close Emacs
         (kill-emacs))
 
     (error
-     ;; Display error message and suggest running with debugging
      (message "LEmacs failed to install, run 'emacs -nw --debug-init'"))))
 
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
@@ -1395,6 +1384,7 @@ targets."
 (use-package wgrep
   :defer t
   :ensure t
+  :config
   (wgrep-enable-key "e")
   (wgrep-auto-save-buffer t)
   (wgrep-change-readonly-file t))
@@ -1407,6 +1397,8 @@ targets."
 (use-package flymake
   :defer t
   :ensure t
+  :hook
+  (prog-mode . flymake-mode)
   :config
   (set-window-margins nil 2 2)
   (set-window-fringes nil 0 0)
@@ -1417,8 +1409,6 @@ targets."
 			 ("C-c ! P" . flymake-show-project-diagnostics)
 			 ("C-c ! n" . flymake-goto-next-error)
 			 ("C-c ! p" . flymake-goto-prev-error))
-
-  (add-hook 'prog-mode-hook #'flymake-mode)
 
   ;; Magic in order to display markings on margin, not the fringe
   ;; Probably when this becomes ready, we wont need it to display
@@ -1487,6 +1477,7 @@ targets."
 
 	(setq lsp-enable-links nil)
 	(setq lsp-eldoc-enable-hover t)
+    (setq lsp-eldoc-render-all t)
 	(setq lsp-python-ms-python-executable "/usr/bin/python3")
 
 	(setq lsp-headerline-breadcrumb-enable-symbol-numbers t)
@@ -1510,7 +1501,7 @@ targets."
 	;; ESLINT is hell...
 	;; Install it globally (taking in consideration node is the same version as above)
 	(setq lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
-	;; (setq lsp-eslint-server-command '("/Users/rmj/.nvm/versions/node/v16.15.0/bin/vscode-eslint-language-server" "--stdio"))
+	;; (setq lsp-eslint-server-command '("~/.nvm/versions/node/v16.15.0/bin/vscode-eslint-language-server" "--stdio"))
 	;; (setq lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
 
 	;; LSP Custom for: Prisma

@@ -14,7 +14,7 @@
 
 (setq frame-resize-pixelwise t
       frame-inhibit-implied-resize t
-      frame-title-format '("%c"))
+      frame-title-format '("Emacs"))
 
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
