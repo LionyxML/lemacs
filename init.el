@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.30
+;; Version: 0.1.31
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -1435,27 +1435,7 @@ targets."
   (put 'flymake-note 'flymake-bitmap (propertize "»" 'face `(:inherit (success default) :underline nil)))
   )
 
-;; (use-package flycheck
-;;   :defer t
-;;   :ensure t
-;;   :config
-;;   (with-eval-after-load 'flycheck
-;;     (custom-set-variables
-;;      '(flycheck-indication-mode-line-symbol (quote <))))
-
-;;   (setq-default flycheck-indication-mode 'left-margin)
-;;   (add-hook 'flycheck-mode-hook #'flycheck-set-indication-mode)
-
-;;   (defun my-set-flycheck-margins ()
-;;     (interactive)
-;;     (setq left-fringe-width 1 right-fringe-width 1
-;;           left-margin-width 1 right-margin-width 1)
-;;     (flycheck-refresh-fringes-and-margins))
-
-;;   (add-hook 'flycheck-mode-hook #'my-set-flycheck-margins))
-
-
-;; This is ugly but the only way I managed to work, manuall hooks didnt do the trick :/
+;; This is ugly but the only way I managed to make it work, manual hooks didn't do the trick :/
 (when (eq lemacs-lsp-client 'lsp-mode)
   (use-package lsp-mode
 	:if (eq lemacs-lsp-client 'lsp-mode)
@@ -1485,18 +1465,11 @@ targets."
 	(setq lsp-headerline-breadcrumb-enable-diagnostics nil)
 	(setq lsp-headerline-breadcrumb-icons-enable nil)
 
-	(setq lsp-ui-doc-use-childframe t)
-
 	(setq lsp-log-io nil)   ;; Don't log everything = speed
 	(setq lsp-idle-delay 0) ;; If needed, increase to 0.5...
 	(setq lsp-keep-workspace-alive nil)
 	(setq lsp-keymap-prefix "C-c l")
 	(define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
-
-	(global-set-key (kbd "M-3") 'lsp-ui-peek-find-implementation)
-	(global-set-key (kbd "M-4") 'lsp-ui-peek-find-references)
-	(global-set-key (kbd "M-5") 'lsp-ui-doc-toggle)
-
 
 	;; ESLINT is hell...
 	;; Install it globally (taking in consideration node is the same version as above)
@@ -1557,23 +1530,6 @@ targets."
 
 	))
 
-;; (use-package lsp-ui
-;;   :defer t
-;;   :ensure t
-;;   :after (:all lsp)
-;;   :custom
-;;   (lsp-ui-doc-max-width 100)
-;;   (lsp-ui-peek-always-show nil)
-;;   (lsp-ui-doc-alignment 'window)
-;;   (lsp-ui-doc-position 'top) ;; 'at-point 'top 'bottom
-;;   ;; (lsp-ui-doc-show-with-cursor t)
-;;   ;; (lsp-ui-doc-enable t)
-;;   ;; (lsp-ui-sideline-show-hover t)
-;;   (lsp-ui-sideline-diagnostic-max-line-length 100)
-;;   (lsp-ui-sideline-ignore-duplicate t)
-;;   (lsp-ui-sideline-show-code-actions nil)
-;;   :config)
-
 (use-package ellama
   :defer t
   :ensure t
@@ -1605,7 +1561,7 @@ targets."
       (window-height . 0.25)
       (side . bottom)
       (slot . 0))
-     ("\\*\\(Flymake diagnostics\\|Flycheck\\|prettier er\\|xref\\|EGLOT\\|Completions\\)"
+     ("\\*\\(Flymake diagnostics\\|prettier er\\|xref\\|EGLOT\\|Completions\\)"
       (display-buffer-in-side-window)
       (window-height . 0.25)
       (side . bottom)
