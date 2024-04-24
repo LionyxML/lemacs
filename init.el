@@ -482,9 +482,10 @@ negative N, comment out original line and use the absolute value."
   (setq dashboard-display-icons-p t)
   (setq dashboard-icon-type 'nerd-icons)
 
-  (setq dashboard-items '((recents   . 5)
-                        (bookmarks . 5)
-                        (projects  . 5)
+  (setq dashboard-items '(
+                        ;; (recents   . 5)
+                        ;; (bookmarks . 5)
+                        ;; (projects  . 5)
                         ;; (agenda    . 5)
                         ;; (registers . 5)
 						))
