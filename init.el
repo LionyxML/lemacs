@@ -111,7 +111,7 @@
      (message "LEmacs failed to install, run 'emacs -nw --debug-init'"))))
 
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
-(defcustom lemacs-lsp-client 'lsp-mode
+(defcustom lemacs-lsp-client 'eglot
   "The LSP implementation to use."
   :type '(choice (const :tag "eglot" eglot)
                  (const :tag "lsp-mode" lsp-mode))
@@ -338,7 +338,7 @@ negative N, comment out original line and use the absolute value."
      ("\\.\\(mp[34]\\|m4a\\|ogg\\|flac\\|webm\\|mkv\\)" "mpv" "xdg-open" "open")
      (".*" "xdg-open")))
   (dired-kill-when-opening-new-dired-buffer t)
-  (dired-listing-switches "-al --group-directories-first")
+  (dired-listing-switches "-lah --group-directories-first")
   :init
   (defun dired-get-size ()
     "On hitting ? gets the selected or under cursor file/dir size."
