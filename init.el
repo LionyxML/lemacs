@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.32
+;; Version: 0.1.33
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -68,7 +68,7 @@
   (setq use-package-always-ensure t
         use-package-expand-minimally t))
 
-;;; --------------------------------- LEMACS FIRST INSTALL FUNCTION
+;;; --------------------------------- LEMACS INSTALLER
 (defun lemacs/first-install ()
   "Install tree-sitter grammars and nerd-icons fonts on the first run."
   (interactive)
@@ -109,19 +109,6 @@
 
     (error
      (message "LEmacs failed to install, run 'emacs -nw --debug-init'"))))
-
-(defun lemacs/all-available-fonts ()
-  "Create and visit a buffer containing a sorted list of available fonts."
-  (interactive)
-  (let ((font-list (sort (x-list-fonts "*") #'string<))
-        (font-buffer (generate-new-buffer "*Font List*")))
-    (with-current-buffer font-buffer
-      (dolist (font font-list)
-        (let* ((font-family (nth 2 (split-string font "-"))))
-          (insert (format "%s\n" (propertize font 'face `(:family ,font-family :height 110))))))
-      (goto-char (point-min))
-      (setq buffer-read-only t))
-    (pop-to-buffer font-buffer)))
 
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
 (defcustom lemacs-lsp-client 'eglot
@@ -199,7 +186,7 @@
         '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
-  
+
   ;; Set exec path from shell
   (defun lemacs/set-exec-path-from-shell-PATH ()
     "Set up Emacs' `exec-path' and PATH environment the same as user Shell."
@@ -212,7 +199,20 @@
       (setq exec-path (split-string path-from-shell path-separator))))
   (lemacs/set-exec-path-from-shell-PATH)
 
-  
+
+  (defun lemacs/all-available-fonts ()
+    "Create and visit a buffer containing a sorted list of available fonts."
+    (interactive)
+    (let ((font-list (sort (x-list-fonts "*") #'string<))
+          (font-buffer (generate-new-buffer "*Font List*")))
+      (with-current-buffer font-buffer
+        (dolist (font font-list)
+          (let* ((font-family (nth 2 (split-string font "-"))))
+            (insert (format "%s\n" (propertize font 'face `(:family ,font-family :height 110))))))
+        (goto-char (point-min))
+        (setq buffer-read-only t))
+      (pop-to-buffer font-buffer)))
+
   ;; Enable indent-tabs-mode (no tabs) for all prog-modes
   (defun lemacs/prefer-tabs ()
     "Disables indent-tabs-mode, and prefer spaces over tabs."
@@ -240,7 +240,7 @@
 								(recenter)
 								))
 
-  
+
   ;; Page up and center if not on beginning of buffer
   (global-set-key (kbd "M-v") (lambda ()
 								(interactive)
@@ -326,7 +326,7 @@ negative N, comment out original line and use the absolute value."
 
   (when (eq lemacs-in-buffer-completion 'company)
     (global-company-mode))
-  
+
   (winner-mode 1)
   (global-auto-revert-mode 1)
   (indent-tabs-mode -1)
@@ -363,7 +363,7 @@ negative N, comment out original line and use the absolute value."
                  (progn
                    (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                    (match-string 1)))))))
-  
+
 ;;; --------------------------------- ISEARCH
 (use-package isearch
   :ensure nil
@@ -391,7 +391,7 @@ negative N, comment out original line and use the absolute value."
   (setq eshell-cmpl-cycle-completions nil)
   (setq eshell-cmpl-ignore-case t)
   (setq eshell-ask-to-save-history (quote always))
-  
+
   (add-hook 'eshell-mode-hook
 			(lambda ()
               (progn
@@ -406,6 +406,7 @@ negative N, comment out original line and use the absolute value."
 							   (eshell-send-input)
 							   ))))
 
+  (require 'vc)
   (setq eshell-prompt-function
 		(lambda ()
           (concat
@@ -655,7 +656,7 @@ negative N, comment out original line and use the absolute value."
   (if (display-graphic-p)
     (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point)
   (global-set-key (kbd "C-h C-.") #'eldoc-doc-buffer))
-  
+
   (setq eldoc-echo-area-use-multiline-p nil))
 
 (use-package eldoc-box
@@ -1586,7 +1587,7 @@ targets."
       (side . right)
       (slot . 0)))))
 
-;;; --------------------------------- INIT/PROVIDE THIS CONFIG
+;;; -------------------------------- INIT/PROVIDE THIS CONFIG
 
 (provide 'init)
 ;;; init.el ends here
