@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.31
+;; Version: 0.1.32
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -110,6 +110,19 @@
     (error
      (message "LEmacs failed to install, run 'emacs -nw --debug-init'"))))
 
+(defun lemacs/all-available-fonts ()
+  "Create and visit a buffer containing a sorted list of available fonts."
+  (interactive)
+  (let ((font-list (sort (x-list-fonts "*") #'string<))
+        (font-buffer (generate-new-buffer "*Font List*")))
+    (with-current-buffer font-buffer
+      (dolist (font font-list)
+        (let* ((font-family (nth 2 (split-string font "-"))))
+          (insert (format "%s\n" (propertize font 'face `(:family ,font-family :height 110))))))
+      (goto-char (point-min))
+      (setq buffer-read-only t))
+    (pop-to-buffer font-buffer)))
+
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
 (defcustom lemacs-lsp-client 'eglot
   "The LSP implementation to use."
@@ -171,14 +184,14 @@
   (prog-mode . display-line-numbers-mode)
   :config
   ;; Settings per OS
-  (set-face-attribute 'default nil :family "Hack" :height 100)
+  (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 100)
   (when (eq system-type 'darwin)
     (setq insert-directory-program "gls")
     (setq mac-option-key-is-meta nil
           mac-option-modifier nil
           mac-command-key-is-meta t
           mac-command-modifier 'meta)
-    (set-face-attribute 'default nil :family "Hack" :height 130))
+    (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 130))
 
 
   ;; Do not allow the cursor in the minibuffer prompt
@@ -551,25 +564,25 @@ negative N, comment out original line and use the absolute value."
   (unless (eq system-type 'darwin)
     (if (facep 'mode-line-active)
         (set-face-attribute 'mode-line-active nil
-                            :family "Hack"
+                            :family "JetBrainsMono Nerd Font"
                             :height 100) ; For 29+
       (set-face-attribute 'mode-line nil
-                          :family "Hack"
+                          :family "JetBrainsMono Nerd Font"
                           :height 100))
     (set-face-attribute 'mode-line-inactive nil
-                        :family "Hack"
+                        :family "JetBrainsMono Nerd Font"
                         :height 100))
 
   (when (eq system-type 'darwin)
     (if (facep 'mode-line-active)
         (set-face-attribute 'mode-line-active nil
-                            :family "Hack Nerd Font"
+                            :family "JetBrainsMono Nerd Font"
                             :height 130) ; For 29+
       (set-face-attribute 'mode-line nil
-                          :family "Hack Nerd Font"
+                          :family "JetBrainsMono Nerd Font"
                           :height 130))
     (set-face-attribute 'mode-line-inactive nil
-                        :family "Hack Nerd Font"
+                        :family "JetBrainsMono Nerd Font"
                         :height 130)))
 
 (use-package dotenv-mode
@@ -629,7 +642,7 @@ negative N, comment out original line and use the absolute value."
 	"Enable eslint if typescript mode"
 	(when (or (eq major-mode 'tsx-ts-mode)
 			  (eq major-mode 'typescript-ts-mode)
-			  (eq major-mode 'javascript-ts-mode)
+			  (eq major-mode 'js-ts-mode)
 			  (eq major-mode 'typescriptreact-mode))
 	  (flymake-eslint-enable)))
 
