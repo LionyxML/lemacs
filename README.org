@@ -12,9 +12,7 @@
   ╚══════╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝
 #+END_SRC
 
-* LEmacs - L(ionyx)Emacs Config
-
-Emacs for the modern developer focused on seamlessly TUI/GUI experience, either standalone or in
+Emacs for the modern developer. Focused on seamlessly TUI/GUI experience, either standalone or in
 a server/client mode.
 
 Left (Terminal User Interface) / Right (Graphical User Interface)
