@@ -1,7 +1,7 @@
 #+TITLE: LEmacs - L(ionyx)Emacs Config
 #+AUTHOR: Rahul M. Juliato
 #+EMAIL: rahul.juliato@gmail.com
-#+OPTIONS: toc: nil
+#+OPTIONS: toc:nil
 
 #+BEGIN_SRC txt
   ██╗     ███████╗███╗   ███╗ █████╗  ██████╗███████╗
