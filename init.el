@@ -155,6 +155,8 @@
   (switch-to-buffer-obey-display-actions t)
   (tab-always-indent 'complete) ;; TAB serves as M-TAB to completion
   (tab-width 4)
+  (tab-bar-close-button-show nil)
+  (tab-bar-new-button-show nil)
   (treesit-font-lock-level 4)
   (truncate-lines t)
   (tsx-ts-mode-indent-offset 4)
@@ -199,6 +201,14 @@
       (setq exec-path (split-string path-from-shell path-separator))))
   (lemacs/set-exec-path-from-shell-PATH)
 
+  (defun lemacs/rename-buffer-and-move-to-new-window ()
+    (interactive)
+    (let ((temp-name (make-temp-name "temp-buffer-")))
+      (rename-buffer temp-name t)
+      (delete-window)
+      (split-window-right)
+      (switch-to-buffer temp-name)))
+  (global-set-key (kbd "C-x x x") 'lemacs/rename-buffer-and-move-to-new-window)
 
   (defun lemacs/all-available-fonts ()
     "Create and visit a buffer containing a sorted list of available fonts."
