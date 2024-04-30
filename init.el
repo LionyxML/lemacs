@@ -402,6 +402,53 @@ negative N, comment out original line and use the absolute value."
   (setq eshell-cmpl-ignore-case t)
   (setq eshell-ask-to-save-history (quote always))
 
+  (defun lemacs/open-eshell ()
+    "Open a new instance of eshell."
+    (interactive)
+    (eshell 'N))
+
+  (defun lemacs/split-eshell-vertical ()
+    "Split the window vertically and open a new instance of eshell."
+    (interactive)
+    (split-window-right)
+    (other-window 1)
+    (lemacs/open-eshell))
+
+  (defun lemacs/split-eshell-horizontal ()
+    "Split the window horizontally and open a new instance of eshell."
+    (interactive)
+    (split-window-below)
+    (other-window 1)
+    (lemacs/open-eshell))
+
+  (defun lemacs/open-eshell-new-tab ()
+    "Open eshell in a new tab."
+    (interactive)
+    (let ((new-tab (generate-new-buffer-name "*eshell*")))
+      (tab-new)
+      (eshell)
+      (rename-buffer new-tab)))
+
+  (defun lemacs/kill-all-eshell-buffers ()
+    "Kill all *eshell* buffers."
+    (interactive)
+    (let ((eshell-buffers (cl-remove-if-not (lambda (buffer)
+                                              (string-prefix-p "*eshell*" (buffer-name buffer)))
+                                            (buffer-list))))
+      (if eshell-buffers
+          (progn
+            (message "Killing *eshell* buffers:")
+            (dolist (buffer eshell-buffers)
+              (message "  %s" (buffer-name buffer))
+              (kill-buffer buffer)))
+        (message "No *eshell* buffers to kill."))))
+
+  (global-set-key (kbd "C-c e e") 'lemacs/open-eshell)
+  (global-set-key (kbd "C-c e v") 'lemacs/split-eshell-vertical)
+  (global-set-key (kbd "C-c e h") 'lemacs/split-eshell-horizontal)
+  (global-set-key (kbd "C-c e k") 'lemacs/kill-all-eshell-buffers)
+  (global-set-key (kbd "C-c e t") 'lemacs/open-eshell-new-tab)
+
   (add-hook 'eshell-mode-hook
 			(lambda ()
               (progn
@@ -416,39 +463,38 @@ negative N, comment out original line and use the absolute value."
 							   (eshell-send-input)
 							   ))))
 
-  (require 'vc)
   (setq eshell-prompt-function
-		(lambda ()
+        (lambda ()
           (concat
            "┌─("
-		   (if (> eshell-last-command-status 0)
-			   (nerd-icons-faicon "nf-fa-close")
-		     (nerd-icons-faicon "nf-fa-check"))
-		   " "
-		   (number-to-string eshell-last-command-status)
+           (if (> eshell-last-command-status 0)
+               (nerd-icons-faicon "nf-fa-close")
+             (nerd-icons-faicon "nf-fa-check"))
+           " "
+           (number-to-string eshell-last-command-status)
            ")──("
-		   (nerd-icons-faicon "nf-fa-user")
-		   " "
-		   (user-login-name)
+           (nerd-icons-faicon "nf-fa-user")
+           " "
+           (user-login-name)
            ")──("
-		   (nerd-icons-mdicon "nf-md-clock")
-		   " "
+           (nerd-icons-mdicon "nf-md-clock")
+           " "
            (format-time-string "%H:%M:%S" (current-time))
            ")──("
-		   (nerd-icons-faicon "nf-fa-folder")
-		   " "
+           (nerd-icons-faicon "nf-fa-folder")
+           " "
            (concat (if (>= (length (eshell/pwd)) 40)
-					   (concat "..." (car (last (butlast (split-string (eshell/pwd) "/") 0))))
-					 (abbreviate-file-name (eshell/pwd))))
+                       (concat "..." (car (last (butlast (split-string (eshell/pwd) "/") 0))))
+                     (abbreviate-file-name (eshell/pwd))))
            ")\n"
-		   (if (car (vc-git-branches))
-			   (concat
-				"├─("
-				(nerd-icons-devicon "nf-dev-git_branch")
-				" "
-				(car (vc-git-branches))
-				")\n"
-				))
+           (when (and (boundp 'vc-git-branches) (car (vc-git-branches)))
+             (concat
+              "├─("
+              (nerd-icons-devicon "nf-dev-git_branch")
+              " "
+              (car (vc-git-branches))
+              ")\n"
+              ))
            "└─➜ ")))
 
   (setq eshell-prompt-regexp "└─➜ ")
@@ -1576,7 +1622,7 @@ targets."
   :ensure nil
   :custom
   (display-buffer-alist
-   '(("\\*.*e?shell\\*"
+   '(("\\*.*-e?shell\\*"  ;; we only want <project_name>-eshell to follow this rule
       (display-buffer-in-side-window)
       (window-height . 0.25)
       (side . bottom)
