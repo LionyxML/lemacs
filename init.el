@@ -407,6 +407,12 @@ negative N, comment out original line and use the absolute value."
     (interactive)
     (eshell 'N))
 
+  (defun lemacs/close-eshell ()
+    "Closes the eshell (or any buffer), killing the window."
+    (interactive)
+    (kill-buffer (current-buffer))
+    (delete-window))
+
   (defun lemacs/split-eshell-vertical ()
     "Split the window vertically and open a new instance of eshell."
     (interactive)
@@ -432,9 +438,12 @@ negative N, comment out original line and use the absolute value."
   (defun lemacs/kill-all-eshell-buffers ()
     "Kill all *eshell* buffers."
     (interactive)
-    (let ((eshell-buffers (cl-remove-if-not (lambda (buffer)
-                                              (string-prefix-p "*eshell*" (buffer-name buffer)))
-                                            (buffer-list))))
+    (let ((eshell-buffers
+           (cl-remove-if-not
+            (lambda (buffer)
+              (string-prefix-p "*eshell*" (buffer-name buffer)))
+            (buffer-list))))
+
       (if eshell-buffers
           (progn
             (message "Killing *eshell* buffers:")
@@ -445,9 +454,16 @@ negative N, comment out original line and use the absolute value."
 
   (global-set-key (kbd "C-c e e") 'lemacs/open-eshell)
   (global-set-key (kbd "C-c e v") 'lemacs/split-eshell-vertical)
+  (global-set-key (kbd "C-c e \\") 'lemacs/split-eshell-vertical)
+  (global-set-key (kbd "C-c e |") 'lemacs/split-eshell-vertical)
+
   (global-set-key (kbd "C-c e h") 'lemacs/split-eshell-horizontal)
+  (global-set-key (kbd "C-c e -") 'lemacs/split-eshell-horizontal)
+
   (global-set-key (kbd "C-c e k") 'lemacs/kill-all-eshell-buffers)
   (global-set-key (kbd "C-c e t") 'lemacs/open-eshell-new-tab)
+
+  (global-set-key (kbd "C-c e x") 'lemacs/close-eshell)
 
   (add-hook 'eshell-mode-hook
 			(lambda ()
