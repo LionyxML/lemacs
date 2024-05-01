@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.33
+;; Version: 0.1.34
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -1100,12 +1100,11 @@ uses the files with the prefix libtree-sitter-."
 (use-package vc-msg
   :defer t
   :ensure t
-  :config
-  (pos-tip-background-color "#4F4F4F")
-  (pos-tip-foreground-color "#FFFFEF")
   :bind
   (("M-2" . 'vc-msg-show))
   :config
+  (setq-default pos-tip-background-color "#4F4F4F")
+  (setq-default pos-tip-foreground-color "#FFFFEF")
   (setq vc-msg-show-at-line-beginning-p nil))
 
 (use-package vterm
