@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.34
+;; Version: 0.1.35
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -764,11 +764,6 @@ negative N, comment out original line and use the absolute value."
   :bind ("M-g t" . git-timemachine-toggle))
 
 (use-package gh-md
-  :defer t
-  :ensure t
-  :config)
-
-(use-package gnu-elpa-keyring-update
   :defer t
   :ensure t
   :config)
