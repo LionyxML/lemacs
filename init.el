@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.35
+;; Version: 0.1.36
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -187,7 +187,6 @@
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
 
   ;; Set exec path from shell
   (defun lemacs/set-exec-path-from-shell-PATH ()
@@ -521,7 +520,7 @@ negative N, comment out original line and use the absolute value."
   (setq eshell-visual-commands
 		'("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
 		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
-		  "ncmpcpp" "newsbeuter" "nethack" "mutt")))
+		  "ncmpcpp" "newsbeuter" "nethack" "mutt" "yarn" "pnpm")))
 
 ;;; --------------------------------- PACKAGES
 (use-package add-node-modules-path
@@ -863,6 +862,19 @@ negative N, comment out original line and use the absolute value."
   :bind
   (("C-S-p" . org-ros))
   :config)
+
+(use-package org-gcal
+  :defer t
+  :ensure t
+  :bind
+  :config
+  (setq plstore-cache-passphrase-for-symmetric-encryption t)
+  ;; SETUP ON: https://github.com/kidd/org-gcal.el
+  ;;
+  ;; (setq org-gcal-client-id "your-id-foo.apps.googleusercontent.com"
+  ;;       org-gcal-client-secret "your-secret"
+  ;;       org-gcal-fetch-file-alist '(("your-email@domain" . "~/agenda.org")))
+  )
 
 (use-package package-lint
   :defer t
@@ -1637,12 +1649,12 @@ targets."
       (window-height . 0.25)
       (side . bottom)
       (slot . -1))
-     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\|python3\\)\\*"
+     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\|sh\\|python3\\)\\*"
       (display-buffer-in-side-window)
       (window-height . 0.25)
       (side . bottom)
       (slot . 0))
-     ("\\*\\(Flymake diagnostics\\|prettier er\\|xref\\|EGLOT\\|Completions\\)"
+     ("\\*\\(Flymake diagnostics\\|prettier er\\|xref\\|EGLOT\\|Org-Babel Er\\|Completions\\)"
       (display-buffer-in-side-window)
       (window-height . 0.25)
       (side . bottom)
@@ -1651,7 +1663,12 @@ targets."
       (display-buffer-in-side-window)
       (window-width . 75)
       (side . right)
-      (slot . 0)))))
+      (slot . 0))
+     ("\\*\\(undo-tree\\)\\*"
+      (display-buffer-in-side-window)
+      (window-width . 50)
+      (side . right)
+      (slot . 1)))))
 
 ;;; -------------------------------- INIT/PROVIDE THIS CONFIG
 
