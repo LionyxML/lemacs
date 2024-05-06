@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.37
+;; Version: 0.1.38
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -891,16 +891,9 @@ negative N, comment out original line and use the absolute value."
 (use-package prettier
   :ensure t
   :defer t
-  :config
-  (defun my-enable-prettier-for-file ()
-    "Enable prettier-mode for specific file types after a delay."
-    (interactive)
-    (when (and buffer-file-name
-               (string-match-p "\\.\\(html\\|js\\|jsx\\|ts\\|tsx\\|css\\|sass\\|scss\\|json\\|yml\\)\\'" buffer-file-name))
-      (run-at-time 2 nil (lambda ()
-                           (prettier-mode 1)
-                           (message "Prettier mode is ON")))))
-  (add-hook 'after-change-major-mode #'enable-prettier-mode))
+  :hook
+  (prog-mode . prettier-mode)
+  :config)
 
 (use-package prisma-mode
   :defer t
