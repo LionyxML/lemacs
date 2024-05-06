@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.36
+;; Version: 0.1.37
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -550,6 +550,13 @@ negative N, comment out original line and use the absolute value."
 (use-package catppuccin-theme
   :defer t
   :ensure t
+  :config)
+
+(use-package breadcrumb
+  :defer t
+  :ensure t
+  :hook
+  (eglot-connect . breadcrumb-mode)
   :config)
 
 (use-package dashboard
@@ -1501,7 +1508,9 @@ targets."
 			 ("C-c ! l" . consult-flymake)
 			 ("C-c ! P" . flymake-show-project-diagnostics)
 			 ("C-c ! n" . flymake-goto-next-error)
-			 ("C-c ! p" . flymake-goto-prev-error))
+			 ("C-c ! p" . flymake-goto-prev-error)
+             ("M-7" . flymake-goto-prev-error)
+             ("M-8" . flymake-goto-next-error))
 
   ;; Magic in order to display markings on margin, not the fringe
   ;; Probably when this becomes ready, we wont need it to display
