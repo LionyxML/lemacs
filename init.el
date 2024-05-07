@@ -111,17 +111,38 @@
      (message "LEmacs failed to install, run 'emacs -nw --debug-init'"))))
 
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
-(defcustom lemacs-lsp-client 'eglot
+(defcustom lemacs-lsp-client 'lsp-mode
   "The LSP implementation to use."
-  :type '(choice (const :tag "eglot" eglot)
-                 (const :tag "lsp-mode" lsp-mode))
+  :type '(choice
+           (const :tag "eglot" eglot)
+           (const :tag "lsp-mode" lsp-mode)
+           (const :tag "none" nil))
   :group 'lemacs)
 
 (defcustom lemacs-in-buffer-completion 'corfu
   "The in-buffer completion to use."
-  :type '(choice (const :tag "corfu" corfu)
-                 (const :tag "company" company))
+  :type '(choice
+           (const :tag "corfu" corfu)
+           (const :tag "company" company)
+           (const :tag "none" nil))
   :group 'lemacs)
+
+(defcustom lemacs-polymode 'off
+  "Enables polymode, like to styled-components on style[s|d].[t|j]sx? files.
+Notice this is a bit messy."
+  :type '(choice
+           (const :tag "on" 1)
+           (const :tag "off" nil))
+  :group 'lemacs)
+
+(defvar lemacs-art "
+  ██╗     ███████╗███╗   ███╗ █████╗  ██████╗███████╗
+  ██║     ██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝
+  ██║     █████╗  ██╔████╔██║███████║██║     ███████╗
+  ██║     ██╔══╝  ██║╚██╔╝██║██╔══██║██║     ╚════██║
+  ███████╗███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║
+  ╚══════╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝
+")
 
 ;;; --------------------------------- EMACS
 (use-package emacs
@@ -310,18 +331,12 @@ negative N, comment out original line and use the absolute value."
               ;; (profiler-stop)
 
               (with-current-buffer (get-buffer-create "*scratch*")
-                (insert (format "
-
-  ██╗     ███████╗███╗   ███╗ █████╗  ██████╗███████╗
-  ██║     ██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝
-  ██║     █████╗  ██╔████╔██║███████║██║     ███████╗
-  ██║     ██╔══╝  ██║╚██╔╝██║██╔══██║██║     ╚════██║
-  ███████╗███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║
-  ╚══════╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝
+                (insert (format "%s
 
     Loading time : %s
     Packages     : %s
 "
+                                lemacs-art
                                 (emacs-init-time)
                                 (number-to-string (length package-activated-list)))))))
   :bind
@@ -332,9 +347,6 @@ negative N, comment out original line and use the absolute value."
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
   (load-theme 'catppuccin :no-confirm)
-
-  (when (eq lemacs-in-buffer-completion 'company)
-    (global-company-mode))
 
   (winner-mode 1)
   (global-auto-revert-mode 1)
@@ -522,7 +534,38 @@ negative N, comment out original line and use the absolute value."
 		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
 		  "ncmpcpp" "newsbeuter" "nethack" "mutt" "yarn" "pnpm")))
 
-;;; --------------------------------- PACKAGES
+;;; --------------------------------- WINDOW
+(use-package window
+  :ensure nil
+  :custom
+  (display-buffer-alist
+   '(("\\*.*-e?shell\\*"  ;; we only want <project_name>-eshell to follow this rule
+      (display-buffer-in-side-window)
+      (window-height . 0.25)
+      (side . bottom)
+      (slot . -1))
+     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\|sh\\|python3\\)\\*"
+      (display-buffer-in-side-window)
+      (window-height . 0.25)
+      (side . bottom)
+      (slot . 0))
+     ("\\*\\(Flymake diagnostics\\|prettier er\\|xref\\|EGLOT\\|Org-Babel Er\\|Completions\\)"
+      (display-buffer-in-side-window)
+      (window-height . 0.25)
+      (side . bottom)
+      (slot . 1))
+     ("\\*\\([Hh]elp\\)\\*"
+      (display-buffer-in-side-window)
+      (window-width . 75)
+      (side . right)
+      (slot . 0))
+     ("\\*\\(undo-tree\\)\\*"
+      (display-buffer-in-side-window)
+      (window-width . 50)
+      (side . right)
+      (slot . 1)))))
+
+;;; --------------------------------- EXTERNAL PACKAGES
 (use-package add-node-modules-path
   :defer t
   :custom
@@ -567,7 +610,7 @@ negative N, comment out original line and use the absolute value."
   ;; (setq dashboard-startup-banner 'logo)
   (setq dashboard-startup-banner
 		(cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
-              (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))
+      (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))
 
   (setq dashboard-center-content t)
   (setq dashboard-vertically-center-content nil)
@@ -604,7 +647,7 @@ negative N, comment out original line and use the absolute value."
   :config
   (set-face-attribute 'diff-hl-change nil :background "#89b4fa")
   (set-face-attribute 'diff-hl-delete nil :background "#f38ba8")
-  (set-face-attribute 'diff-hl-insert nil :background "#a6e3a1"))
+  (set-face-attribute 'diff-hl-insert nil :background "#a6e3a1")) 
 
 (use-package dirvish
   :defer t
@@ -690,6 +733,12 @@ negative N, comment out original line and use the absolute value."
   ;; Load cover images
   (setq emms-browser-covers 'emms-browser-cache-thumbnail-async))
 
+(use-package erc-hl-nicks
+  :defer t
+  :ensure t
+  :config
+  :after (:all erc))
+
 (use-package eglot
   :if (eq lemacs-lsp-client 'eglot)
   :ensure t
@@ -711,12 +760,43 @@ negative N, comment out original line and use the absolute value."
       (add-hook 'web-mode-hook #'eglot-ensure)
       (add-hook 'prisma-mode-hook #'eglot-ensure)
 
-	  (bind-keys :map eglot-mode-map
-				 ("C-c l a" . eglot-code-actions)
-				 ("C-c l o" . eglot-code-action-organize-imports)
-				 ("C-c l r" . eglot-rename)
-				 ("C-c l f" . eglot-format))))
+	    (bind-keys :map eglot-mode-map
+				("C-c l a" . eglot-code-actions)
+				("C-c l o" . eglot-code-action-organize-imports)
+				("C-c l r" . eglot-rename)
+				("C-c l f" . eglot-format))))
+  
+  (cl-delete-duplicates (nconc eglot-server-programs
+                          '((((js-mode :language-id "javascript")
+                               (js-ts-mode :language-id "javascript")
+                               (tsx-ts-mode :language-id "typescriptreact")
+                               (typescript-ts-mode :language-id "typescript")
+                               (typescript-mode :language-id "typescript"))
+                              .
+                              ("typescript-language-server" "--stdio"
+                                :initializationOptions
+                                (:preferences
+                                  (:includeInlayEnumMemberValueHints t
+                                    :includeInlayFunctionLikeReturnTypeHints t
+                                    :includeInlayFunctionParameterTypeHints t
+                                    :includeInlayParameterNameHints "all"
+                                    :includeInlayParameterNameHintsWhenArgumentMatchesName t
+                                    :includeInlayPropertyDeclarationTypeHints t
+                                    :includeInlayVariableTypeHints t
+                                    :includeInlayVariableTypeHintsWhenTypeMatchesName t
+                                    :completeFunctionCalls t))))))
+    :test #'(lambda (element _)
+              (if (listp (car element))
+                (if (listp (caar element))
+                  (memq 'js-mode (caar element))
+                  (memq 'js-mode (car element)))
+                (eq 'js-mode element))))
 
+  (setq-default eglot-workspace-configuration
+    '(:completions
+       (:completeFunctionCalls t)))
+  
+  
   (defun my-enable-flymake-eslint ()
 	"Enable eslint if typescript mode"
 	(when (or (eq major-mode 'tsx-ts-mode)
@@ -873,7 +953,6 @@ negative N, comment out original line and use the absolute value."
 (use-package org-gcal
   :defer t
   :ensure t
-  :bind
   :config
   (setq plstore-cache-passphrase-for-symmetric-encryption t)
   ;; SETUP ON: https://github.com/kidd/org-gcal.el
@@ -884,8 +963,8 @@ negative N, comment out original line and use the absolute value."
   )
 
 (use-package package-lint
-  :defer t
   :ensure t
+  :defer t
   :config)
 
 (use-package prettier
@@ -928,21 +1007,6 @@ negative N, comment out original line and use the absolute value."
   :defer t
   :ensure t
   :config)
-
-;; NOTE: disabled in favor of tree-sitter, rustic seems abandoned :(
-;;
-;; (use-package rust-mode
-;;   :defer t
-;;   :ensure t
-;;   :config)
-
-;; (use-package rustic
-;;   :defer t
-;;   :ensure t
-;;   :config
-;;   (setq rustic-analyzer-command '("~/.cargo/bin/rust-analyzer"))
-;;   (setq rustic-rustfmt-config-alist '((edition . "2018"))) ;; If not forced here, rustfmt complains
-;;   (setq rustic-format-on-save t))
 
 (use-package sass-mode
   :defer t
@@ -989,6 +1053,8 @@ negative N, comment out original line and use the absolute value."
 ;;   If we had nicier syntax highlighting (.tsx is the benchmark here), we could
 ;;  drop tree-sitter and tree-sitter-langs. But still, not the time to do so.
 (use-package treesit-auto
+  :ensure t
+  :defer t
   :custom
   (treesit-auto-install 'prompt)
   :config
@@ -998,6 +1064,9 @@ negative N, comment out original line and use the absolute value."
 
 (use-package tree-sitter
   :ensure t
+  :defer t
+  :hook
+  (after-init . global-tree-sitter-mode)
   :config
 
   (setq tree-sitter-load-path (list (expand-file-name "tree-sitter" user-emacs-directory)))
@@ -1047,8 +1116,6 @@ uses the files with the prefix libtree-sitter-."
   :ensure t
   :bind
   (("M-i" . treemacs))
-  :hook
-  (after-init . global-tree-sitter-mode)
   :config
   (setq treemacs-show-hidden-files t)
   ;; (setq treemacs-resize-icons 44)
@@ -1058,7 +1125,7 @@ uses the files with the prefix libtree-sitter-."
   (setq treemacs-icons nil)
   (setq treemacs-file-event-delay 100)
   (setq treemacs-silent-refresh t)
-  (setq treemacs--project-follow-delay 0.1)
+  (setq treemacs--project-follow-delay 0.05)
   (treemacs-project-follow-mode +1))
 
 (use-package treemacs-icons-dired
@@ -1187,13 +1254,15 @@ uses the files with the prefix libtree-sitter-."
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
-(when (eq lemacs-in-buffer-completion 'corfu)
-  (use-package corfu
+(use-package corfu
+  :if (eq lemacs-in-buffer-completion 'corfu)
+  :defer t
+  :ensure t
 	;; Optional customizations
 	:custom
 	;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
 	(corfu-auto t)                 ;; Enable auto completion
-	(corfu-auto-delay 0)
+	(corfu-auto-delay 0.1)
 	(corfu-auto-prefix 1)
 	;; (corfu-separator ?\s)          ;; Orderless field separator
 	;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
@@ -1223,23 +1292,25 @@ uses the files with the prefix libtree-sitter-."
 	(global-corfu-mode))
 
 
-  (when (not window-system)
+(when (not window-system)
 	(add-to-list 'load-path "~/.emacs.d/site-lisp/corfu-terminal/")
 	(require 'corfu-terminal)
 	(corfu-terminal-mode))
 
-  (use-package nerd-icons-corfu
+(use-package nerd-icons-corfu
 	:ensure t
+  :defer t
 	:after (:all corfu)
-	:config))
+	:config)
 
 
-(when (eq lemacs-in-buffer-completion 'company)
-  ;; NOTE:
-  ;;   We use company-quickhelp + company-quickhelp-terminal on CLI
-  ;;   And company-box on GUI (company quickhelp on GUI is toolkit dependent
-  ;;   and altough it works ok with Emacs Lucid, it does not with GTK and macOS).
-  (use-package company
+;; NOTE:
+;;   We use company-quickhelp + company-quickhelp-terminal on CLI
+;;   And company-box on GUI (company quickhelp on GUI is toolkit dependent
+;;   and altough it works ok with Emacs Lucid, it does not with GTK and macOS).
+(use-package company
+  :if (eq lemacs-in-buffer-completion 'company)
+  :disabled (not (eq lemacs-in-buffer-completion 'company))
 	:defer t
 	:ensure t
 	:bind
@@ -1248,44 +1319,47 @@ uses the files with the prefix libtree-sitter-."
 	(setq company-tooltip-maximum-width 50)
 	(setq company-tooltip-align-annotations t)
 	(setq company-minimum-prefix-length 2)
-	(setq company-idle-delay 0))
+	(setq company-idle-delay 0.1)
+  :init
+  (global-company-mode))
 
-  (use-package company-quickhelp
-	:if (not window-system)
+(use-package company-quickhelp
+	:if (and (eq lemacs-in-buffer-completion 'company) (eq window-system nil))
+	:defer t
+	:ensure t
+  :after (:all company)
 	:custom
 	(company-quickhelp-use-propertized-text nil)
 	:config
 	(eval-after-load 'company
 	  '(define-key company-active-map (kbd "C-h") #'company-quickhelp-manual-begin)))
 
-  (use-package company-quickhelp-terminal
-	:if (not window-system)
+(use-package company-quickhelp-terminal
+	:if (and (eq lemacs-in-buffer-completion 'company) (eq window-system nil))
+	:defer t
+	:ensure t
+  :after (:all company)
 	:custom
 	(company-quickhelp-use-propertized-text nil)
 	:config
 	(with-eval-after-load 'company-quickhelp
-      (company-quickhelp-terminal-mode 1)))
+    (company-quickhelp-terminal-mode 1)))
 
 
-  (use-package company-box
-	:if (window-system)
+(use-package company-box
+	:if (and (eq lemacs-in-buffer-completion 'company) (window-system))
+	:defer t
+	:ensure t
+  :after (:all company)
 	:hook (company-mode . company-box-mode)
 	:config
-	(setq company-box-scrollbar nil)))
+	(setq company-box-scrollbar nil))
 
-
-;; NOTE TO SELF: Corfu is not yet mature, meaning it needs A LOT of effort to make
-;;               it work on both TUI and GUI, and auto doc for TUI is now broken...
-;;               getting back to good old company-mode...
-
-;; TODO: ditch flycheck
-;; (use-package consult-flycheck
-;;   :defer t
-;;   :ensure t)
 
 (use-package consult
-  ;; Replace bindings. Lazily loaded due by `use-package'.
   :ensure t
+  :defer t
+  ;; Replace bindings. Lazily loaded due by `use-package'.
   :bind (;; C-c bindings in `mode-specific-map'
          ("C-c M-x" . consult-mode-command)
          ("C-c h" . consult-history)
@@ -1309,9 +1383,7 @@ uses the files with the prefix libtree-sitter-."
          ("M-y" . consult-yank-pop)                ;; orig. yank-pop
          ;; M-g bindings in `goto-map'
          ("M-g e" . consult-compile-error)
-		 ("M-g f" . consult-flymake)
-         ;; TODO: ditch flycheck
-         ;; ("M-g F" . consult-flycheck)
+		     ("M-g f" . consult-flymake)
          ("M-g g" . consult-goto-line)             ;; orig. goto-line
          ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
          ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
@@ -1407,6 +1479,7 @@ uses the files with the prefix libtree-sitter-."
 
 (use-package embark
   :ensure t
+  :defer t
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
    ("C-;" . embark-dwim)        ;; good alternative: M-.
@@ -1548,7 +1621,9 @@ targets."
 	:ensure t
 	:config
 	(lsp-inlay-hints-mode)
-	(setq lsp-inlay-hint-enable t)
+  (setq lsp-inlay-hint-enable t)
+
+  (setq lsp-completion-provider :none)
 
 	(setq lsp-enable-links nil)
 	(setq lsp-eldoc-enable-hover t)
@@ -1635,42 +1710,43 @@ targets."
           (make-llm-ollama
             :chat-model "codellama" :embedding-model "codellama")))
 
+(use-package polymode
+  :if (eq lemacs-polymode 'on)
+  :ensure t
+  :defer t
+  :config
+  ;; React.JS styled-components "integration"
+  (define-hostmode poly-typescript-hostmode nil
+    "Typescript hostmode."
+    :mode 'typescript-ts-mode)
+  (define-innermode poly-typescript-cssinjs-innermode nil
+    :mode 'css-mode
+    :head-matcher "\\(styled\\|css\\|\\.attrs<[^>]+>\\([^)]+\\)\\)?[.()<>[:alnum:]]?+`"
+    :tail-matcher "\`"
+    :head-mode 'host
+    :tail-mode 'host)
+  (define-polymode poly-typescript-mode
+    :hostmode 'poly-typescript-hostmode
+    :innermodes '(poly-typescript-cssinjs-innermode))
+
+  ;; I do not want this to proliferate to all  .[j|t]sx? files, so
+  ;; I am limiting it to the styled? filenames
+  (add-to-list 'auto-mode-alist '("\\(styled\\|style[sd]\\).[tj]sx?\\'" . poly-typescript-mode)))
+
 (use-package yasnippet
   :ensure t
   :defer t
-  :hook
-  (after-init . yas-global-mode)
-  :config)
+  :diminish yas-minor-mode
+  :custom (yas-keymap-disable-hook
+           (lambda () (and (frame-live-p corfu--frame)
+                           (frame-visible-p corfu--frame))))
+  :hook (after-init . yas-global-mode))
 
-(use-package window
-  :ensure nil
-  :custom
-  (display-buffer-alist
-   '(("\\*.*-e?shell\\*"  ;; we only want <project_name>-eshell to follow this rule
-      (display-buffer-in-side-window)
-      (window-height . 0.25)
-      (side . bottom)
-      (slot . -1))
-     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\|sh\\|python3\\)\\*"
-      (display-buffer-in-side-window)
-      (window-height . 0.25)
-      (side . bottom)
-      (slot . 0))
-     ("\\*\\(Flymake diagnostics\\|prettier er\\|xref\\|EGLOT\\|Org-Babel Er\\|Completions\\)"
-      (display-buffer-in-side-window)
-      (window-height . 0.25)
-      (side . bottom)
-      (slot . 1))
-     ("\\*\\([Hh]elp\\)\\*"
-      (display-buffer-in-side-window)
-      (window-width . 75)
-      (side . right)
-      (slot . 0))
-     ("\\*\\(undo-tree\\)\\*"
-      (display-buffer-in-side-window)
-      (window-width . 50)
-      (side . right)
-      (slot . 1)))))
+(use-package yasnippet-snippets
+  :ensure t
+  :defer t
+  :after (:all yasnippet)
+  :config)
 
 ;;; -------------------------------- INIT/PROVIDE THIS CONFIG
 
