@@ -1058,8 +1058,7 @@ negative N, comment out original line and use the absolute value."
   :custom
   (treesit-auto-install 'prompt)
   :config
-  ;; all minus: rust (I prefer rustic)
-  (treesit-auto-add-to-auto-mode-alist '(awk bash bibtex c c-sharp clojure cmake commonlisp cpp css dart dockerfile elixir go gomod heex html java javascript json julia kotlin latex lua magik make markdown nu proto python r ruby toml tsx typescript typst verilog vhdl wat wast yaml rust))
+  (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 
 (use-package tree-sitter
