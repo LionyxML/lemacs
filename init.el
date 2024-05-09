@@ -135,6 +135,20 @@ Notice this is a bit messy."
            (const :tag "off" nil))
   :group 'lemacs)
 
+(defcustom lemacs-ligatures 'on
+  "Enables fonts ligatures."
+  :type '(choice
+           (const :tag "on" 1)
+           (const :tag "off" nil))
+  :group 'lemacs)
+
+(defcustom lemacs-org-gcal 'off
+  "Enables org Google Calendar."
+  :type '(choice
+           (const :tag "on" 1)
+           (const :tag "off" nil))
+  :group 'lemacs)
+
 (defvar lemacs-art "
   ██╗     ███████╗███╗   ███╗ █████╗  ██████╗███████╗
   ██║     ██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝
@@ -880,6 +894,33 @@ negative N, comment out original line and use the absolute value."
   :config
   (setq indent-guide-char "│"))
 
+(use-package ligature
+  :if (eq lemacs-ligatures 'on)
+  :defer t
+  :ensure t
+  :hook (after-init . global-ligature-mode)
+  :config
+  ;; Enable the "www" ligature in every possible major mode
+  (ligature-set-ligatures 't '("www"))
+  ;; Enable traditional ligature support in eww-mode, if the
+  ;; `variable-pitch' face supports it
+  (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+  ;; Enable all Cascadia Code ligatures in programming modes
+  (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+                                        ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+                                        "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+                                        "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+                                        "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+                                        "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+                                        "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+                                        "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+                                        ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+                                        "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+                                        "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+                                        "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+                                        "\\\\" "://")))
+
+
 (use-package magit
   :defer t
   :ensure t
@@ -951,6 +992,7 @@ negative N, comment out original line and use the absolute value."
   :config)
 
 (use-package org-gcal
+  :if (eq lemacs-org-gcal 'on)
   :defer t
   :ensure t
   :config
@@ -1261,8 +1303,8 @@ uses the files with the prefix libtree-sitter-."
 	:custom
 	;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
 	(corfu-auto t)                 ;; Enable auto completion
-	(corfu-auto-delay 0.1)
-	(corfu-auto-prefix 1)
+	(corfu-auto-delay 0)
+	(corfu-auto-prefix 3)
 	;; (corfu-separator ?\s)          ;; Orderless field separator
 	;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
 	;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
