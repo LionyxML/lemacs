@@ -95,6 +95,7 @@
             (lemacs--install-packages (extract-use-package-packages)))
 
         (switch-to-buffer "*Messages*")
+        (message (format "%s" lemacs-art))
         (message "\n\n\nInstalling LEmacs...\n\n\n\n")
 
         (package-refresh-contents)
@@ -157,7 +158,6 @@ Notice this is a bit messy."
   ███████╗███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║
   ╚══════╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝
 ")
-
 ;;; --------------------------------- EMACS
 (use-package emacs
   :custom
