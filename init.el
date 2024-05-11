@@ -558,7 +558,7 @@ negative N, comment out original line and use the absolute value."
       (window-height . 0.25)
       (side . bottom)
       (slot . -1))
-     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\|sh\\|python3\\)\\*"
+     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\|sh\\|env\\|python3\\)\\*"
       (display-buffer-in-side-window)
       (window-height . 0.25)
       (side . bottom)
