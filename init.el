@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.39
+;; Version: 0.1.40
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -580,7 +580,12 @@ negative N, comment out original line and use the absolute value."
       (slot . 1)))))
 
 ;;; --------------------------------- EXTERNAL PACKAGES
+(use-package 0x0
+  :ensure t
+  :defer t)
+
 (use-package add-node-modules-path
+  :ensure t
   :defer t
   :custom
   ;; Makes sure you are using the local bin for your
@@ -595,6 +600,7 @@ negative N, comment out original line and use the absolute value."
 	'(add-hook 'js-mode-hook #'add-node-modules-path)))
 
 (use-package ace-window
+  :ensure t
   :defer t
   :bind
   ("M-o" . ace-window))
