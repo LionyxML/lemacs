@@ -60,3 +60,4 @@ history
 /tree-sitter/bin/*
 !/tree-sitter/bin/
 gnus.el
+yeetube

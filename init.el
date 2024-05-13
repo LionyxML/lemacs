@@ -112,7 +112,7 @@
      (message "LEmacs failed to install, run 'emacs -nw --debug-init'"))))
 
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
-(defcustom lemacs-lsp-client 'lsp-mode
+(defcustom lemacs-lsp-client 'eglot
   "The LSP implementation to use."
   :type '(choice
            (const :tag "eglot" eglot)
@@ -528,7 +528,7 @@ negative N, comment out original line and use the absolute value."
                        (concat "..." (car (last (butlast (split-string (eshell/pwd) "/") 0))))
                      (abbreviate-file-name (eshell/pwd))))
            ")\n"
-           (when (and (boundp 'vc-git-branches) (car (vc-git-branches)))
+           (when (vc-git-branches)
              (concat
               "├─("
               (nerd-icons-devicon "nf-dev-git_branch")
@@ -546,7 +546,7 @@ negative N, comment out original line and use the absolute value."
   (setq eshell-visual-commands
 		'("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
 		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
-		  "ncmpcpp" "newsbeuter" "nethack" "mutt" "yarn" "pnpm")))
+		   "ncmpcpp" "newsbeuter" "nethack" "mutt" "yarn" "pnpm")))
 
 ;;; --------------------------------- WINDOW
 (use-package window
