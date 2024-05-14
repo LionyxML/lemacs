@@ -527,8 +527,8 @@ negative N, comment out original line and use the absolute value."
            (concat (if (>= (length (eshell/pwd)) 40)
                        (concat "..." (car (last (butlast (split-string (eshell/pwd) "/") 0))))
                      (abbreviate-file-name (eshell/pwd))))
-           ")\n"
-           (when (vc-git-branches)
+            ")\n"
+         (when (and (fboundp 'vc-git-root) (vc-git-root default-directory))
              (concat
               "├─("
               (nerd-icons-devicon "nf-dev-git_branch")
@@ -546,7 +546,7 @@ negative N, comment out original line and use the absolute value."
   (setq eshell-visual-commands
 		'("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
 		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
-		   "ncmpcpp" "newsbeuter" "nethack" "mutt" "yarn" "pnpm")))
+		   "ncmpcpp" "newsbeuter" "nethack" "mutt" "yarn" "pnpm" "sudo")))
 
 ;;; --------------------------------- WINDOW
 (use-package window
@@ -558,7 +558,7 @@ negative N, comment out original line and use the absolute value."
       (window-height . 0.25)
       (side . bottom)
       (slot . -1))
-     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\|sh\\|env\\|python3\\)\\*"
+     ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\|sh\\|env\\|python3\\|sudo\\)\\*"
       (display-buffer-in-side-window)
       (window-height . 0.25)
       (side . bottom)
