@@ -667,7 +667,7 @@ negative N, comment out original line and use the absolute value."
   :config
   (set-face-attribute 'diff-hl-change nil :background "#89b4fa")
   (set-face-attribute 'diff-hl-delete nil :background "#f38ba8")
-  (set-face-attribute 'diff-hl-insert nil :background "#a6e3a1")) 
+  (set-face-attribute 'diff-hl-insert nil :background "#a6e3a1"))
 
 (use-package dirvish
   :defer t
@@ -699,7 +699,6 @@ negative N, comment out original line and use the absolute value."
   (doom-modeline-buffer-name t)
   (doom-modeline-vcs-max-length 25)
   (doom-modeline-icon t)
-  ()
   :config
   (setq inhibit-compacting-font-caches t) ;; Don´t compact font caches during GC
 
