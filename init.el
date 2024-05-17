@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.40
+;; Version: 0.1.41
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -679,8 +679,10 @@ negative N, comment out original line and use the absolute value."
   :ensure t
   :bind ("C-c d" . docker)
   :config
-  (setq docker-command "podman")
-  (setq docker-compose-command "podman-compose"))
+  ;; (setq docker-command "podman")
+  ;; (setq docker-compose-command "podman-compose")
+  (setq docker-command "docker")
+  (setq docker-compose-command "docker-compose"))
 
 (use-package dockerfile-mode
   :defer t
