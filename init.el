@@ -417,7 +417,7 @@ negative N, comment out original line and use the absolute value."
   ;; (erc-interactive-display ...) ;; this option will be available on next ERC release (5.6)
   (erc-hide-list '("JOIN" "PART" "QUIT"))
   (erc-timestamp-format "[%H:%M]")
-  (erc-autojoin-channels-alist '((".*\\.libera\\.chat" "#emacs"))))
+  (erc-autojoin-channels-alist '((".*\\.libera\\.chat" "#emacs" "#systemcrafters"))))
 
 ;;; --------------------------------- ESHELL
 (use-package eshell
