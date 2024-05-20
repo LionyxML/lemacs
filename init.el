@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.42
+;; Version: 0.1.43
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -632,8 +632,10 @@ negative N, comment out original line and use the absolute value."
   ;; (setq dashboard-startup-banner (".....logo.png" . ".....logo.txt"))
   ;; (setq dashboard-startup-banner 'logo)
   (setq dashboard-startup-banner
-		(cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
-      (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))
+    (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory))
+  ;; (setq dashboard-startup-banner
+	;; 	(cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
+  ;;     (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))
 
   (setq dashboard-center-content t)
   (setq dashboard-vertically-center-content nil)
