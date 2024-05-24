@@ -151,6 +151,13 @@ Notice this is a bit messy."
            (const :tag "off" nil))
   :group 'lemacs)
 
+(defcustom lemacs-docker-executable 'docker
+  "Enables org Google Calendar."
+  :type '(choice
+           (const :tag "docker" docker)
+           (const :tag "podman" podman))
+  :group 'lemacs)
+
 (defvar lemacs-art "
  ▄█          ▄████████   ▄▄▄▄███▄▄▄▄      ▄████████  ▄████████    ▄████████
 ███         ███    ███ ▄██▀▀▀███▀▀▀██▄   ███    ███ ███    ███   ███    ███
@@ -680,10 +687,13 @@ negative N, comment out original line and use the absolute value."
   :ensure t
   :bind ("C-c d" . docker)
   :config
-  ;; (setq docker-command "podman")
-  ;; (setq docker-compose-command "podman-compose")
-  (setq docker-command "docker")
-  (setq docker-compose-command "docker-compose"))
+  (when (eq lemacs-docker-executable 'docker)
+    (setq docker-command "docker")
+    (setq docker-compose-command "docker-compose"))
+
+  (when (eq lemacs-docker-executable 'podman)
+    (setq docker-command "podman")
+    (setq docker-compose-command "podman-compose")))
 
 (use-package dockerfile-mode
   :defer t
