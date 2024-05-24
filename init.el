@@ -50,6 +50,7 @@
                 native-comp-deferred-compilation         t    ;; Make native compilation happens asynchronously
                 package-native-compile                   t))  ;; Compile installed packages
 
+;; Package sources
 (eval-when-compile
   (require 'use-package))
 
@@ -673,11 +674,6 @@ negative N, comment out original line and use the absolute value."
   (set-face-attribute 'diff-hl-change nil :background "#89b4fa")
   (set-face-attribute 'diff-hl-delete nil :background "#f38ba8")
   (set-face-attribute 'diff-hl-insert nil :background "#a6e3a1"))
-
-(use-package dirvish
-  :defer t
-  :ensure t
-  :config)
 
 (use-package docker
   :defer t
