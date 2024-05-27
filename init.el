@@ -24,21 +24,41 @@
 
 ;;; Code:
 
-;;; --------------------------------- USE-PACKAGE INIT
-;; Performance Hack 01 --- GC buffer before all
-(setq gc-cons-threshold #x40000000)
+;;; --------------------------------- PERFORMANCE HACKS
+;; --- Max GC Buffer while starting Emacs
+;; --- Quickier filename handling
+;; --- Both reseted after loading
 
-;; Performance Hack 01.1 --- GC buffer before all
-(setq read-process-output-max (* 1024 1024 4)) ;; 4mb
+(setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
+  gc-cons-percentage 0.6)
 
-;; Performance Hack 02 --- Quickier filename handling, resetted after load
-(defvar default-file-name-handler-alist file-name-handler-alist)
+(defvar config:file-name-handler-alist-cache file-name-handler-alist)
+
 (setq file-name-handler-alist nil)
 
-;; Performance Hack 03 --- The basic fundamental mode for begin with
+(defun config:restore-post-init-settings ()
+  (setq gc-cons-threshold 16777216 ; 16mb
+        gc-cons-percentage 0.1)
+  (setq file-name-handler-alist config:file-name-handler-alist-cache))
+
+(add-hook 'emacs-startup-hook #'config:restore-post-init-settings)
+
+;;--------- Defer GC to "after" using the minibuffer, avoind locks on it
+(defun config:defer-gc ()
+  (setq gc-cons-threshold most-positive-fixnum))
+(defun config:-do-restore-gc ()
+  (setq gc-cons-threshold 16777216))
+(defun config:restore-gc ()
+  (run-at-time 1 nil #'config:-do-restore-gc))
+
+(add-hook 'minibuffer-setup #'config:defer-gc)
+(add-hook 'minibuffer-exit #'config:restore-gc)
+
+
+;;--- Starts with the most funcamental mode
 (setq initial-major-mode 'fundamental-mode)
 
-;; Native compilation settings
+;;; --------------------------------- NATIVE COMP SETTINGS
 (when (featurep 'native-compile)
   ;; Set the right directory to store the native compilation cache
   (let ((path (expand-file-name "eln-cache/" user-emacs-directory)))
@@ -50,6 +70,7 @@
                 native-comp-deferred-compilation         t    ;; Make native compilation happens asynchronously
                 package-native-compile                   t))  ;; Compile installed packages
 
+;;; --------------------------------- USE-PACKAGE INIT
 ;; Package sources
 (eval-when-compile
   (require 'use-package))
@@ -346,24 +367,21 @@ negative N, comment out original line and use the absolute value."
 
   ;; Welcome to LEmacs
   (add-hook 'emacs-startup-hook
-            (lambda ()
-              (message "Emacs has fully loaded. This code runs after startup.")
+    (lambda ()
+      (message "Emacs has fully loaded. This code runs after startup.")
 
-              ;; Performance Hack 02.1 --- Quickier filename handling, resetted after load
-              (setq file-name-handler-alist default-file-name-handler-alist)
+      ;; (profiler-report)
+      ;; (profiler-stop)
 
-              ;; (profiler-report)
-              ;; (profiler-stop)
-
-              (with-current-buffer (get-buffer-create "*scratch*")
-                (insert (format "%s
+      (with-current-buffer (get-buffer-create "*scratch*")
+        (insert (format "%s
 
     Loading time : %s
     Packages     : %s
 "
-                                lemacs-art
-                                (emacs-init-time)
-                                (number-to-string (length package-activated-list)))))))
+                  lemacs-art
+                  (emacs-init-time)
+                  (number-to-string (length package-activated-list)))))))
   :bind
   (("M-D" . 'my-duplicate-line-or-region)
    ("C-x C-b" . 'ibuffer))
