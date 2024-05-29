@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.43
+;; Version: 0.1.44
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -761,6 +761,11 @@ negative N, comment out original line and use the absolute value."
   :ensure t
   :config)
 
+(use-package eat
+  :defer t
+  :ensure t
+  :config)
+
 (use-package emms
   :defer t
   :ensure t
@@ -983,11 +988,6 @@ negative N, comment out original line and use the absolute value."
   :mode ("README\\.md\\'" . gfm-mode)
   :custom
   (setq markdown-command "multimarkdown"))
-
-(use-package multi-vterm
-  :defer t
-  :ensure t
-  :config)
 
 (use-package nerd-icons-completion
   :after marginalia
@@ -1256,14 +1256,6 @@ uses the files with the prefix libtree-sitter-."
   (setq-default pos-tip-background-color "#4F4F4F")
   (setq-default pos-tip-foreground-color "#FFFFEF")
   (setq vc-msg-show-at-line-beginning-p nil))
-
-(use-package vterm
-  :defer t
-  :ensure t
-  :config
-  (add-hook 'vterm-mode-hook (lambda ()
-                               (setq-local global-hl-line-mode
-                                           nil))))
 
 (use-package which-key
   :defer t
