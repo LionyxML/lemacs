@@ -43,7 +43,7 @@
 
 (add-hook 'emacs-startup-hook #'config:restore-post-init-settings)
 
-;;--------- Defer GC to "after" using the minibuffer, avoind locks on it
+;; --- Defer GC to "after" using the minibuffer, avoiding it to be unresponsive
 (defun config:defer-gc ()
   (setq gc-cons-threshold most-positive-fixnum))
 (defun config:-do-restore-gc ()
@@ -53,7 +53,6 @@
 
 (add-hook 'minibuffer-setup #'config:defer-gc)
 (add-hook 'minibuffer-exit #'config:restore-gc)
-
 
 ;;--- Starts with the most funcamental mode
 (setq initial-major-mode 'fundamental-mode)
