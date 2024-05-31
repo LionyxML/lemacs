@@ -378,10 +378,9 @@ negative N, comment out original line and use the absolute value."
   (("M-D" . 'my-duplicate-line-or-region)
    ("C-x C-b" . 'ibuffer))
   :init
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
   (load-theme 'catppuccin :no-confirm)
+
+  (select-frame-set-input-focus (selected-frame))
 
   (winner-mode 1)
   (global-auto-revert-mode 1)
