@@ -164,15 +164,8 @@ Notice this is a bit messy."
            (const :tag "off" nil))
   :group 'lemacs)
 
-(defcustom lemacs-org-gcal 'off
-  "Enables org Google Calendar."
-  :type '(choice
-           (const :tag "on" 1)
-           (const :tag "off" nil))
-  :group 'lemacs)
-
 (defcustom lemacs-docker-executable 'docker
-  "Enables org Google Calendar."
+  "The executable to be used with docker-mode."
   :type '(choice
            (const :tag "docker" docker)
            (const :tag "podman" podman))
@@ -180,14 +173,14 @@ Notice this is a bit messy."
 
 (defvar lemacs-art "
           ████████  ▄▄▄▄▄███▄▄▄▄▄    ████████  ████████ █████████
-██       ██    ███ ██▀▀▀███▀▀▀██  ██    ███ ██    ███ ███    ███
+█       ██    ███ ██▀▀▀███▀▀▀██  ██    ███ ██    ███ ███    ███
 ███       ███    ██ ███   ███   ███  ███    ███ ███    ██ ███    ██
 ███      ███▄▄▄     ███   ███   ███  ███    ███ ███        ███
 ███       ███▀▀▀     ███   ███   ███ ██████████ ███       ██████████
 ███       ███    ██ ███   ███   ███  ███    ███ ███    ██        ███
 ███     ███    ███ ███   ███   ███  ███    ███ ███    ███ ██    ███
 █████████ ██████████ ██   ███   ██  ███    ██ ██████████████████
-  
+
 ")
 ;;; --------------------------------- EMACS
 (use-package emacs
@@ -1025,19 +1018,6 @@ negative N, comment out original line and use the absolute value."
   :bind
   (("C-S-p" . org-ros))
   :config)
-
-(use-package org-gcal
-  :if (eq lemacs-org-gcal 'on)
-  :defer t
-  :ensure t
-  :config
-  (setq plstore-cache-passphrase-for-symmetric-encryption t)
-  ;; SETUP ON: https://github.com/kidd/org-gcal.el
-  ;;
-  ;; (setq org-gcal-client-id "your-id-foo.apps.googleusercontent.com"
-  ;;       org-gcal-client-secret "your-secret"
-  ;;       org-gcal-fetch-file-alist '(("your-email@domain" . "~/agenda.org")))
-  )
 
 (use-package package-lint
   :ensure t
