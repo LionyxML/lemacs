@@ -32,27 +32,27 @@
 (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
   gc-cons-percentage 0.6)
 
-(defvar config:file-name-handler-alist-cache file-name-handler-alist)
+(defvar lemacs/file-name-handler-alist-cache file-name-handler-alist)
 
 (setq file-name-handler-alist nil)
 
-(defun config:restore-post-init-settings ()
+(defun lemacs/restore-post-init-settings ()
   (setq gc-cons-threshold 16777216 ; 16mb
         gc-cons-percentage 0.1)
-  (setq file-name-handler-alist config:file-name-handler-alist-cache))
+  (setq file-name-handler-alist lemacs/file-name-handler-alist-cache))
 
-(add-hook 'emacs-startup-hook #'config:restore-post-init-settings)
+(add-hook 'emacs-startup-hook #'lemacs/restore-post-init-settings)
 
 ;; --- Defer GC to "after" using the minibuffer, avoiding it to be unresponsive
-(defun config:defer-gc ()
+(defun lemacs/defer-gc ()
   (setq gc-cons-threshold most-positive-fixnum))
-(defun config:-do-restore-gc ()
+(defun lemacs/-do-restore-gc ()
   (setq gc-cons-threshold 16777216))
-(defun config:restore-gc ()
-  (run-at-time 1 nil #'config:-do-restore-gc))
+(defun lemacs/restore-gc ()
+  (run-at-time 1 nil #'lemacs/-do-restore-gc))
 
-(add-hook 'minibuffer-setup #'config:defer-gc)
-(add-hook 'minibuffer-exit #'config:restore-gc)
+(add-hook 'minibuffer-setup #'lemacs/defer-gc)
+(add-hook 'minibuffer-exit #'lemacs/restore-gc)
 
 ;;--- Starts with the most funcamental mode
 (setq initial-major-mode 'fundamental-mode)
@@ -201,7 +201,7 @@ Notice this is a bit messy."
   (inhibit-startup-screen t)
   (inhibit-x-resources t)
   (initial-scratch-message "")
-  (ispell-dictionary "pt_BR")
+  (ispell-dictionary "en_US")
   (line-spacing 1)
   (make-backup-files nil)
   (native-comp-async-report-warnings-errors 'silent)
@@ -433,6 +433,13 @@ negative N, comment out original line and use the absolute value."
   :ensure nil
   :defer t
   :custom
+
+  (defun lemacs-erc-enable-flyspell ()
+    "Enable Flyspell mode in ERC buffers."
+    (flyspell-mode 1))
+
+  (add-hook 'erc-join-hook 'lemacs-erc-enable-flyspell)
+
   (erc-join-buffer 'window)
   ;; (erc-interactive-display ...) ;; this option will be available on next ERC release (5.6)
   (erc-hide-list '("JOIN" "PART" "QUIT"))
