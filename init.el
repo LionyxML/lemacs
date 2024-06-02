@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.44
+;; Version: 0.1.45
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -241,6 +241,31 @@ Notice this is a bit messy."
           mac-command-modifier 'meta)
     (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 130))
 
+  ;; Modeline fonts ajustments per OS
+  (unless (eq system-type 'darwin)
+    (if (facep 'mode-line-active)
+      (set-face-attribute 'mode-line-active nil
+        :family "JetBrainsMono Nerd Font"
+        :height 100) ; For 29+
+      (set-face-attribute 'mode-line nil
+        :family "JetBrainsMono Nerd Font"
+        :height 100))
+    (set-face-attribute 'mode-line-inactive nil
+      :family "JetBrainsMono Nerd Font"
+      :height 100))
+
+  (when (eq system-type 'darwin)
+    (if (facep 'mode-line-active)
+      (set-face-attribute 'mode-line-active nil
+        :family "JetBrainsMono Nerd Font"
+        :height 130) ; For 29+
+      (set-face-attribute 'mode-line nil
+        :family "JetBrainsMono Nerd Font"
+        :height 130))
+    (set-face-attribute 'mode-line-inactive nil
+      :family "JetBrainsMono Nerd Font"
+      :height 130))
+
 
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
@@ -252,9 +277,9 @@ Notice this is a bit messy."
     "Set up Emacs' `exec-path' and PATH environment the same as user Shell."
     (interactive)
     (let ((path-from-shell (replace-regexp-in-string
-                            "[ \t\n]*$" "" (shell-command-to-string
-                                            "$SHELL --login -c 'echo $PATH'"
-                                            ))))
+                             "[ \t\n]*$" "" (shell-command-to-string
+                                              "$SHELL --login -c 'echo $PATH'"
+                                              ))))
       (setenv "PATH" path-from-shell)
       (setq exec-path (split-string path-from-shell path-separator))))
   (lemacs/set-exec-path-from-shell-PATH)
@@ -380,7 +405,11 @@ negative N, comment out original line and use the absolute value."
   :init
   (load-theme 'catppuccin :no-confirm)
 
+  ;; Emacs frame starts focused
   (select-frame-set-input-focus (selected-frame))
+
+  ;; Emacs frame starts maximized
+  (toggle-frame-maximized)
 
   (winner-mode 1)
   (global-auto-revert-mode 1)
@@ -575,6 +604,26 @@ negative N, comment out original line and use the absolute value."
 		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
 		   "ncmpcpp" "newsbeuter" "nethack" "mutt" "yarn" "pnpm" "sudo")))
 
+;;; --------------------------------- VC
+(use-package vc
+  :ensure t
+  :config
+  (setq vc-annotate-color-map
+        '((20 . "#f5e0dc")
+          (40 . "#f2cdcd")
+          (60 . "#f5c2e7")
+          (80 . "#cba6f7")
+          (100 . "#f38ba8")
+          (120 . "#eba0ac")
+          (140 . "#fab387")
+          (160 . "#f9e2af")
+          (180 . "#a6e3a1")
+          (200 . "#94e2d5")
+          (220 . "#89dceb")
+          (240 . "#74c7ec")
+          (260 . "#89b4fa")
+          (280 . "#b4befe"))))
+
 ;;; --------------------------------- WINDOW
 (use-package window
   :ensure nil
@@ -655,11 +704,11 @@ negative N, comment out original line and use the absolute value."
   (setq dashboard-banner-logo-title "Welcome to LEMACS")
   ;; (setq dashboard-startup-banner (".....logo.png" . ".....logo.txt"))
   ;; (setq dashboard-startup-banner 'logo)
-  (setq dashboard-startup-banner
-    (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory))
   ;; (setq dashboard-startup-banner
-	;; 	(cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
-  ;;     (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))
+  ;;   (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory))
+  (setq dashboard-startup-banner
+		(cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
+      (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))
 
   (setq dashboard-center-content t)
   (setq dashboard-vertically-center-content nil)
@@ -730,30 +779,7 @@ negative N, comment out original line and use the absolute value."
   (doom-modeline-icon t)
   :config
   (setq inhibit-compacting-font-caches t) ;; Don´t compact font caches during GC
-
-  (unless (eq system-type 'darwin)
-    (if (facep 'mode-line-active)
-        (set-face-attribute 'mode-line-active nil
-                            :family "JetBrainsMono Nerd Font"
-                            :height 100) ; For 29+
-      (set-face-attribute 'mode-line nil
-                          :family "JetBrainsMono Nerd Font"
-                          :height 100))
-    (set-face-attribute 'mode-line-inactive nil
-                        :family "JetBrainsMono Nerd Font"
-                        :height 100))
-
-  (when (eq system-type 'darwin)
-    (if (facep 'mode-line-active)
-        (set-face-attribute 'mode-line-active nil
-                            :family "JetBrainsMono Nerd Font"
-                            :height 130) ; For 29+
-      (set-face-attribute 'mode-line nil
-                          :family "JetBrainsMono Nerd Font"
-                          :height 130))
-    (set-face-attribute 'mode-line-inactive nil
-                        :family "JetBrainsMono Nerd Font"
-                        :height 130)))
+)
 
 (use-package dotenv-mode
   :defer t
@@ -1213,25 +1239,6 @@ uses the files with the prefix libtree-sitter-."
   (after-init . global-undo-tree-mode)
   :config
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/.cache/undo"))))
-
-(use-package vc
-  :ensure t
-  :config
-  (setq vc-annotate-color-map
-        '((20 . "#f5e0dc")
-          (40 . "#f2cdcd")
-          (60 . "#f5c2e7")
-          (80 . "#cba6f7")
-          (100 . "#f38ba8")
-          (120 . "#eba0ac")
-          (140 . "#fab387")
-          (160 . "#f9e2af")
-          (180 . "#a6e3a1")
-          (200 . "#94e2d5")
-          (220 . "#89dceb")
-          (240 . "#74c7ec")
-          (260 . "#89b4fa")
-          (280 . "#b4befe"))))
 
 (use-package vc-msg
   :defer t
