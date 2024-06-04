@@ -689,7 +689,24 @@ negative N, comment out original line and use the absolute value."
 (use-package catppuccin-theme
   :defer t
   :ensure t
-  :config)
+  :config
+
+  (defun lemacs/catppuccin-hack (_)
+    "A catppuccin hack to make sure everything is loaded"
+    (catppuccin-reload)
+    (set-face-attribute 'diff-hl-change nil :background "#89b4fa")
+    (set-face-attribute 'diff-hl-delete nil :background "#f38ba8")
+    (set-face-attribute 'diff-hl-insert nil :background "#a6e3a1"))
+
+
+  ;; Run hack on Terminal mode on loading
+  (when (not window-system)
+    (add-hook 'after-init-hook (lambda ()
+                                 (run-with-timer 0.3 nil
+                                   (lambda ()(lemacs/catppuccin-hack nil))))))
+
+  ;; Run hack after a new frame is open
+  (add-hook 'after-make-frame-functions 'lemacs/catppuccin-hack))
 
 (use-package breadcrumb
   :defer t
