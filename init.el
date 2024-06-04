@@ -171,6 +171,20 @@ Notice this is a bit messy."
            (const :tag "podman" podman))
   :group 'lemacs)
 
+(defcustom lemacs-nerd-icons 'nil
+  "Enables Nerd Icons provided by Nerd Fonts."
+  :type '(choice
+           (const :tag "t" t)
+           (const :tag "nil" nil))
+  :group 'lemacs)
+
+(defcustom lemacs-ascii-art 't
+  "Enables ASCII art on GUI Emacs."
+  :type '(choice
+           (const :tag "t" t)
+           (const :tag "nil" nil))
+  :group 'lemacs)
+
 (defvar lemacs-art "
           ████████  ▄▄▄▄▄███▄▄▄▄▄    ████████  ████████ █████████
 █       ██    ███ ██▀▀▀███▀▀▀██  ██    ███ ██    ███ ███    ███
@@ -767,16 +781,21 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (setq dashboard-banner-logo-title "Welcome to LEMACS")
   ;; (setq dashboard-startup-banner (".....logo.png" . ".....logo.txt"))
   ;; (setq dashboard-startup-banner 'logo)
-  ;; (setq dashboard-startup-banner
-  ;;   (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory))
-  (setq dashboard-startup-banner
-		(cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
+  (when lemacs-ascii-art
+    (setq dashboard-startup-banner
       (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))
+
+  (unless lemacs-ascii-art
+    (setq dashboard-startup-banner
+		  (cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
+        (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory))))
 
   (setq dashboard-center-content t)
   (setq dashboard-vertically-center-content nil)
   (setq dashboard-display-icons-p t)
-  (setq dashboard-icon-type 'nerd-icons)
+
+  (when lemacs-nerd-icons
+    (setq dashboard-icon-type 'nerd-icons))
 
   (setq dashboard-items '(
                         ;; (recents   . 5)
@@ -839,7 +858,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (doom-modeline-project-detection 'project)
   (doom-modeline-buffer-name t)
   (doom-modeline-vcs-max-length 25)
-  (doom-modeline-icon t)
+  (doom-modeline-icon lemacs-nerd-icons)
   :config
   (setq inhibit-compacting-font-caches t) ;; Don´t compact font caches during GC
 )
@@ -1079,13 +1098,17 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (setq markdown-command "multimarkdown"))
 
 (use-package nerd-icons-completion
-  :after marginalia
+  :if lemacs-nerd-icons
+  :ensure t
+  ;; :defer t
+  :after (:all nerd-icons marginalia)
   :config
   (nerd-icons-completion-mode)
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
 (use-package nerd-icons-dired
   ;; :defer t
+  :if lemacs-nerd-icons
   :ensure t
   :after (:all nerd-icons dired)
   :config
@@ -1093,6 +1116,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
 (use-package nerd-icons-ibuffer
   ;; :defer t
+  :if lemacs-nerd-icons
   :ensure t
   :after (:any nerd-icons)
   :config
@@ -1275,6 +1299,8 @@ uses the files with the prefix libtree-sitter-."
   (setq treemacs-width 40)
   (setq treemacs-filewatch-mode t)
   (setq treemacs-icons nil)
+  (unless lemacs-nerd-icons
+    (setq treemacs-no-png-images 't))
   (setq treemacs-file-event-delay 100)
   (setq treemacs-silent-refresh t)
   (setq treemacs--project-follow-delay 0.05)
@@ -1292,6 +1318,7 @@ uses the files with the prefix libtree-sitter-."
   :config)
 
 (use-package treemacs-nerd-icons
+  :if lemacs-nerd-icons  
   :ensure t
   :config
   (treemacs-load-theme "nerd-icons"))
@@ -1411,7 +1438,8 @@ uses the files with the prefix libtree-sitter-."
 	;; `global-corfu-modes' to exclude certain modes.
 
 	:config
-	(add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)
+  (when lemacs-nerd-icons
+	  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 	:init
 	(global-corfu-mode))
@@ -1423,6 +1451,7 @@ uses the files with the prefix libtree-sitter-."
 	(corfu-terminal-mode))
 
 (use-package nerd-icons-corfu
+  :if lemacs-nerd-icons
 	:ensure t
   :defer t
 	:after (:all corfu)
