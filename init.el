@@ -789,7 +789,8 @@ negative N, comment out original line and use the absolute value."
 (use-package eat
   :defer t
   :ensure t
-  :config)
+  :config
+  (setq eat-term-name "xterm-256color"))
 
 (use-package emms
   :defer t
