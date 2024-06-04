@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.45
+;; Version: 0.1.46
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -654,6 +654,52 @@ negative N, comment out original line and use the absolute value."
       (window-width . 50)
       (side . right)
       (slot . 1)))))
+
+;;; --------------------------------- TAB-BAR
+(use-package tab-bar
+  :ensure nil
+  :init
+  ;; This aims to substitute tmux (or gnu/screen) with Emacs
+  ;; Tabs are our tmux windows (new one with C-x t 2)
+  ;; Windows are emacs windows (new one with C-x 5 2)
+
+  (setq tab-bar-auto-width t)
+  (setq tab-bar-auto-width-min '(10 4))
+  (setq tab-bar-auto-width-max '(40 5))
+
+
+  (defun lemacs/renumber-tabs (&optional include-file-name)
+    "Renumber all tabs according to their position.
+If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
+    (interactive "P")
+    (let ((tabs (tab-bar-tabs)))
+      (dotimes (i (length tabs))
+        (let* ((tab (nth i tabs))
+                (old-name (alist-get 'name tab))
+                (file-name (if include-file-name
+                             (replace-regexp-in-string "^\\([0-9]+) \\)" "" old-name)
+                             ""))
+                (new-name (format " »%d« %s" (1+ i) file-name)))
+          (tab-bar-select-tab (1+ i)) ; Select the tab by its 1-based index
+          (tab-bar-rename-tab new-name)))))
+
+
+  ;; Whenever we modify tabs, we want it renumbered
+  (advice-add 'tab-close :after #'lemacs/renumber-tabs)
+  (advice-add 'tab-close-other :after #'lemacs/renumber-tabs)
+  (advice-add 'tab-new :after #'lemacs/renumber-tabs)
+
+
+  (defun lemacs/switch-tab-or-tab-bar ()
+    "Switch between 2 tabs or choose if > 2 tabs are present."
+    (interactive)
+    (if (= (length (tab-bar-tabs)) 2)
+      (tab-next)
+      (call-interactively 'tab-bar-switch-to-tab)
+      ))
+
+  (global-set-key (kbd "M-l") 'lemacs/switch-tab-or-tab-bar))
+
 
 ;;; --------------------------------- EXTERNAL PACKAGES
 (use-package 0x0
