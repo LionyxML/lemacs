@@ -171,7 +171,7 @@ Notice this is a bit messy."
            (const :tag "podman" podman))
   :group 'lemacs)
 
-(defcustom lemacs-nerd-icons 'nil
+(defcustom lemacs-nerd-icons 't
   "Enables Nerd Icons provided by Nerd Fonts."
   :type '(choice
            (const :tag "t" t)
