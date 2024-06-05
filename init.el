@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.46
+;; Version: 0.1.47
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
