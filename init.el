@@ -204,8 +204,6 @@ Notice this is a bit messy."
   (create-lockfiles nil)
   (delete-by-moving-to-trash t)
   (enable-recursive-minibuffers t)
-  (frame-inhibit-implied-resize t)
-  (frame-resize-pixelwise t)
   (gnus-init-file "~/.gnus.el")
   (ibuffer-show-empty-filter-groups nil)
   (indent-tabs-mode nil)
@@ -442,6 +440,7 @@ negative N, comment out original line and use the absolute value."
 ;;; --------------------------------- DIRED
 (use-package dired
   :ensure nil
+  :defer t
   :custom
   (dired-dwim-target t)
   (dired-guess-shell-alist-user
@@ -465,6 +464,7 @@ negative N, comment out original line and use the absolute value."
 ;;; --------------------------------- ISEARCH
 (use-package isearch
   :ensure nil
+  :defer t
   :config
   (setq isearch-lazy-count t)
   (setq lazy-count-prefix-format "(%s/%s) ")
@@ -491,6 +491,8 @@ negative N, comment out original line and use the absolute value."
 
 ;;; --------------------------------- ESHELL
 (use-package eshell
+  :ensure nil
+  :defer t
   :config
   (setq eshell-hist-ignoredups t)
   (setq eshell-cmpl-cycle-completions nil)
@@ -620,7 +622,8 @@ negative N, comment out original line and use the absolute value."
 
 ;;; --------------------------------- VC
 (use-package vc
-  :ensure t
+  :ensure nil
+  :defer t
   :config
   (setq vc-annotate-color-map
         '((20 . "#f5e0dc")
@@ -641,6 +644,7 @@ negative N, comment out original line and use the absolute value."
 ;;; --------------------------------- WINDOW
 (use-package window
   :ensure nil
+  :defer t
   :custom
   (display-buffer-alist
    '(("\\*.*-e?shell\\*"  ;; we only want <project_name>-eshell to follow this rule
@@ -672,6 +676,7 @@ negative N, comment out original line and use the absolute value."
 ;;; --------------------------------- TAB-BAR
 (use-package tab-bar
   :ensure nil
+  :defer t
   :init
   ;; This aims to substitute tmux (or gnu/screen) with Emacs
   ;; Tabs are our tmux windows (new one with C-x t 2)
@@ -714,6 +719,10 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
   (global-set-key (kbd "M-l") 'lemacs/switch-tab-or-tab-bar))
 
+(use-package org
+  :ensure nil
+  :defer t
+  :config)
 
 ;;; --------------------------------- EXTERNAL PACKAGES
 (use-package 0x0
@@ -777,6 +786,9 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
 (use-package dashboard
   :ensure t
+  :defer t
+  :hook
+  (after-init dashboard-open)
   :config
   (setq dashboard-banner-logo-title "Welcome to LEMACS")
   ;; (setq dashboard-startup-banner (".....logo.png" . ".....logo.txt"))
@@ -904,7 +916,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 (use-package eglot
   :if (eq lemacs-lsp-client 'eglot)
   :ensure t
-  :preface
   :custom
   (eglot-autoshutdown t)
   (eglot-events-buffer-size 0)
@@ -1017,10 +1028,14 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :config)
 
 (use-package kkp
+  :if (not window-system)
   :ensure t
+  :defer t
+  :hook
+  (after-init . (global-kkp-mode +1))
   :config
   ;; (setq kkp-alt-modifier 'alt) ;; use this if you want to map the Alt keyboard modifier to Alt in Emacs (and not to Meta)
-  (global-kkp-mode +1))
+  )
 
 (use-package handlebars-mode
   :defer t
@@ -1148,7 +1163,12 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :defer t
   :hook
-  (prog-mode . prettier-mode)
+  ((js-mode . prettier-mode)
+   (typescript-mode . prettier-mode)
+   (typescriptreact-mode . prettier-mode)
+   (html-mode . prettier-mode)
+   (css-mode . prettier-mode)
+   (scss-mode . prettier-mode))
   :config)
 
 (use-package prisma-mode
@@ -1381,12 +1401,14 @@ uses the files with the prefix libtree-sitter-."
 
 (use-package vertico
   :ensure t
+  :hook
+  (after-init . vertico-mode)
   :custom
   (vertico-count 10)                    ; Number of candidates to display
   (vertico-resize nil)
   (vertico-cycle nil)                   ; Go from last to first candidate and first to last (cycle)?
   :config
-  (vertico-mode)
+  ;; (vertico-mode)
 
   ;; Prefix the current candidate with “» ”. From
   ;; https://github.com/minad/vertico/wiki#prefix-current-candidate-with-arrow
@@ -1401,6 +1423,8 @@ uses the files with the prefix libtree-sitter-."
 
 (use-package orderless
   :ensure t
+  :defer t
+  :after vertico
   :init
    (setq completion-styles '(orderless basic)
         completion-category-defaults nil
