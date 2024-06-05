@@ -226,8 +226,6 @@ Notice this is a bit messy."
   (switch-to-buffer-obey-display-actions t)
   (tab-always-indent 'complete) ;; TAB serves as M-TAB to completion
   (tab-width 4)
-  (tab-bar-close-button-show nil)
-  (tab-bar-new-button-show nil)
   (treesit-font-lock-level 4)
   (truncate-lines t)
   (tsx-ts-mode-indent-offset 4)
@@ -677,10 +675,15 @@ negative N, comment out original line and use the absolute value."
 (use-package tab-bar
   :ensure nil
   :defer t
+  :custom
+  (tab-bar-close-button-show nil)
+  (tab-bar-new-button-show nil)
   :init
   ;; This aims to substitute tmux (or gnu/screen) with Emacs
   ;; Tabs are our tmux windows (new one with C-x t 2)
   ;; Windows are emacs windows (new one with C-x 5 2)
+
+  (setq tab-bar-position t)
 
   (setq tab-bar-auto-width t)
   (setq tab-bar-auto-width-min '(10 4))
@@ -1166,6 +1169,8 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   ((js-mode . prettier-mode)
    (typescript-mode . prettier-mode)
    (typescriptreact-mode . prettier-mode)
+   (typescript-ts-mode . prettier-mode)
+   (tsx-ts-mode . prettier-mode)
    (html-mode . prettier-mode)
    (css-mode . prettier-mode)
    (scss-mode . prettier-mode))
