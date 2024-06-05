@@ -490,7 +490,7 @@ negative N, comment out original line and use the absolute value."
 ;;; --------------------------------- ESHELL
 (use-package eshell
   :ensure nil
-  :defer t
+  :defer nil
   :config
   (setq eshell-hist-ignoredups t)
   (setq eshell-cmpl-cycle-completions nil)
