@@ -158,8 +158,7 @@ uses the files with the prefix libtree-sitter-."
         ;; (install-use-package-packages lemacs--emacs-builtin-packages lemacs--install-packages)
 
         (message ">>> All required packages installed.")
-        (message ">>> Press any key to continue with LEmacs tree-sitter / font configurations...")
-        (read-key)
+        (message ">>> Configuring LEmacs tree-sitter and fonts...")
 
         (require 'tree-sitter)
         (require 'nerd-icons)
@@ -170,7 +169,7 @@ uses the files with the prefix libtree-sitter-."
 
         (nerd-icons-install-fonts)
 
-        (message ">>> LEmacs installed!!! Presss any key to close this and open Emacs normally.")
+        (message ">>> LEmacs installed!!! Presss any key to close the installer and open Emacs normally.")
         (read-key)
 
         (kill-emacs))
@@ -790,19 +789,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 (use-package catppuccin-theme
   :defer t
   :ensure t
-  :config
-  (defun lemacs/catppuccin-hack (_)
-    "A catppuccin hack to make sure everything is loaded"
-    (catppuccin-reload))
-
-  ;; Run hack on Terminal mode on loading
-  (when (not window-system)
-    (add-hook 'after-init-hook (lambda ()
-                                 (run-with-timer 0.3 nil
-                                   (lambda ()(lemacs/catppuccin-hack nil))))))
-
-  ;; Run hack after a new frame is open
-  (add-hook 'after-make-frame-functions 'lemacs/catppuccin-hack))
+  :config)
 
 (use-package breadcrumb
   :defer t
