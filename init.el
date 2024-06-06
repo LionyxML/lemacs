@@ -861,7 +861,9 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :defer t
   :ensure t
   :hook
-  (after-init . exec-path-from-shell-initialize))
+  (after-init . (lambda ()
+                  (when (memq window-system '(mac ns x))
+                    (exec-path-from-shell-initialize)))))
 
 (use-package diredfl
   :defer t
