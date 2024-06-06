@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.47
+;; Version: 0.1.48
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -158,15 +158,14 @@ uses the files with the prefix libtree-sitter-."
         ;; (install-use-package-packages lemacs--emacs-builtin-packages lemacs--install-packages)
 
         (message ">>> All required packages installed.")
-        (message ">>> Configuring LEmacs tree-sitter and fonts...")
+        (message ">>> Configuring LEmacs...")
 
-        (require 'tree-sitter)
+        ;; TODO: I need to make something to automate some mechanism what will get compiled libs here...
+        ;;        (lemacs/create-tree-sitter-directories)
+        ;;        (tree-sitter-langs-install-grammars)
+        ;;        (create-tree-sitter-links)
+
         (require 'nerd-icons)
-
-        (lemacs/create-tree-sitter-directories)
-        (tree-sitter-langs-install-grammars)
-        (create-tree-sitter-links)
-
         (nerd-icons-install-fonts)
 
         (message ">>> LEmacs installed!!! Presss any key to close the installer and open Emacs normally.")
@@ -1271,58 +1270,15 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :config)
 
-;; NOTE:
-;;   Tree-sitter is still a bit messy on Emacs.
-;;   We basically still install the 3rd party package just to have the nicer
-;;  more colorful sintax higlighting.
-;;   Problem is when grepping or peeking a file, such as with lsp peek or
-;;  consult-grep, sintax higlighting is not loaded by default. For that we use
-;;  the internal treesit mode, configured via treesit-auto.
-;;   If we had nicier syntax highlighting (.tsx is the benchmark here), we could
-;;  drop tree-sitter and tree-sitter-langs. But still, not the time to do so.
 (use-package treesit-auto
   :ensure t
   :defer t
   :custom
-  (treesit-auto-install t)
-  :config
-  (treesit-auto-add-to-auto-mode-alist 'all)
-  (global-treesit-auto-mode))
-
-(use-package tree-sitter
-  :ensure t
-  :defer t
+  (treesit-auto-install 'prompt)
   :hook
-  (after-init . global-tree-sitter-mode)
+  (after-init . global-treesit-auto-mode)
   :config
-
-  (setq tree-sitter-load-path (list (expand-file-name "tree-sitter" user-emacs-directory)))
-
-  (setq major-mode-remap-alist
-        '((yaml-mode . yaml-ts-mode)
-          (bash-mode . bash-ts-mode)
-          (js-mode . js-ts-mode)
-          (javascript-mode . js-ts-mode)
-          (js2-mode . js-ts-mode)
-          (typescript-mode . typescript-ts-mode)))
-
-  ;; we choose this instead of tsx-mode so that eglot / lsp-mode can automatically figure out language for server
-  ;; see https://github.com/joaotavora/eglot/issues/624 and https://github.com/joaotavora/eglot#handling-quirky-servers
-  (define-derived-mode typescriptreact-mode tsx-ts-mode
-    "TypeScript TSX")
-  ;; use our derived mode for tsx files
-  (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescriptreact-mode))
-  ;; by default, typescript-mode is mapped to the treesitter typescript parser
-  ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
-  (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx))
-
-  (add-hook 'tree-sitter-after-on-hook 'tree-sitter-hl-mode))
-
-(use-package tree-sitter-langs
-  :ensure t
-  :defer t
-  :config
-  (setq-default tree-sitter-langs-grammar-dir (expand-file-name "tree-sitter" user-emacs-directory)))
+  (treesit-auto-add-to-auto-mode-alist 'all))
 
 (use-package treemacs
   :defer t
