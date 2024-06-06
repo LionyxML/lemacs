@@ -919,23 +919,24 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 (use-package eglot
   :if (eq lemacs-lsp-client 'eglot)
   :ensure t
+  :defer t
+  :hook
+  ((python-ts-mode . eglot-ensure)
+   (js-ts-mode . eglot-ensure)
+   (typescript-ts-mode . eglot-ensure)
+   (typescriptreact-mode . eglot-ensure)
+   (tsx-ts-mode . eglot-ensure)
+   (rust-ts-mode . eglot-ensure)
+   (css-mode . eglot-ensure)
+   (sass-mode . eglot-ensure)
+   (web-mode . eglot-ensure)
+   (prisma-mode . eglot-ensure))
   :custom
   (eglot-autoshutdown t)
   (eglot-events-buffer-size 0)
   :config
   (when (eq lemacs-lsp-client 'eglot)
     (progn
-      (add-hook 'python-ts-mode-hook #'eglot-ensure)
-      (add-hook 'js-ts-mode-hook #'eglot-ensure)
-      (add-hook 'typescript-ts-mode-hook #'eglot-ensure)
-      (add-hook 'typescriptreact-mode-hook #'eglot-ensure)
-      (add-hook 'tsx-ts-mode-hook #'eglot-ensure)
-      (add-hook 'rust-ts-mode-hook #'eglot-ensure)
-      (add-hook 'css-mode-hook #'eglot-ensure)
-      (add-hook 'sass-mode-hook #'eglot-ensure)
-      (add-hook 'web-mode-hook #'eglot-ensure)
-      (add-hook 'prisma-mode-hook #'eglot-ensure)
-
 	    (bind-keys :map eglot-mode-map
 				("C-c l a" . eglot-code-actions)
 				("C-c l o" . eglot-code-action-organize-imports)
