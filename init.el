@@ -178,7 +178,7 @@ Notice this is a bit messy."
            (const :tag "nil" nil))
   :group 'lemacs)
 
-(defcustom lemacs-ascii-art 't
+(defcustom lemacs-ascii-art 'nil
   "Enables ASCII art on GUI Emacs."
   :type '(choice
            (const :tag "t" t)
@@ -200,7 +200,6 @@ Notice this is a bit messy."
 (use-package emacs
   :custom
   (auto-save-default nil)
-  (column-number-mode t)
   (create-lockfiles nil)
   (delete-by-moving-to-trash t)
   (enable-recursive-minibuffers t)
@@ -218,7 +217,6 @@ Notice this is a bit messy."
   (make-backup-files nil)
   (native-comp-async-report-warnings-errors 'silent)
   (org-babel-load-languages '((emacs-lisp . t) (python . t) (ruby . t) (shell . t)))
-  (pixel-scroll-precision-mode t)
   (pixel-scroll-precision-use-momentum nil)
   (ring-bell-function 'ignore)
   (shr-use-colors nil)
@@ -235,7 +233,6 @@ Notice this is a bit messy."
   (use-short-answers t)
   (warning-minimum-level :emergency)
   (window-combination-resize t)
-  (xterm-mouse-mode t)
   (grep-find-ignored-directories
    '("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "node_modules" "build" "dist"))
   :hook
@@ -410,8 +407,7 @@ negative N, comment out original line and use the absolute value."
                   (emacs-init-time)
                   (number-to-string (length package-activated-list)))))))
   :bind
-  (("M-D" . 'my-duplicate-line-or-region)
-   ("C-x C-b" . 'ibuffer))
+  (("C-x C-b" . 'ibuffer))
   :init
   (load-theme 'catppuccin :no-confirm)
 
@@ -424,7 +420,6 @@ negative N, comment out original line and use the absolute value."
   (winner-mode 1)
   (global-auto-revert-mode 1)
   (indent-tabs-mode -1)
-  (recentf-mode 1)
   (savehist-mode 1)
   (save-place-mode 1)
   (desktop-save-mode 1)
@@ -432,7 +427,8 @@ negative N, comment out original line and use the absolute value."
     (xclip-mode 1))
   (file-name-shadow-mode 1)
   (delete-selection-mode 1)
-  (diff-hl-flydiff-mode 1))
+  (pixel-scroll-precision-mode 1)
+  (xterm-mouse-mode 1))
 
 
 ;;; --------------------------------- DIRED
@@ -722,10 +718,22 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
   (global-set-key (kbd "M-l") 'lemacs/switch-tab-or-tab-bar))
 
+;;; --------------------------------- DEFFERED BUILTINS
 (use-package org
   :ensure nil
+  :defer t)
+
+(use-package recentf
+  :ensure nil
   :defer t
-  :config)
+  :hook
+  (after-init . recentf-mode))
+
+(use-package column-number
+  :ensure nil
+  :defer t
+  :hook
+  (after-init . column-number-mode))
 
 ;;; --------------------------------- EXTERNAL PACKAGES
 (use-package 0x0
@@ -762,14 +770,9 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :defer t
   :ensure t
   :config
-
   (defun lemacs/catppuccin-hack (_)
     "A catppuccin hack to make sure everything is loaded"
-    (catppuccin-reload)
-    (set-face-attribute 'diff-hl-change nil :background "#89b4fa")
-    (set-face-attribute 'diff-hl-delete nil :background "#f38ba8")
-    (set-face-attribute 'diff-hl-insert nil :background "#a6e3a1"))
-
+    (catppuccin-reload))
 
   ;; Run hack on Terminal mode on loading
   (when (not window-system)
@@ -791,7 +794,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :defer t
   :hook
-  (after-init dashboard-open)
+  (after-init . dashboard-open)
   :config
   (setq dashboard-banner-logo-title "Welcome to LEMACS")
   ;; (setq dashboard-startup-banner (".....logo.png" . ".....logo.txt"))
@@ -826,9 +829,11 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :defer t
   :ensure t
   :hook
-  (after-init . global-diff-hl-mode)
+  (find-file . (lambda ()
+                 (global-diff-hl-mode)
+                 (diff-hl-flydiff-mode)
+                 (diff-hl-margin-mode)))
   :custom
-  (diff-hl-margin-mode t)
   (diff-hl-side 'left)
   (diff-hl-margin-symbols-alist
    '((insert . " ")
@@ -843,6 +848,12 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (set-face-attribute 'diff-hl-change nil :background "#89b4fa")
   (set-face-attribute 'diff-hl-delete nil :background "#f38ba8")
   (set-face-attribute 'diff-hl-insert nil :background "#a6e3a1"))
+
+(use-package diredfl
+  :defer t
+  :ensure t
+  :hook
+  (dired-mode . diredfl-global-mode))
 
 (use-package docker
   :defer t
@@ -1259,7 +1270,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :defer t
   :custom
-  (treesit-auto-install 'prompt)
+  (treesit-auto-install t)
   :config
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
@@ -1294,8 +1305,8 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (add-hook 'tree-sitter-after-on-hook 'tree-sitter-hl-mode))
 
 (use-package tree-sitter-langs
-  :defer t
   :ensure t
+  :defer t
   :config
   (setq-default tree-sitter-langs-grammar-dir (expand-file-name "tree-sitter" user-emacs-directory))
 
@@ -1344,7 +1355,7 @@ uses the files with the prefix libtree-sitter-."
   :config)
 
 (use-package treemacs-nerd-icons
-  :if lemacs-nerd-icons  
+  :if lemacs-nerd-icons
   :ensure t
   :config
   (treemacs-load-theme "nerd-icons"))
@@ -1414,8 +1425,6 @@ uses the files with the prefix libtree-sitter-."
   (vertico-resize nil)
   (vertico-cycle nil)                   ; Go from last to first candidate and first to last (cycle)?
   :config
-  ;; (vertico-mode)
-
   ;; Prefix the current candidate with “» ”. From
   ;; https://github.com/minad/vertico/wiki#prefix-current-candidate-with-arrow
   (advice-add #'vertico--format-candidate :around
@@ -1440,45 +1449,43 @@ uses the files with the prefix libtree-sitter-."
   :if (eq lemacs-in-buffer-completion 'corfu)
   :defer t
   :ensure t
-	;; Optional customizations
-	:custom
-	;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-	(corfu-auto t)                 ;; Enable auto completion
-	(corfu-auto-delay 0)
-	(corfu-auto-prefix 3)
-	;; (corfu-separator ?\s)          ;; Orderless field separator
-	;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-	;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-	(corfu-quit-no-match t)
-	;; (corfu-preview-current nil)    ;; Disable current candidate preview
-	;; (corfu-preselect 'prompt)      ;; Preselect the prompt
-	;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-	(corfu-scroll-margin 5)        ;; Use scroll margin
-	(corfu-max-width 50)
-	(corfu-popupinfo-mode t)
-	(corfu-popupinfo-delay 0)
+  :custom
+  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (corfu-auto t)                 ;; Enable auto completion
+  (corfu-auto-delay 0)
+  (corfu-auto-prefix 3)
+  ;; (corfu-separator ?\s)          ;; Orderless field separator
+  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  (corfu-quit-no-match t)
+  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+  ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
+  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+  (corfu-scroll-margin 5)        ;; Use scroll margin
+  (corfu-max-width 50)
+  (corfu-popupinfo-delay 0)
 
-	;; Enable Corfu only for certain modes.
-	;; :hook ((prog-mode . corfu-mode)
-	;;        (shell-mode . corfu-mode)
-	;;        (eshell-mode . corfu-mode))
+  ;; Enable Corfu only for certain modes.
+  ;; :hook ((prog-mode . corfu-mode)
+  ;;        (shell-mode . corfu-mode)
+  ;;        (eshell-mode . corfu-mode))
 
-	;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
-	;; be used globally (M-/).  See also the customization variable
-	;; `global-corfu-modes' to exclude certain modes.
+  ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
+  ;; be used globally (M-/).  See also the customization variable
+  ;; `global-corfu-modes' to exclude certain modes.
 
-	:config
+  :config
   (when lemacs-nerd-icons
-	  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+	(add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
-	:init
-	(global-corfu-mode))
+  :init
+  (global-corfu-mode)
+  (corfu-popupinfo-mode t)
 
-
-(when (not window-system)
+  (when (not window-system)
 	(add-to-list 'load-path "~/.emacs.d/site-lisp/corfu-terminal/")
 	(require 'corfu-terminal)
-	(corfu-terminal-mode))
+	(corfu-terminal-mode)))
 
 (use-package nerd-icons-corfu
   :if lemacs-nerd-icons
@@ -1805,9 +1812,9 @@ targets."
 	:ensure t
 	:config
 	(lsp-inlay-hints-mode)
-  (setq lsp-inlay-hint-enable t)
+    (setq lsp-inlay-hint-enable t)
 
-  (setq lsp-completion-provider :none)
+    (setq lsp-completion-provider :none)
 
 	(setq lsp-enable-links nil)
 	(setq lsp-eldoc-enable-hover t)
@@ -1923,13 +1930,12 @@ targets."
   :diminish yas-minor-mode
   :custom (yas-keymap-disable-hook
            (lambda () (and (frame-live-p corfu--frame)
-                           (frame-visible-p corfu--frame))))
-  :hook (after-init . yas-global-mode))
+                           (frame-visible-p corfu--frame)))))
 
 (use-package yasnippet-snippets
   :ensure t
   :defer t
-  :after (:all yasnippet)
+  :after yasnippet
   :config)
 
 (use-package yeetube
