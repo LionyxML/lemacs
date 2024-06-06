@@ -857,11 +857,11 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (set-face-attribute 'diff-hl-delete nil :background "#f38ba8")
   (set-face-attribute 'diff-hl-insert nil :background "#a6e3a1"))
 
-(use-package direnv
+(use-package exec-path-from-shell
   :defer t
   :ensure t
   :hook
-  (after-init . direnv-mode))
+  (after-init . exec-path-from-shell-initialize))
 
 (use-package diredfl
   :defer t
