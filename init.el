@@ -1272,15 +1272,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :custom
   (treesit-auto-install t)
   :config
-  (treesit-auto-add-to-auto-mode-alist 'all)
-  (global-treesit-auto-mode))
-
-(use-package tree-sitter
-  :ensure t
-  :defer t
-  :hook
-  (after-init . global-tree-sitter-mode)
-  :config
 
   (setq tree-sitter-load-path (list (expand-file-name "tree-sitter" user-emacs-directory)))
 
@@ -1301,28 +1292,9 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   ;; by default, typescript-mode is mapped to the treesitter typescript parser
   ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx))
-
-  (add-hook 'tree-sitter-after-on-hook 'tree-sitter-hl-mode))
-
-(use-package tree-sitter-langs
-  :ensure t
-  :defer t
-  :config
-  (setq-default tree-sitter-langs-grammar-dir (expand-file-name "tree-sitter" user-emacs-directory))
-
-  (defun create-tree-sitter-links ()
-	"Create links from .emacs.d/tree-sitter/bin* to .emacs.d/tree-sitter/* files.
-Since tree-sitter-mode uses the format provided by /bin and the built-in
-uses the files with the prefix libtree-sitter-."
-  (interactive)
-  (let ((bin-dir (expand-file-name "tree-sitter/bin" user-emacs-directory))
-        (lib-dir (expand-file-name "tree-sitter" user-emacs-directory)))
-    (dolist (file (directory-files bin-dir nil "\\.so$"))
-      (let ((link-name (concat lib-dir "/libtree-sitter-" (file-name-nondirectory file))))
-        (unless (file-exists-p link-name)
-          (make-symbolic-link (concat bin-dir "/" file) link-name t))))))
-
-  (create-tree-sitter-links))
+  
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
 
 (use-package treemacs
   :defer t
