@@ -82,10 +82,9 @@
 █████████ ██████████ ██   ███   ██  ███    ██ ██████████████████
 
 ")
-
-(switch-to-buffer "*scratch*")
-(message (format "%s" lemacs-art))
-(message "LEmacs is initializing...")
+(switch-to-buffer "*Messages*")
+;;(message (format "%s" lemacs-art))
+(message ">>>LEmacs is initializing...")
 
 (eval-when-compile
   (require 'use-package))
@@ -125,26 +124,59 @@
         (unless (package-installed-p pkg)
           (package-install pkg)))))
 
+  (defun lemacs/create-tree-sitter-directories ()
+    "Create tree-sitter and bin directories inside the user's .emacs.d directory."
+    (let* ((emacs-d (file-name-as-directory user-emacs-directory))
+           (tree-sitter-dir (expand-file-name "tree-sitter" emacs-d))
+           (bin-dir (expand-file-name "bin" tree-sitter-dir)))
+      (unless (file-directory-p tree-sitter-dir)
+        (make-directory tree-sitter-dir))
+      (unless (file-directory-p bin-dir)
+        (make-directory bin-dir))
+      (message "Created directories: %s and %s" tree-sitter-dir bin-dir)))
+
+  (defun create-tree-sitter-links ()
+	"Create links from .emacs.d/tree-sitter/bin* to .emacs.d/tree-sitter/* files.
+Since tree-sitter-mode uses the format provided by /bin and the built-in
+uses the files with the prefix libtree-sitter-."
+    (interactive)
+    (let ((bin-dir (expand-file-name "tree-sitter/bin" user-emacs-directory))
+          (lib-dir (expand-file-name "tree-sitter" user-emacs-directory)))
+      (dolist (file (directory-files bin-dir nil "\\.so$"))
+        (let ((link-name (concat lib-dir "/libtree-sitter-" (file-name-nondirectory file))))
+          (unless (file-exists-p link-name)
+            (make-symbolic-link (concat bin-dir "/" file) link-name t))))))
+
   (condition-case err
       (let ((lemacs--emacs-builtin-packages '(vc tab-bar org recentf column-number dired window eshell erc eldoc emacs isearch prisma-mode lsp-prisma))
             (lemacs--install-packages (extract-use-package-packages)))
 
         (switch-to-buffer "*Messages*")
-        (message (format "%s" lemacs-art))
-        (message "\n\n\nInstalling LEmacs...\n\n\n\n")
 
-        (package-refresh-contents)
-        (install-use-package-packages lemacs--emacs-builtin-packages lemacs--install-packages)
+        ;; FIXME Probably not needed anymore
+        ;; (package-refresh-contents)
+        ;; (install-use-package-packages lemacs--emacs-builtin-packages lemacs--install-packages)
+
+        (message ">>> All required packages installed.")
+        (message ">>> Press any key to continue with LEmacs tree-sitter / font configurations...")
+        (read-key)
 
         (require 'tree-sitter)
         (require 'nerd-icons)
 
-        (call-interactively 'tree-sitter-langs-install-grammars)
-        (call-interactively 'nerd-icons-install-fonts)
+        (lemacs/create-tree-sitter-directories)
+        (tree-sitter-langs-install-grammars)
+        (create-tree-sitter-links)
+
+        (nerd-icons-install-fonts)
+
+        (message ">>> LEmacs installed!!! Presss any key to close this and open Emacs normally.")
+        (read-key)
+
         (kill-emacs))
 
     (error
-     (message "LEmacs failed to install, run 'emacs -nw --debug-init'"))))
+     (message ">>> LEmacs failed to install, run 'emacs -nw --debug-init'"))))
 
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
 (defcustom lemacs-lsp-client 'eglot
@@ -280,18 +312,6 @@ Notice this is a bit messy."
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-  ;; Set exec path from shell
-  (defun lemacs/set-exec-path-from-shell-PATH ()
-    "Set up Emacs' `exec-path' and PATH environment the same as user Shell."
-    (interactive)
-    (let ((path-from-shell (replace-regexp-in-string
-                             "[ \t\n]*$" "" (shell-command-to-string
-                                              "$SHELL --login -c 'echo $PATH'"
-                                              ))))
-      (setenv "PATH" path-from-shell)
-      (setq exec-path (split-string path-from-shell path-separator))))
-  (lemacs/set-exec-path-from-shell-PATH)
 
   (defun lemacs/rename-buffer-and-move-to-new-window ()
     (interactive)
@@ -636,7 +656,7 @@ negative N, comment out original line and use the absolute value."
           (260 . "#89b4fa")
           (280 . "#b4befe"))))
 
-;;; --------------------------------- WINDOW
+;;;--------------------------------- WINDOW
 (use-package window
   :ensure nil
   :defer t
@@ -850,6 +870,12 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (set-face-attribute 'diff-hl-delete nil :background "#f38ba8")
   (set-face-attribute 'diff-hl-insert nil :background "#a6e3a1"))
 
+(use-package direnv
+  :defer t
+  :ensure t
+  :hook
+  (after-init . direnv-mode))
+
 (use-package diredfl
   :defer t
   :ensure t
@@ -1047,11 +1073,9 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :if (not window-system)
   :ensure t
   :defer t
-  :hook
-  (after-init . (global-kkp-mode +1))
   :config
   ;; (setq kkp-alt-modifier 'alt) ;; use this if you want to map the Alt keyboard modifier to Alt in Emacs (and not to Meta)
-  )
+  (global-kkp-mode +1))
 
 (use-package handlebars-mode
   :defer t
@@ -1309,21 +1333,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :defer t
   :config
-  (setq-default tree-sitter-langs-grammar-dir (expand-file-name "tree-sitter" user-emacs-directory))
-
-  (defun create-tree-sitter-links ()
-	"Create links from .emacs.d/tree-sitter/bin* to .emacs.d/tree-sitter/* files.
-Since tree-sitter-mode uses the format provided by /bin and the built-in
-uses the files with the prefix libtree-sitter-."
-  (interactive)
-  (let ((bin-dir (expand-file-name "tree-sitter/bin" user-emacs-directory))
-        (lib-dir (expand-file-name "tree-sitter" user-emacs-directory)))
-    (dolist (file (directory-files bin-dir nil "\\.so$"))
-      (let ((link-name (concat lib-dir "/libtree-sitter-" (file-name-nondirectory file))))
-        (unless (file-exists-p link-name)
-          (make-symbolic-link (concat bin-dir "/" file) link-name t))))))
-
-  (create-tree-sitter-links))
+  (setq-default tree-sitter-langs-grammar-dir (expand-file-name "tree-sitter" user-emacs-directory)))
 
 (use-package treemacs
   :defer t
