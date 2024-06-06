@@ -71,6 +71,22 @@
 
 ;;; --------------------------------- USE-PACKAGE INIT
 ;; Package sources
+(defvar lemacs-art "
+          ████████  ▄▄▄▄▄███▄▄▄▄▄    ████████  ████████ █████████
+█       ██    ███ ██▀▀▀███▀▀▀██  ██    ███ ██    ███ ███    ███
+███       ███    ██ ███   ███   ███  ███    ███ ███    ██ ███    ██
+███      ███▄▄▄     ███   ███   ███  ███    ███ ███        ███
+███       ███▀▀▀     ███   ███   ███ ██████████ ███       ██████████
+███       ███    ██ ███   ███   ███  ███    ███ ███    ██        ███
+███     ███    ███ ███   ███   ███  ███    ███ ███    ███ ██    ███
+█████████ ██████████ ██   ███   ██  ███    ██ ██████████████████
+
+")
+
+(switch-to-buffer "*scratch*")
+(message (format "%s" lemacs-art))
+(message "LEmacs is initializing...")
+
 (eval-when-compile
   (require 'use-package))
 
@@ -79,8 +95,6 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
 (add-to-list 'load-path "~/.emacs.d/lisp")
-
-(package-initialize)
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -112,7 +126,7 @@
           (package-install pkg)))))
 
   (condition-case err
-      (let ((lemacs--emacs-builtin-packages '(dired window eshell erc eldoc emacs isearch prisma-mode lsp-prisma))
+      (let ((lemacs--emacs-builtin-packages '(vc tab-bar org recentf column-number dired window eshell erc eldoc emacs isearch prisma-mode lsp-prisma))
             (lemacs--install-packages (extract-use-package-packages)))
 
         (switch-to-buffer "*Messages*")
@@ -184,18 +198,6 @@ Notice this is a bit messy."
            (const :tag "t" t)
            (const :tag "nil" nil))
   :group 'lemacs)
-
-(defvar lemacs-art "
-          ████████  ▄▄▄▄▄███▄▄▄▄▄    ████████  ████████ █████████
-█       ██    ███ ██▀▀▀███▀▀▀██  ██    ███ ██    ███ ███    ███
-███       ███    ██ ███   ███   ███  ███    ███ ███    ██ ███    ██
-███      ███▄▄▄     ███   ███   ███  ███    ███ ███        ███
-███       ███▀▀▀     ███   ███   ███ ██████████ ███       ██████████
-███       ███    ██ ███   ███   ███  ███    ███ ███    ██        ███
-███     ███    ███ ███   ███   ███  ███    ███ ███    ███ ██    ███
-█████████ ██████████ ██   ███   ██  ███    ██ ██████████████████
-
-")
 ;;; --------------------------------- EMACS
 (use-package emacs
   :custom
@@ -409,7 +411,8 @@ negative N, comment out original line and use the absolute value."
   :bind
   (("C-x C-b" . 'ibuffer))
   :init
-  (load-theme 'catppuccin :no-confirm)
+  (ignore-errors
+      (load-theme 'catppuccin :no-confirm))
 
   ;; Emacs frame starts focused
   (select-frame-set-input-focus (selected-frame))
@@ -423,8 +426,6 @@ negative N, comment out original line and use the absolute value."
   (savehist-mode 1)
   (save-place-mode 1)
   (desktop-save-mode 1)
-  (when (eq system-type 'gnu/linux)
-    (xclip-mode 1))
   (file-name-shadow-mode 1)
   (delete-selection-mode 1)
   (pixel-scroll-precision-mode 1)
@@ -1390,7 +1391,9 @@ uses the files with the prefix libtree-sitter-."
 (use-package xclip
   :defer t
   :ensure t
-  :config)
+  :config
+  (when (eq system-type 'gnu/linux)
+    (xclip-mode 1)))
 
 (use-package xterm-color
   :defer t
