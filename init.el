@@ -430,7 +430,7 @@ negative N, comment out original line and use the absolute value."
   (("C-x C-b" . 'ibuffer))
   :init
   (ignore-errors
-      (load-theme 'catppuccin :no-confirm))
+    (load-theme 'catppuccin :no-confirm))
 
   ;; Emacs frame starts focused
   (select-frame-set-input-focus (selected-frame))
@@ -438,17 +438,16 @@ negative N, comment out original line and use the absolute value."
   ;; Emacs frame starts maximized
   (toggle-frame-maximized)
 
-  (winner-mode 1)
+  (delete-selection-mode 1)
+  (desktop-save-mode -1)
+  (file-name-shadow-mode 1)
   (global-auto-revert-mode 1)
   (indent-tabs-mode -1)
-  (savehist-mode 1)
-  (save-place-mode 1)
-  (desktop-save-mode 1)
-  (file-name-shadow-mode 1)
-  (delete-selection-mode 1)
   (pixel-scroll-precision-mode 1)
+  (save-place-mode 1)
+  (savehist-mode 1)
+  (winner-mode 1)
   (xterm-mouse-mode 1))
-
 
 ;;; --------------------------------- DIRED
 (use-package dired
