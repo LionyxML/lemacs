@@ -91,78 +91,24 @@
 (defun lemacs/first-install ()
   "Install tree-sitter grammars and nerd-icons fonts on the first run."
   (interactive)
+  (switch-to-buffer "*Messages*")
+  (ignore-errors
+	(load-theme 'catppuccin :no-confirm))
 
-  (defun extract-use-package-packages ()
-    (let ((packages '())
-          (init-file (expand-file-name "init.el" user-emacs-directory)))
-      (with-temp-buffer
-        (insert-file-contents init-file)
-        (goto-char (point-min))
-        (while (re-search-forward "^\\(\\s-*\\)(use-package\\s-+\\(\\(\\sw\\|\\s_\\)+\\)" nil t)
-          (push (intern (match-string 2)) packages)))
-      (reverse packages)))
+  (message ">>> All required packages installed.")
+  (message ">>> Configuring LEmacs...")
 
-  (defun install-use-package-packages (packages-builtin packages-external)
-    (interactive)
-    (let ((to-install (cl-set-difference packages-external packages-builtin)))
-      (dolist (pkg to-install)
-        (unless (package-installed-p pkg)
-          (package-install pkg)))))
+  (message ">>> Configuring Tree Sitter parsers...")
+  (require 'treesit-auto)
+  (treesit-auto-install-all)
 
-  (defun lemacs/create-tree-sitter-directories ()
-    "Create tree-sitter and bin directories inside the user's .emacs.d directory."
-    (let* ((emacs-d (file-name-as-directory user-emacs-directory))
-           (tree-sitter-dir (expand-file-name "tree-sitter" emacs-d))
-           (bin-dir (expand-file-name "bin" tree-sitter-dir)))
-      (unless (file-directory-p tree-sitter-dir)
-        (make-directory tree-sitter-dir))
-      (unless (file-directory-p bin-dir)
-        (make-directory bin-dir))
-      (message "Created directories: %s and %s" tree-sitter-dir bin-dir)))
+  (message ">>> Configuring Nerd Fonts...")
+  (require 'nerd-icons)
+  (nerd-icons-install-fonts)
 
-  (defun create-tree-sitter-links ()
-	"Create links from .emacs.d/tree-sitter/bin* to .emacs.d/tree-sitter/* files.
-Since tree-sitter-mode uses the format provided by /bin and the built-in
-uses the files with the prefix libtree-sitter-."
-    (interactive)
-    (let ((bin-dir (expand-file-name "tree-sitter/bin" user-emacs-directory))
-          (lib-dir (expand-file-name "tree-sitter" user-emacs-directory)))
-      (dolist (file (directory-files bin-dir nil "\\.so$"))
-        (let ((link-name (concat lib-dir "/libtree-sitter-" (file-name-nondirectory file))))
-          (unless (file-exists-p link-name)
-            (make-symbolic-link (concat bin-dir "/" file) link-name t))))))
-
-  (condition-case err
-      (let ((lemacs--emacs-builtin-packages '(vc tab-bar org recentf column-number dired window eshell erc eldoc emacs isearch prisma-mode lsp-prisma))
-            (lemacs--install-packages (extract-use-package-packages)))
-
-	(ignore-errors
-	  (load-theme 'catppuccin :no-confirm))
-
-        (switch-to-buffer "*Messages*")
-
-        ;; FIXME Probably not needed anymore
-        ;; (package-refresh-contents)
-        ;; (install-use-package-packages lemacs--emacs-builtin-packages lemacs--install-packages)
-
-        (message ">>> All required packages installed.")
-        (message ">>> Configuring LEmacs...")
-
-        ;; TODO: I need to make something to automate some mechanism what will get compiled libs here...
-        ;;        (lemacs/create-tree-sitter-directories)
-        ;;        (tree-sitter-langs-install-grammars)
-        ;;        (create-tree-sitter-links)
-
-        (require 'nerd-icons)
-        (nerd-icons-install-fonts)
-
-        (message ">>> LEmacs installed!!! Presss any key to close the installer and open Emacs normally.")
-        (read-key)
-
-        (kill-emacs))
-
-    (error
-     (message ">>> LEmacs failed to install, run 'emacs -nw --debug-init'"))))
+  (message ">>> LEmacs installed!!! Presss any key to close the installer and open Emacs normally.")
+  (read-key)
+  (kill-emacs))
 
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
 (defcustom lemacs-lsp-client 'eglot
