@@ -10,7 +10,7 @@
   ;; These colors should match your selected theme for maximum effect
   ;; Note that for catppuccin whenever we create a new frame or open it on terminal
   ;; it is necessary to reload the theme.
-  (set-face-attribute 'default nil :background "#1E1E2D" :foreground "#ffffff")
+  (set-face-attribute 'default nil :background "#1E1E2D" :foreground "#1E1E2D")
   (set-face-attribute 'mode-line nil :background "#1E1E2D" :foreground "#1E1E2D" :box 'unspecified))
 
 (lemacs/avoid-initial-flash-of-light)

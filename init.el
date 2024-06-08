@@ -151,6 +151,9 @@ uses the files with the prefix libtree-sitter-."
       (let ((lemacs--emacs-builtin-packages '(vc tab-bar org recentf column-number dired window eshell erc eldoc emacs isearch prisma-mode lsp-prisma))
             (lemacs--install-packages (extract-use-package-packages)))
 
+	(ignore-errors
+	  (load-theme 'catppuccin :no-confirm))
+
         (switch-to-buffer "*Messages*")
 
         ;; FIXME Probably not needed anymore
@@ -787,7 +790,24 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 (use-package catppuccin-theme
   :defer t
   :ensure t
-  :config)
+  :config
+  ;; NOTE reloading catppuccin "undoes" what early init does to screen NOT to flash on GUI boot
+  (defun lemacs/catppuccin-hack (_)
+    "A catppuccin hack to make sure everything is loaded"
+    (catppuccin-reload))
+
+  ;; Run hack on Terminal mode on loading
+  (when (not window-system)
+    (add-hook 'after-init-hook (lambda ()
+                                 (run-with-timer 0.3 nil
+                                   (lambda ()(lemacs/catppuccin-hack nil))))))
+
+  ;; Run hack after a new frame is open
+  (add-hook 'after-make-frame-functions 'lemacs/catppuccin-hack)
+
+  (custom-set-faces `(diff-hl-change ((t (:background ,(catppuccin-get-color 'blue))))))
+  (custom-set-faces `(diff-hl-delete ((t (:background ,(catppuccin-get-color 'red))))))
+  (custom-set-faces `(diff-hl-insert ((t (:background ,(catppuccin-get-color 'green)))))))
 
 (use-package breadcrumb
   :defer t
@@ -802,7 +822,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :hook
   (after-init . dashboard-open)
   :config
-  (setq dashboard-banner-logo-title "Welcome to LEMACS")
+  (setq dashboard-banner-logo-title "")
   ;; (setq dashboard-startup-banner (".....logo.png" . ".....logo.txt"))
   ;; (setq dashboard-startup-banner 'logo)
   (when lemacs-ascii-art
@@ -850,10 +870,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :bind
   (("M-9" . 'diff-hl-previous-hunk)
    ("M-0" . 'diff-hl-next-hunk))
-  :config
-  (set-face-attribute 'diff-hl-change nil :background "#89b4fa")
-  (set-face-attribute 'diff-hl-delete nil :background "#f38ba8")
-  (set-face-attribute 'diff-hl-insert nil :background "#a6e3a1"))
+  :config)
 
 (use-package exec-path-from-shell
   :defer t
