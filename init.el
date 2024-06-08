@@ -71,21 +71,6 @@
 
 ;;; --------------------------------- USE-PACKAGE INIT
 ;; Package sources
-(defvar lemacs-art "
-          ████████  ▄▄▄▄▄███▄▄▄▄▄    ████████  ████████ █████████
-█       ██    ███ ██▀▀▀███▀▀▀██  ██    ███ ██    ███ ███    ███
-███       ███    ██ ███   ███   ███  ███    ███ ███    ██ ███    ██
-███      ███▄▄▄     ███   ███   ███  ███    ███ ███        ███
-███       ███▀▀▀     ███   ███   ███ ██████████ ███       ██████████
-███       ███    ██ ███   ███   ███  ███    ███ ███    ██        ███
-███     ███    ███ ███   ███   ███  ███    ███ ███    ███ ██    ███
-█████████ ██████████ ██   ███   ██  ███    ██ ██████████████████
-
-")
-(switch-to-buffer "*Messages*")
-;;(message (format "%s" lemacs-art))
-(message ">>>LEmacs is initializing...")
-
 (eval-when-compile
   (require 'use-package))
 
@@ -225,12 +210,24 @@ Notice this is a bit messy."
            (const :tag "nil" nil))
   :group 'lemacs)
 
-(defcustom lemacs-ascii-art 'nil
+(defcustom lemacs-ascii-art 't
   "Enables ASCII art on GUI Emacs."
   :type '(choice
            (const :tag "t" t)
            (const :tag "nil" nil))
   :group 'lemacs)
+
+(defvar lemacs-art "
+          ████████  ▄▄▄▄▄███▄▄▄▄▄    ████████  ████████ █████████
+█       ██    ███ ██▀▀▀███▀▀▀██  ██    ███ ██    ███ ███    ███
+███       ███    ██ ███   ███   ███  ███    ███ ███    ██ ███    ██
+███      ███▄▄▄     ███   ███   ███  ███    ███ ███        ███
+███       ███▀▀▀     ███   ███   ███ ██████████ ███       ██████████
+███       ███    ██ ███   ███   ███  ███    ███ ███    ██        ███
+███     ███    ███ ███   ███   ███  ███    ███ ███    ███ ██    ███
+█████████ ██████████ ██   ███   ██  ███    ██ ██████████████████
+
+")
 ;;; --------------------------------- EMACS
 (use-package emacs
   :custom
@@ -795,16 +792,12 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (defun lemacs/catppuccin-hack (_)
     "A catppuccin hack to make sure everything is loaded"
     (catppuccin-reload))
-
-  ;; Run hack on Terminal mode on loading
-  (when (not window-system)
-    (add-hook 'after-init-hook (lambda ()
-                                 (run-with-timer 0.3 nil
-                                   (lambda ()(lemacs/catppuccin-hack nil))))))
-
-  ;; Run hack after a new frame is open
+  (add-hook 'after-init-hook (lambda ()
+                               (run-with-timer 0.3 nil
+                                               (lambda ()(lemacs/catppuccin-hack nil)))))
   (add-hook 'after-make-frame-functions 'lemacs/catppuccin-hack)
-
+  
+  ;; Custom diff-hl colors
   (custom-set-faces `(diff-hl-change ((t (:background ,(catppuccin-get-color 'blue))))))
   (custom-set-faces `(diff-hl-delete ((t (:background ,(catppuccin-get-color 'red))))))
   (custom-set-faces `(diff-hl-insert ((t (:background ,(catppuccin-get-color 'green)))))))
