@@ -685,7 +685,9 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 ;;; --------------------------------- DEFFERED BUILTINS
 (use-package org
   :ensure nil
-  :defer t)
+  :defer t
+  :mode ("\\.org\\'" . org-mode)
+  :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
 (use-package recentf
   :ensure nil
@@ -1836,6 +1838,10 @@ targets."
   ;; I do not want this to proliferate to all  .[j|t]sx? files, so
   ;; I am limiting it to the styled? filenames
   (add-to-list 'auto-mode-alist '("\\(styled\\|style[sd]\\).[tj]sx?\\'" . poly-typescript-mode)))
+
+(use-package verb
+  :ensure t
+  :defer t)
 
 (use-package yasnippet
   :ensure t
