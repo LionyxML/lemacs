@@ -870,7 +870,23 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :defer t
   :ensure t
   :config
-  (setq eat-term-name "xterm-256color"))
+  ;; Add to your .bashrc
+  ;; [ -n "$EAT_SHELL_INTEGRATION_DIR" ] && \
+  ;; source "$EAT_SHELL_INTEGRATION_DIR/bash"
+
+  (setq eat-term-name "xterm-256color")
+
+  ;; Runs not compatible eshell term stuff with eat on the same buffer
+  (add-hook 'eshell-load-hook #'eat-eshell-mode)
+
+  ;; Runs listed 'visual-mode' eshell stuff with eat on separated buffer
+  ;; (takes precedence over the above setting)
+  (add-hook 'eshell-load-hook #'eat-eshell-visual-command-mode)
+
+  ;; Disabled line/number minor modes on modeline
+  (add-hook 'eat-mode-hook (lambda ()
+                             (setq-local line-number-mode nil)
+                             (setq-local column-number-mode nil))))
 
 (use-package emms
   :defer t
