@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.48
+;; Version: 0.1.49
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -1165,6 +1165,8 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :defer t
   :hook
   ((js-mode . prettier-mode)
+   (js-jsx-mode . prettier-mode)
+   (js-ts-mode . prettier-mode)
    (typescript-mode . prettier-mode)
    (typescriptreact-mode . prettier-mode)
    (typescript-ts-mode . prettier-mode)
