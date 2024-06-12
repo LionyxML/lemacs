@@ -251,7 +251,6 @@ Notice this is a bit messy."
       :family "JetBrainsMono Nerd Font"
       :height 130))
 
-
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt))
@@ -377,6 +376,8 @@ negative N, comment out original line and use the absolute value."
   :init
   (ignore-errors
     (load-theme 'catppuccin :no-confirm))
+
+  (modify-coding-system-alist 'file "" 'utf-8)
 
   ;; Emacs frame starts focused
   (select-frame-set-input-focus (selected-frame))
