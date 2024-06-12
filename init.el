@@ -377,6 +377,8 @@ negative N, comment out original line and use the absolute value."
   (ignore-errors
     (load-theme 'catppuccin :no-confirm))
 
+  ;; Makes everything accept utf-8 as default, so buffers with tsx and so
+  ;; won't ask for encoding (because undecided-unix) every single keystroke
   (modify-coding-system-alist 'file "" 'utf-8)
 
   ;; Emacs frame starts focused
