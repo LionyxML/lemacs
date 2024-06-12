@@ -680,7 +680,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
       (call-interactively 'tab-bar-switch-to-tab)
       ))
 
-  (global-set-key (kbd "M-l") 'lemacs/switch-tab-or-tab-bar))
+  (global-set-key (kbd "M-r") 'lemacs/switch-tab-or-tab-bar))
 
 ;;; --------------------------------- DEFFERED BUILTINS
 (use-package org
