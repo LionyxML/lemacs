@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.49
+;; Version: 0.1.50
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -1208,10 +1208,18 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (prog-mode . rainbow-delimiters-mode)
   :config)
 
-(use-package restclient
-  :defer t
+(use-package sly
   :ensure t
-  :config)
+  :defer t
+  :init
+  ;; 1.) Install sbcl systemwide (brew install sbcl | apt install sbcl)
+  ;; 2.) Install the quicklisp package manager
+  ;; $ curl -o /tmp/ql.lisp http://beta.quicklisp.org/quicklisp.lisp
+  ;; $ sbcl --no-sysinit --no-userinit --load /tmp/ql.lisp \
+  ;;        --eval '(quicklisp-quickstart:install :path "~/.quicklisp")' \
+  ;;        --eval '(ql:add-to-init-file)' \
+  ;;        --quit
+  (setq inferior-lisp-program "sbcl"))
 
 (use-package sass-mode
   :defer t
