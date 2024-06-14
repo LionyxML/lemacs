@@ -579,7 +579,7 @@ negative N, comment out original line and use the absolute value."
   (setq eshell-visual-commands
 		'("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
 		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
-		   "ncmpcpp" "newsbeuter" "nethack" "mutt" "yarn" "pnpm" "sudo")))
+		   "ncmpcpp" "newsbeuter" "nethack" "mutt" "yarn" "pnpm" "sudo" "mpv" "cava")))
 
 ;;; --------------------------------- VC
 (use-package vc
