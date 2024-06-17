@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.50
+;; Version: 0.1.51
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -174,6 +174,14 @@ Notice this is a bit messy."
 █████████ ██████████ ██   ███   ██  ███    ██ ██████████████████
 
 ")
+
+(defcustom lemacs-start-transparent 't
+  "Enables ASCII art on GUI Emacs."
+  :type '(choice
+           (const :tag "t" t)
+           (const :tag "nil" nil))
+  :group 'lemacs)
+
 ;;; --------------------------------- EMACS
 (use-package emacs
   :custom
@@ -255,6 +263,16 @@ Notice this is a bit messy."
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  (defun lemacs/transparency-set ()
+    "Set frame transparency (Graphical Mode)."
+    (interactive)
+    (set-frame-parameter (selected-frame) 'alpha '(90 90)))
+
+  (defun lemacs/transparency-unset ()
+    "Unset frame transparency (Graphical Mode)."
+    (interactive)
+    (set-frame-parameter (selected-frame) 'alpha '(100 100)))
 
   (defun lemacs/rename-buffer-and-move-to-new-window ()
     (interactive)
@@ -728,6 +746,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :defer t
   :bind
+  ("M-O" . ace-window)
   ("M-o" . ace-window))
 
 (use-package add-node-modules-path
@@ -784,6 +803,9 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
   (when lemacs-nerd-icons
     (setq dashboard-icon-type 'nerd-icons))
+
+  (when lemacs-start-transparent
+    (lemacs/transparency-set))
 
   (setq dashboard-items '(
                         ;; (recents   . 5)
