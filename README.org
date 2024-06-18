@@ -3,6 +3,10 @@
 #+EMAIL: rahul.juliato@gmail.com
 #+OPTIONS: toc:nil
 
+NOTE: though everything is fine with this repo, the README is
+outdated. Take it with a grain of salt. I'll try to make some new docs
+in a while.
+
 #+BEGIN_SRC txt
           ████████  ▄▄▄▄▄███▄▄▄▄▄    ████████  ████████ █████████
 ██       ██    ███ ██▀▀▀███▀▀▀██  ██    ███ ██    ███ ███    ███
