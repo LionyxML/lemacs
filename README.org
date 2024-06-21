@@ -3,21 +3,9 @@
 #+EMAIL: rahul.juliato@gmail.com
 #+OPTIONS: toc:nil
 
-NOTE: though everything is fine with this repo, the README is
-outdated. Take it with a grain of salt. I'll try to make some new docs
-in a while.
+NOTE: README UNDER RECONSTRUCTION
 
-#+BEGIN_SRC txt
-          ████████  ▄▄▄▄▄███▄▄▄▄▄    ████████  ████████ █████████
-██       ██    ███ ██▀▀▀███▀▀▀██  ██    ███ ██    ███ ███    ███
-███       ███    ██ ███   ███   ███  ███    ███ ███    ██ ███    ██
-███      ███▄▄▄     ███   ███   ███  ███    ███ ███        ███
-███       ███▀▀▀     ███   ███   ███ ██████████ ███       ██████████
-███       ███    ██ ███   ███   ███  ███    ███ ███    ██        ███
-███     ███    ███ ███   ███   ███  ███    ███ ███    ███ ██    ███
-█████████ ██████████ ██   ███   ██  ███    ██ ██████████████████
-
-#+END_SRC
+[[./assets/lemacs_logo.png]]
 
 Emacs for the modern developer. Focused on seamlessly TUI/GUI experience, either standalone or in
 a server/client mode.

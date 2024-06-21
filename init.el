@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.51
+;; Version: 0.1.52
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -156,7 +156,7 @@ Notice this is a bit messy."
            (const :tag "nil" nil))
   :group 'lemacs)
 
-(defcustom lemacs-ascii-art 't
+(defcustom lemacs-ascii-art 'nil
   "Enables ASCII art on GUI Emacs."
   :type '(choice
            (const :tag "t" t)
