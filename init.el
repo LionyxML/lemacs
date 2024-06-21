@@ -175,7 +175,7 @@ Notice this is a bit messy."
 
 ")
 
-(defcustom lemacs-start-transparent 't
+(defcustom lemacs-start-transparent 'nil
   "Enables ASCII art on GUI Emacs."
   :type '(choice
            (const :tag "t" t)
@@ -753,6 +753,24 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :defer t
   :ensure t
   :config)
+
+(use-package auto-dark
+  :ensure t
+  :config
+  (setq auto-dark-dark-theme 'catppuccin)
+  (setq auto-dark-light-theme 'catppuccin)
+
+  (add-hook 'auto-dark-dark-mode-hook
+            (lambda ()
+              (setq catppuccin-flavor 'mocha)
+              (catppuccin-reload)))
+
+  (add-hook 'auto-dark-light-mode-hook
+            (lambda ()
+              (setq catppuccin-flavor 'frappe)
+              (catppuccin-reload)))
+
+  (auto-dark-mode 1))
 
 (use-package catppuccin-theme
   :defer t
