@@ -5,7 +5,7 @@
 
 NOTE: README UNDER RECONSTRUCTION
 
-[[./assets/lemacs_logo.png]]
+[[./assets/img_00.png]]
 
 Emacs for the modern developer. Focused on seamlessly TUI/GUI experience, either standalone or in
 a server/client mode.
