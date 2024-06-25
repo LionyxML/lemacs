@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.52
+;; Version: 0.1.53
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -315,6 +315,8 @@ Notice this is a bit messy."
           (cdr args)))
   (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
+  ;; Unbinds C-z to (suspend-frame)
+  (global-unset-key (kbd "C-z"))
 
   ;; Page down and center
   (global-set-key (kbd "C-v") (lambda ()
