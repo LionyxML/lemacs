@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.53
+;; Version: 0.1.54
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -156,7 +156,7 @@ Notice this is a bit messy."
            (const :tag "nil" nil))
   :group 'lemacs)
 
-(defcustom lemacs-ascii-art 'nil
+(defcustom lemacs-ascii-art 't
   "Enables ASCII art on GUI Emacs."
   :type '(choice
            (const :tag "t" t)
@@ -317,6 +317,7 @@ Notice this is a bit messy."
 
   ;; Unbinds C-z to (suspend-frame)
   (global-unset-key (kbd "C-z"))
+  (global-unset-key (kbd "C-x C-z"))
 
   ;; Page down and center
   (global-set-key (kbd "C-v") (lambda ()
@@ -1204,6 +1205,16 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :defer t
   :config)
+
+(use-package project-x
+  :load-path "site-lisp/project-x"
+  :defer t
+  :after project
+  :config
+  (setq project-x-save-interval 600)    ;Save project state every 10 min
+  ;; C-x p j -> opens a project with its saved state
+  ;; C-x p w -> writes a project state
+  (project-x-mode 1))
 
 (use-package prettier
   :ensure t
