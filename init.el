@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.54
+;; Version: 0.1.55
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -123,7 +123,6 @@
   "The in-buffer completion to use."
   :type '(choice
            (const :tag "corfu" corfu)
-           (const :tag "company" company)
            (const :tag "none" nil))
   :group 'lemacs)
 
@@ -595,7 +594,6 @@ negative N, comment out original line and use the absolute value."
   (setq eshell-prompt-regexp "└─➜ ")
 
   (add-hook 'eshell-mode-hook (lambda () (setenv "TERM" "xterm-256color")))
-  (add-hook 'eshell-mode-hook (lambda () (company-mode -1)) 'append)
 
   (setq eshell-visual-commands
 		'("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
@@ -760,20 +758,21 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 (use-package auto-dark
   :ensure t
   :config
-  (setq auto-dark-dark-theme 'catppuccin)
-  (setq auto-dark-light-theme 'catppuccin)
+  (ignore-errors
+    (setq auto-dark-dark-theme 'catppuccin)
+    (setq auto-dark-light-theme 'catppuccin)
 
-  (add-hook 'auto-dark-dark-mode-hook
-            (lambda ()
-              (setq catppuccin-flavor 'mocha)
-              (catppuccin-reload)))
+    (add-hook 'auto-dark-dark-mode-hook
+              (lambda ()
+                (setq catppuccin-flavor 'mocha)
+                (catppuccin-reload)))
 
-  (add-hook 'auto-dark-light-mode-hook
-            (lambda ()
-              (setq catppuccin-flavor 'frappe)
-              (catppuccin-reload)))
+    (add-hook 'auto-dark-light-mode-hook
+              (lambda ()
+                (setq catppuccin-flavor 'frappe)
+                (catppuccin-reload)))
 
-  (auto-dark-mode 1))
+    (auto-dark-mode 1)))
 
 (use-package catppuccin-theme
   :defer t
@@ -979,8 +978,13 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :custom
   (eglot-autoshutdown t)
   (eglot-events-buffer-size 0)
+  (eglot-sync-connect nil)
+  (eglot-connect-timeout nil)
   :config
   (when (eq lemacs-lsp-client 'eglot)
+
+    (fset #'jsonrpc--log-event #'ignore)
+
     (progn
 	    (bind-keys :map eglot-mode-map
 				("C-c l a" . eglot-code-actions)
@@ -1044,7 +1048,38 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :defer t
   :ensure t
   :after (:all eldoc)
-  :config)
+  :custom-face
+  (eldoc-box-border ((t (:background "#80adf0"))))
+  :config
+  (setq eldoc-box-frame-parameters
+      '((left . -1)
+        (top . -1)
+        (width  . 0)
+        (height  . 0)
+        (no-accept-focus . t)
+        (no-focus-on-map . t)
+        (min-width  . 0)
+        (min-height  . 0)
+        (internal-border-width . 2)
+        (vertical-scroll-bars . nil)
+        (horizontal-scroll-bars . nil)
+        (right-fringe . 10)
+        (left-fringe . 3)
+        (menu-bar-lines . 0)
+        (tool-bar-lines . 0)
+        (line-spacing . 0)
+        (unsplittable . t)
+        (undecorated . t)
+        (visibility . nil)
+        (mouse-wheel-frame . nil)
+        (no-other-frame . t)
+        (cursor-type . nil)
+        (inhibit-double-buffering . t)
+        (drag-internal-border . t)
+        (no-special-glyphs . t)
+        (desktop-dont-save . t)
+        (tab-bar-lines . 0)
+        (tab-bar-lines-keep-state . 1))))
 
 (use-package expand-region
   :defer t
@@ -1130,7 +1165,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
                                         "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
                                         "\\\\" "://")))
 
-
 (use-package magit
   :defer t
   :ensure t
@@ -1208,7 +1242,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
 (use-package project-x
   :load-path "site-lisp/project-x"
-  :defer t
   :after project
   :config
   (setq project-x-save-interval 600)    ;Save project state every 10 min
@@ -1442,13 +1475,26 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
+(use-package cape
+  :ensure t
+  :config
+  (defun lemacs/eglot-capf ()
+    (setq-local completion-at-point-functions
+                (list (cape-capf-super
+                       #'eglot-completion-at-point
+                       #'tempel-expand
+                       #'cape-file))))
+  (add-hook 'eglot-managed-mode-hook #'lemacs/eglot-capf))
+
 (use-package corfu
   :if (eq lemacs-in-buffer-completion 'corfu)
   :defer t
   :ensure t
+  :custom-face
+  (corfu-border ((t (:background "#80adf0"))))
   :custom
   ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  (corfu-auto t)                 ;; Enable auto completion
+  (corfu-auto t)                    ;; Enable auto completion
   (corfu-auto-delay 0)
   (corfu-auto-prefix 3)
   ;; (corfu-separator ?\s)          ;; Orderless field separator
@@ -1458,10 +1504,10 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
   ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
   ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-  (corfu-scroll-margin 5)        ;; Use scroll margin
+  (corfu-scroll-margin 5)           ;; Use scroll margin
   (corfu-max-width 50)
+  (corfu-min-width 50)
   (corfu-popupinfo-delay 0)
-
   ;; Enable Corfu only for certain modes.
   ;; :hook ((prog-mode . corfu-mode)
   ;;        (shell-mode . corfu-mode)
@@ -1474,6 +1520,30 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :config
   (when lemacs-nerd-icons
 	(add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+
+  (setq corfu--frame-parameters
+        '((no-accept-focus . t)
+          (no-focus-on-map . t)
+          (min-width . t)
+          (min-height . t)
+          (border-width . 0)
+          (outer-border-width . 0)
+          (internal-border-width . 1)
+          (child-frame-border-width . 2)
+          (left-fringe . 0)
+          (right-fringe . 0)
+          (vertical-scroll-bars)
+          (horizontal-scroll-bars)
+          (menu-bar-lines . 0)
+          (tool-bar-lines . 0)
+          (tab-bar-lines . 0)
+          (no-other-frame . t)
+          (unsplittable . t)
+          (undecorated . t)
+          (cursor-type)
+          (no-special-glyphs . t)
+          (desktop-dont-save . t)))
+  
 
   :init
   (global-corfu-mode)
@@ -1490,59 +1560,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :defer t
 	:after (:all corfu)
 	:config)
-
-
-;; NOTE:
-;;   We use company-quickhelp + company-quickhelp-terminal on CLI
-;;   And company-box on GUI (company quickhelp on GUI is toolkit dependent
-;;   and altough it works ok with Emacs Lucid, it does not with GTK and macOS).
-(use-package company
-  :if (eq lemacs-in-buffer-completion 'company)
-  :disabled (not (eq lemacs-in-buffer-completion 'company))
-	:defer t
-	:ensure t
-	:bind
-	("C-j" . company-complete)
-	:config
-	(setq company-tooltip-maximum-width 50)
-	(setq company-tooltip-align-annotations t)
-	(setq company-minimum-prefix-length 2)
-	(setq company-idle-delay 0.1)
-  :init
-  (global-company-mode))
-
-(use-package company-quickhelp
-	:if (and (eq lemacs-in-buffer-completion 'company) (eq window-system nil))
-	:defer t
-	:ensure t
-  :after (:all company)
-	:custom
-	(company-quickhelp-use-propertized-text nil)
-	:config
-	(eval-after-load 'company
-	  '(define-key company-active-map (kbd "C-h") #'company-quickhelp-manual-begin)))
-
-(use-package company-quickhelp-terminal
-	:if (and (eq lemacs-in-buffer-completion 'company) (eq window-system nil))
-	:defer t
-	:ensure t
-  :after (:all company)
-	:custom
-	(company-quickhelp-use-propertized-text nil)
-	:config
-	(with-eval-after-load 'company-quickhelp
-    (company-quickhelp-terminal-mode 1)))
-
-
-(use-package company-box
-	:if (and (eq lemacs-in-buffer-completion 'company) (window-system))
-	:defer t
-	:ensure t
-  :after (:all company)
-	:hook (company-mode . company-box-mode)
-	:config
-	(setq company-box-scrollbar nil))
-
 
 (use-package consult
   :ensure t
@@ -1898,6 +1915,43 @@ targets."
           (make-llm-ollama
             :chat-model "codellama" :embedding-model "codellama")))
 
+(use-package tempel
+  ;; Require trigger prefix before template name when completing.
+  ;; :custom
+  ;; (tempel-trigger-prefix "<")
+
+  :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
+         ("M-*" . tempel-insert))
+
+  :init
+  ;; Setup completion at point
+  (defun tempel-setup-capf ()
+    ;; Add the Tempel Capf to `completion-at-point-functions'.
+    ;; `tempel-expand' only triggers on exact matches. Alternatively use
+    ;; `tempel-complete' if you want to see all matches, but then you
+    ;; should also configure `tempel-trigger-prefix', such that Tempel
+    ;; does not trigger too often when you don't expect it. NOTE: We add
+    ;; `tempel-expand' *before* the main programming mode Capf, such
+    ;; that it will be tried first.
+    (setq-local completion-at-point-functions
+                (cons #'tempel-expand
+                      completion-at-point-functions)))
+
+  (add-hook 'conf-mode-hook 'tempel-setup-capf)
+  (add-hook 'prog-mode-hook 'tempel-setup-capf)
+  (add-hook 'text-mode-hook 'tempel-setup-capf)
+
+  ;; Optionally make the Tempel templates available to Abbrev,
+  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
+  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
+  ;; (global-tempel-abbrev-mode)
+  )
+
+(use-package tempel-collection
+  :defer t
+  :ensure t
+  :after tempel)
+
 (use-package polymode
   :if (eq lemacs-polymode 'on)
   :ensure t
@@ -1924,20 +1978,6 @@ targets."
 (use-package verb
   :ensure t
   :defer t)
-
-(use-package yasnippet
-  :ensure t
-  :defer t
-  :diminish yas-minor-mode
-  :custom (yas-keymap-disable-hook
-           (lambda () (and (frame-live-p corfu--frame)
-                           (frame-visible-p corfu--frame)))))
-
-(use-package yasnippet-snippets
-  :ensure t
-  :defer t
-  :after yasnippet
-  :config)
 
 (use-package yeetube
   :ensure t
