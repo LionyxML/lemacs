@@ -61,3 +61,4 @@ history
 !/tree-sitter/bin/
 gnus.el
 yeetube
+project-window-list
