@@ -111,7 +111,7 @@
   (kill-emacs))
 
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
-(defcustom lemacs-lsp-client 'eglot
+(defcustom lemacs-lsp-client 'lsp-mode
   "The LSP implementation to use."
   :type '(choice
            (const :tag "eglot" eglot)
@@ -1109,6 +1109,11 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :bind ("M-g t" . git-timemachine-toggle))
 
 (use-package gh-md
+  :defer t
+  :ensure t
+  :config)
+
+(use-package geiser-guile
   :defer t
   :ensure t
   :config)
