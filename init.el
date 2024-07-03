@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.55
+;; Version: 0.1.56
 ;; Package-Requires: ((emacs "29"))
 
 ;;; Commentary:
@@ -187,6 +187,7 @@ Notice this is a bit messy."
   (auto-save-default nil)
   (create-lockfiles nil)
   (delete-by-moving-to-trash t)
+  (display-line-numbers-type 'relative)
   (enable-recursive-minibuffers t)
   (gnus-init-file "~/.gnus.el")
   (ibuffer-show-empty-filter-groups nil)
@@ -408,6 +409,7 @@ negative N, comment out original line and use the absolute value."
   (toggle-frame-maximized)
 
   (delete-selection-mode 1)
+  (blink-cursor-mode -1)
   (desktop-save-mode -1)
   (file-name-shadow-mode 1)
   (global-auto-revert-mode 1)
@@ -1462,9 +1464,46 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
       (setq cand (funcall orig cand prefix suffix index _start))
       (concat
         (if (= vertico--index index)
-          (propertize "» " 'face 'vertico-current)
+          (propertize "» " 'face '(:foreground "#80adf0" :weight bold))
           "  ")
         cand))))
+
+(use-package vertico-posframe
+  :ensure t
+  :defer t
+  :after vertico
+  :custom-face
+  (vertico-posframe-border ((t (:background "#80adf0"))))
+  (vertico-posframe-border-2 ((t (:background "#f38ba8"))))
+  (vertico-posframe-border-3 ((t (:background "#a6e3a1"))))
+  (vertico-posframe-border-4 ((t (:background "#cba6f7"))))
+  (vertico-posframe-border-fallback ((t (:background "#f9e2af"))))
+  :config
+  (defun posframe-poshandler-frame-top-center (info)
+    (cons (/ (- (plist-get info :parent-frame-width)
+                (plist-get info :posframe-width))
+             2)
+          100)) ;; << --- Added padding
+  (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center)
+  
+  ;; (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center)
+  (setq vertico-posframe-width 120)
+  (setq vertico-multiform-commands
+        '((consult-line
+           posframe
+           (vertico-posframe-poshandler . posframe-poshandler-frame-top-center)
+           (vertico-posframe-border-width . 10)
+           ;; NOTE: This is useful when emacs is used in both in X and
+           ;; terminal, for posframe do not work well in terminal, so
+           ;; vertico-buffer-mode will be used as fallback at the
+           ;; moment.
+           (vertico-posframe-fallback-mode . vertico-buffer-mode))
+          (t posframe)))
+  (setq vertico-posframe-parameters
+        '((left-fringe . 8)
+          (right-fringe . 8)))
+  :init
+  (vertico-posframe-mode 1))
 
 (use-package orderless
   :ensure t
