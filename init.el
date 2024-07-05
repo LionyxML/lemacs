@@ -792,7 +792,15 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   ;; Custom diff-hl colors
   (custom-set-faces `(diff-hl-change ((t (:background ,(catppuccin-get-color 'blue))))))
   (custom-set-faces `(diff-hl-delete ((t (:background ,(catppuccin-get-color 'red))))))
-  (custom-set-faces `(diff-hl-insert ((t (:background ,(catppuccin-get-color 'green)))))))
+  (custom-set-faces `(diff-hl-insert ((t (:background ,(catppuccin-get-color 'green))))))
+
+  ;; Custom goggles
+  (custom-set-faces `(goggles-changed ((t (:background ,(catppuccin-get-color 'blue))))))
+  (custom-set-faces `(goggles-added ((t (:background ,(catppuccin-get-color 'green))))))
+  (custom-set-faces `(goggles-removed ((t (:background ,(catppuccin-get-color 'red))))))
+
+  ;; Custom vhl/default-face
+  (custom-set-faces `(vhl/default-face ((t (:background ,(catppuccin-get-color 'surface2)))))))
 
 (use-package breadcrumb
   :defer t
@@ -859,14 +867,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (("M-9" . 'diff-hl-previous-hunk)
    ("M-0" . 'diff-hl-next-hunk))
   :config)
-
-(use-package exec-path-from-shell
-  :defer t
-  :ensure t
-  :hook
-  (after-init . (lambda ()
-                  (when (memq window-system '(mac ns x))
-                    (exec-path-from-shell-initialize)))))
 
 (use-package diredfl
   :defer t
@@ -961,6 +961,14 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :config
   :after (:all erc))
+
+(use-package exec-path-from-shell
+  :defer t
+  :ensure t
+  :hook
+  (after-init . (lambda ()
+                  (when (memq window-system '(mac ns x))
+                    (exec-path-from-shell-initialize)))))
 
 (use-package eglot
   :if (eq lemacs-lsp-client 'eglot)
@@ -1103,19 +1111,36 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
       (error
        (er/expand-region 1)))))
 
-(use-package git-timemachine
+(use-package geiser-guile
   :defer t
   :ensure t
-  :bind ("M-g t" . git-timemachine-toggle))
+  :config)
 
 (use-package gh-md
   :defer t
   :ensure t
   :config)
 
-(use-package geiser-guile
+(use-package git-timemachine
   :defer t
   :ensure t
+  :bind ("M-g t" . git-timemachine-toggle))
+
+;; (use-package goggles
+;;   :defer t
+;;   :ensure t
+;;   :hook ((prog-mode text-mode) . goggles-mode)
+;;   :config
+;;   (goggles-define save kill-ring-save)
+;;   (goggles-define undo-tree-undo undo-tree-visualize-undo-redo)
+;;   (goggles-define undo-tree-redo undo-tree-visualize-undo-redo)
+  
+;;   (setq-default goggles-pulse t))
+
+(use-package volatile-highlights
+  :defer t
+  :ensure t
+  :hook ((prog-mode text-mode) . volatile-highlights-mode)
   :config)
 
 (use-package kkp
