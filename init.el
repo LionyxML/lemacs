@@ -28,6 +28,7 @@
 ;; --- Max GC Buffer while starting Emacs
 ;; --- Quickier filename handling
 ;; --- Both reseted after loading
+(setq read-process-output-max (* 1024 1024 3)) ;; 3mb
 
 (setq gc-cons-threshold most-positive-fixnum ; 2^61 bytes
   gc-cons-percentage 0.6)
@@ -111,7 +112,7 @@
   (kill-emacs))
 
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
-(defcustom lemacs-lsp-client 'lsp-mode
+(defcustom lemacs-lsp-client 'eglot
   "The LSP implementation to use."
   :type '(choice
            (const :tag "eglot" eglot)
@@ -975,16 +976,16 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :defer t
   :hook
-  ((python-ts-mode . eglot-ensure)
-   (js-ts-mode . eglot-ensure)
-   (typescript-ts-mode . eglot-ensure)
-   (typescriptreact-mode . eglot-ensure)
-   (tsx-ts-mode . eglot-ensure)
-   (rust-ts-mode . eglot-ensure)
-   (css-mode . eglot-ensure)
-   (sass-mode . eglot-ensure)
-   (web-mode . eglot-ensure)
-   (prisma-mode . eglot-ensure))
+  (python-ts-mode . eglot-ensure)
+  (js-ts-mode . eglot-ensure)
+  (typescript-ts-mode . eglot-ensure)
+  (typescriptreact-mode . eglot-ensure)
+  (tsx-ts-mode . eglot-ensure)
+  (rust-ts-mode . eglot-ensure)
+  (css-mode . eglot-ensure)
+  (sass-mode . eglot-ensure)
+  (web-mode . eglot-ensure)
+  (prisma-mode . eglot-ensure)
   :custom
   (eglot-autoshutdown t)
   (eglot-events-buffer-size 0)
@@ -1030,28 +1031,18 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
   (setq-default eglot-workspace-configuration
     '(:completions
-       (:completeFunctionCalls t)))
-  
-  
-  (defun my-enable-flymake-eslint ()
-	"Enable eslint if typescript mode"
-	(when (or (eq major-mode 'tsx-ts-mode)
-			  (eq major-mode 'typescript-ts-mode)
-			  (eq major-mode 'js-ts-mode)
-			  (eq major-mode 'typescriptreact-mode))
-	  (flymake-eslint-enable)))
-
-  (add-hook 'eglot-managed-mode-hook #'my-enable-flymake-eslint))
+       (:completeFunctionCalls t))))
 
 (use-package eldoc
   :defer t
   :ensure t
   :config
+  (setq eldoc-echo-area-use-multiline-p nil)
+  (setq eldoc-echo-area-display-truncation-message nil)
+  
   (if (display-graphic-p)
-    (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point)
-  (global-set-key (kbd "C-h C-.") #'eldoc-doc-buffer))
-
-  (setq eldoc-echo-area-use-multiline-p nil))
+      (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point)
+    (global-set-key (kbd "C-h C-.") #'eldoc-doc-buffer)))
 
 (use-package eldoc-box
   :if (window-system)
@@ -1829,10 +1820,41 @@ targets."
   (wgrep-auto-save-buffer t)
   (wgrep-change-readonly-file t))
 
+
 (use-package flymake-eslint
-  :defer t
   :ensure t
-  :config)
+  :config
+  ;; If Emacs is compiled with JSON support
+  (setq flymake-eslint-prefer-json-diagnostics t)
+    
+  (defun lemacs/use-local-eslint ()
+    "Set project's `node_modules' binary eslint as first priority.
+If nothing is found, keep the default value flymake-eslint set or
+your override of `flymake-eslint-executable-name.'"
+    (interactive)
+    (let* ((root (locate-dominating-file (buffer-file-name) "node_modules"))
+           (eslint (and root
+                        (expand-file-name "node_modules/.bin/eslint"
+                                          root))))
+      (when (and eslint (file-executable-p eslint))
+        (setq-local flymake-eslint-executable-name eslint)
+        (message (format "Found local ESLINT! Setting: %s" eslint))
+        (flymake-eslint-enable))))
+
+
+  (defun lemacs/configure-eslint-with-flymake ()
+	(when (or (eq major-mode 'tsx-ts-mode)
+			  (eq major-mode 'typescript-ts-mode)
+			  (eq major-mode 'typescriptreact-mode))
+      (lemacs/use-local-eslint)))
+
+  (add-hook 'eglot-managed-mode-hook #'lemacs/use-local-eslint)
+
+  ;; With older projects without LSP or if eglot fails
+  ;; you can call interactivelly M-x lemacs/use-local-eslint RET
+  ;; or add a hook like:
+  (add-hook 'js-ts-mode-hook #'lemacs/use-local-eslint))
+
 
 (use-package flymake
   :defer t
