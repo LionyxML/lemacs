@@ -6,7 +6,7 @@
 *.eln
 *~
 .#*
-.lsp-session-*
+.lsp-session*
 .
 
 # Emacs packages

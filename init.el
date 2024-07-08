@@ -1434,9 +1434,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :hook
   (after-init . which-key-mode)
-  :config
-  (with-eval-after-load 'lsp-mode
-    (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)))
+  :config)
 
 (use-package xclip
   :defer t
@@ -1849,6 +1847,7 @@ your override of `flymake-eslint-executable-name.'"
       (lemacs/use-local-eslint)))
 
   (add-hook 'eglot-managed-mode-hook #'lemacs/use-local-eslint)
+  (add-hook 'lsp-mode-hook #'lemacs/use-local-eslint)
 
   ;; With older projects without LSP or if eglot fails
   ;; you can call interactivelly M-x lemacs/use-local-eslint RET
@@ -1904,97 +1903,63 @@ your override of `flymake-eslint-executable-name.'"
   (use-package lsp-mode
 	:if (eq lemacs-lsp-client 'lsp-mode)
 	:defer t
-	:hook
-	((python-ts-mode . lsp)
-	 (js-ts-mode . lsp)
-	 (typescript-ts-mode . lsp)
-	 (rust-ts-mode . lsp)
-	 (tsx-ts-mode . lsp)
-	 (css-mode . lsp)
-	 (sass-mode . lsp)
-	 (web-mode . lsp)
-	 (prisma-mode . lsp))
+    :hook ((lsp-mode . lsp-diagnostics-mode)
+           (lsp-mode . lsp-enable-which-key-integration)
+           ((tsx-ts-mode
+             typescript-ts-mode
+             css-mode
+             rust-ts-mode
+             python-ts
+             web-mode
+             prisma-mode
+             js-ts-mode) . lsp))
 	:ensure t
-	:config
-	(lsp-inlay-hints-mode)
-    (setq lsp-inlay-hint-enable t)
-
-    (setq lsp-completion-provider :none)
-
-	(setq lsp-enable-links nil)
-	(setq lsp-eldoc-enable-hover t)
-    (setq lsp-eldoc-render-all t)
-	(setq lsp-python-ms-python-executable "/usr/bin/python3")
-
-	(setq lsp-headerline-breadcrumb-enable-symbol-numbers t)
-	(setq lsp-headerline-arrow "▶")
-	(setq lsp-headerline-breadcrumb-enable-diagnostics nil)
-	(setq lsp-headerline-breadcrumb-icons-enable nil)
-
-	(setq lsp-log-io nil)   ;; Don't log everything = speed
-	(setq lsp-idle-delay 0) ;; If needed, increase to 0.5...
-	(setq lsp-keep-workspace-alive nil)
-	(setq lsp-keymap-prefix "C-c l")
-	(define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
-
-	;; ESLINT is hell...
-	;; Install it globally (taking in consideration node is the same version as above)
-	(setq lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
-	;; (setq lsp-eslint-server-command '("~/.nvm/versions/node/v16.15.0/bin/vscode-eslint-language-server" "--stdio"))
-	;; (setq lsp-eslint-server-command '("vscode-eslint-language-server" "--stdio"))
-
-	;; LSP Custom for: Prisma
-	(add-to-list 'load-path "~/.emacs.d/site-lisp/prisma-mode/")
-	(require 'prisma-mode)
-	(require 'lsp-prisma)
-
-	(add-hook 'before-save-hook #'(lambda () (when (eq major-mode 'prisma-mode)
-                                               (lsp-format-buffer))))
-	(add-hook 'prisma-mode-hook #'lsp-deferred)
-
-	;; LSP requirements on the server
-	;; sudo npm i -g typescript-language-server; sudo npm i -g typescript
-
-	;; LSP Mapping on what mode uses what LSP server
-	(setq lsp-language-id-configuration '((java-mode . "java")
-                                          (python-mode . "python")
-										  (python-ts-mode . "python")
-                                          (gfm-view-mode . "markdown")
-                                          (rust-mode . "rust")
-                                          (rustic-mode . "rust")
-                                          (rust-ts-mode . "rust")
-                                          (css-mode . "css")
-                                          (sass-mode . "sass")
-                                          (xml-mode . "xml")
-                                          (c-mode . "c")
-                                          (c++-mode . "cpp")
-                                          (objc-mode . "objective-c")
-                                          (web-mode . "html")
-                                          (html-mode . "html")
-                                          (sgml-mode . "html")
-                                          (mhtml-mode . "html")
-                                          (go-mode . "go")
-                                          (haskell-mode . "haskell")
-                                          (php-mode . "php")
-                                          (json-mode . "json")
-                                          (js-ts-mode . "javascript")
-                                          (js-mode . "javascript")
-                                          (rjsx-mode . "javascript")
-                                          (javascript-mode . "javascript")
-                                          (typescript-mode . "typescript")
-                                          (typescript-ts-mode . "typescript")
-                                          (tsx-ts-mode . "typescriptreact")
-                                          (prisma-mode . "prisma")
-                                          (typescriptreact-mode . "typescriptreact")
-                                          (ruby-mode . "ruby")
-										  (emacs-lisp-mode . nil)
-                                          ))
-	;; LSP debugging
-	;; (setq lsp-print-io t)
-	;; (setq lsp-trace t)
-	;; (setq lsp-print-performance t)
-
-	))
+    :custom
+	(lsp-keymap-prefix "C-c l")
+    (lsp-inlay-hint-enable t)
+    (lsp-completion-provider :none)
+    (lsp-session-file (locate-user-emacs-file ".lsp-session"))
+    (lsp-log-io nil) ;; for speed
+    (lsp-idle-delay 0) ;; debouncing, if needed 0.5
+    (lsp-keep-workspace-alive nil)
+    ;; core
+    (lsp-enable-xref t)
+    (lsp-auto-configure t)
+    (lsp-enable-links nil)
+    (lsp-eldoc-enable-hover t)
+    (lsp-enable-dap-auto-configure t)
+    (lsp-enable-file-watchers nil)
+    (lsp-enable-folding nil)
+    (lsp-enable-imenu t)
+    (lsp-enable-indentation nil)
+    (lsp-enable-on-type-formatting nil)
+    (lsp-enable-suggest-server-download t)
+    (lsp-enable-symbol-highlighting t)
+    (lsp-enable-text-document-color nil)
+    ;; modeline
+    (lsp-modeline-code-actions-enable nil) ; Modeline should be relatively clean
+    (lsp-modeline-diagnostics-enable nil)  ; Already supported through `flycheck'/ `flymake'
+    (lsp-modeline-workspace-status-enable nil) ; Modeline displays "LSP" when lsp-mode is enabled
+    (lsp-signature-doc-lines 1)                ; Don't raise the echo area. It's distracting
+    (lsp-eldoc-render-all t)
+    ;; completion
+    (lsp-completion-enable t)
+    (lsp-completion-enable-additional-text-edit t) ; Ex: auto-insert an import for a completion candidate
+    (lsp-enable-snippet t)                         ; Important to provide full JSX completion
+    (lsp-completion-show-kind t)                   ; Optional
+    ;; lens
+    (lsp-lens-enable t)
+    ;; headerline
+    (lsp-headerline-breadcrumb-enable-symbol-numbers t)
+    (lsp-headerline-arrow "▶")
+    (lsp-headerline-breadcrumb-enable-diagnostics nil)
+    (lsp-headerline-breadcrumb-icons-enable nil)
+    ;; semantic
+    (lsp-semantic-tokens-enable nil)
+    
+    :init
+    (setq lsp-use-plists t)
+	(lsp-inlay-hints-mode)))
 
 (use-package ellama
   :defer t
