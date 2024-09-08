@@ -112,7 +112,7 @@
   (kill-emacs))
 
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
-(defcustom lemacs-lsp-client 'eglot
+(defcustom lemacs-lsp-client 'lsp-mode
   "The LSP implementation to use."
   :type '(choice
            (const :tag "eglot" eglot)
@@ -727,6 +727,44 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (after-init . column-number-mode))
 
 ;;; --------------------------------- EXTERNAL PACKAGES
+(use-package evil
+  :ensure t
+  :init
+  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+  (setq evil-want-keybinding nil)
+  :config
+  ;; Set the leader key to space
+  (setq evil-want-leader t)
+  (setq evil-leader/in-all-states t)
+  (evil-set-leader 'normal (kbd "SPC"))
+  (evil-set-leader 'visual (kbd "SPC"))
+
+  ;; Define leader key bindings
+  (evil-define-key 'normal 'global (kbd "<leader> s f") 'save-buffer)
+
+  (defun lemacs-open-eldoc ()
+    "Toggle the Eldoc documentation buffer. Enable Eldoc if not already enabled."
+    (interactive)
+    ;; Ensure eldoc-mode is active
+    (unless (bound-and-true-p eldoc-mode)
+      (eldoc-mode 1))
+    ;; Open or toggle the eldoc documentation buffer
+    (let ((eldoc-buf (eldoc-doc-buffer)))
+      (if (get-buffer-window eldoc-buf)
+          (quit-window nil (get-buffer-window eldoc-buf))  ;; Close if visible
+        (display-buffer eldoc-buf))))                      ;; Open if not visible
+
+  (evil-define-key 'normal 'global (kbd "K") 'lemacs-open-eldoc)
+
+  
+  (evil-mode 1))
+
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (evil-collection-init))
+
 (use-package 0x0
   :ensure t
   :defer t)
@@ -758,24 +796,24 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :config)
 
-(use-package auto-dark
-  :ensure t
-  :config
-  (ignore-errors
-    (setq auto-dark-dark-theme 'catppuccin)
-    (setq auto-dark-light-theme 'catppuccin)
+;; (use-package auto-dark
+;;   :ensure t
+;;   :config
+;;   (ignore-errors
+;;     (setq auto-dark-dark-theme 'catppuccin)
+;;     (setq auto-dark-light-theme 'catppuccin)
 
-    (add-hook 'auto-dark-dark-mode-hook
-              (lambda ()
-                (setq catppuccin-flavor 'mocha)
-                (catppuccin-reload)))
+;;     (add-hook 'auto-dark-dark-mode-hook
+;;               (lambda ()
+;;                 (setq catppuccin-flavor 'mocha)
+;;                 (catppuccin-reload)))
 
-    (add-hook 'auto-dark-light-mode-hook
-              (lambda ()
-                (setq catppuccin-flavor 'frappe)
-                (catppuccin-reload)))
+;;     (add-hook 'auto-dark-light-mode-hook
+;;               (lambda ()
+;;                 (setq catppuccin-flavor 'frappe)
+;;                 (catppuccin-reload)))
 
-    (auto-dark-mode 1)))
+;;     (auto-dark-mode 1)))
 
 (use-package catppuccin-theme
   :defer t
@@ -1487,43 +1525,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
           "  ")
         cand))))
 
-(use-package vertico-posframe
-  :ensure t
-  :defer t
-  :after vertico
-  :custom-face
-  (vertico-posframe-border ((t (:background "#80adf0"))))
-  (vertico-posframe-border-2 ((t (:background "#f38ba8"))))
-  (vertico-posframe-border-3 ((t (:background "#a6e3a1"))))
-  (vertico-posframe-border-4 ((t (:background "#cba6f7"))))
-  (vertico-posframe-border-fallback ((t (:background "#f9e2af"))))
-  :config
-  (defun posframe-poshandler-frame-top-center (info)
-    (cons (/ (- (plist-get info :parent-frame-width)
-                (plist-get info :posframe-width))
-             2)
-          100)) ;; << --- Added padding
-  (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center)
-  
-  ;; (setq vertico-posframe-poshandler #'posframe-poshandler-frame-top-center)
-  (setq vertico-posframe-width 120)
-  (setq vertico-multiform-commands
-        '((consult-line
-           posframe
-           (vertico-posframe-poshandler . posframe-poshandler-frame-top-center)
-           (vertico-posframe-border-width . 10)
-           ;; NOTE: This is useful when emacs is used in both in X and
-           ;; terminal, for posframe do not work well in terminal, so
-           ;; vertico-buffer-mode will be used as fallback at the
-           ;; moment.
-           (vertico-posframe-fallback-mode . vertico-buffer-mode))
-          (t posframe)))
-  (setq vertico-posframe-parameters
-        '((left-fringe . 8)
-          (right-fringe . 8)))
-  :init
-  (vertico-posframe-mode 1))
-
 (use-package orderless
   :ensure t
   :defer t
@@ -1877,25 +1878,25 @@ your override of `flymake-eslint-executable-name.'"
   ;; Probably when this becomes ready, we wont need it to display
   ;; flymake on the margin:
   ;; https://mail.gnu.org/archive/html/emacs-devel/2024-03/msg00715.html
-  (advice-add #'flymake--fringe-overlay-spec :override
-	  (lambda (bitmap &optional recursed)
-		(set-window-margins nil 2 2)
-		(set-window-fringes nil 0 0)
+  ;; (advice-add #'flymake--fringe-overlay-spec :override
+  ;;     (lambda (bitmap &optional recursed)
+  ;;   	(set-window-margins nil 2 2)
+  ;;   	(set-window-fringes nil 0 0)
 
-      (if (and (symbolp bitmap)
-            (boundp bitmap)
-            (not recursed))
-        (flymake--fringe-overlay-spec
-          (symbol-value bitmap) t)
-        (and flymake-fringe-indicator-position
-          bitmap
-          (propertize "!" 'display
-            `((margin left-margin)
-               ,bitmap))))))
+  ;;     (if (and (symbolp bitmap)
+  ;;           (boundp bitmap)
+  ;;           (not recursed))
+  ;;       (flymake--fringe-overlay-spec
+  ;;         (symbol-value bitmap) t)
+  ;;       (and flymake-fringe-indicator-position
+  ;;         bitmap
+  ;;         (propertize "!" 'display
+  ;;           `((margin left-margin)
+  ;;              ,bitmap))))))
 
-  (put 'flymake-error 'flymake-bitmap (propertize "»" 'face `(:inherit (error default) :underline nil)))
-  (put 'flymake-warning 'flymake-bitmap (propertize "»" 'face `(:inherit (warning default) :underline nil)))
-  (put 'flymake-note 'flymake-bitmap (propertize "»" 'face `(:inherit (success default) :underline nil)))
+  ;; (put 'flymake-error 'flymake-bitmap (propertize "»" 'face `(:inherit (error default) :underline nil)))
+  ;; ;; (put 'flymake-warning 'flymake-bitmap (propertize "»" 'face `(:inherit (warning default) :underline nil)))
+  ;; (put 'flymake-note 'flymake-bitmap (propertize "»" 'face `(:inherit (success default) :underline nil)))
   )
 
 ;; This is ugly but the only way I managed to make it work, manual hooks didn't do the trick :/
