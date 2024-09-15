@@ -13,7 +13,7 @@
   (set-face-attribute 'mode-line nil :background "#1E1E2D" :foreground "#1E1E2D" :box 'unspecified))
 
 
-;; (lemacs/avoid-initial-flash-of-light)
+(lemacs/avoid-initial-flash-of-light)
 
 (setq frame-resize-pixelwise t
       frame-inhibit-implied-resize t

@@ -796,24 +796,23 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :config)
 
-;; (use-package auto-dark
-;;   :ensure t
-;;   :config
-;;   (ignore-errors
-;;     (setq auto-dark-dark-theme 'catppuccin)
-;;     (setq auto-dark-light-theme 'catppuccin)
+(use-package auto-dark
+  :ensure t
+  :config
+  (ignore-errors
+    (setq auto-dark-themes '((catppuccin) (catppuccin)))
 
-;;     (add-hook 'auto-dark-dark-mode-hook
-;;               (lambda ()
-;;                 (setq catppuccin-flavor 'mocha)
-;;                 (catppuccin-reload)))
+    (add-hook 'auto-dark-dark-mode-hook
+              (lambda ()
+                (setq catppuccin-flavor 'mocha)
+                (catppuccin-reload)))
 
-;;     (add-hook 'auto-dark-light-mode-hook
-;;               (lambda ()
-;;                 (setq catppuccin-flavor 'frappe)
-;;                 (catppuccin-reload)))
+    (add-hook 'auto-dark-light-mode-hook
+              (lambda ()
+                (setq catppuccin-flavor 'frappe)
+                (catppuccin-reload)))
 
-;;     (auto-dark-mode 1)))
+    (auto-dark-mode 1)))
 
 (use-package catppuccin-theme
   :defer t
