@@ -112,7 +112,14 @@
   (kill-emacs))
 
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
-(defcustom lemacs-lsp-client 'lsp-mode
+(defcustom lemacs-input-mode 'evil
+  "The LSP implementation to use."
+  :type '(choice
+           (const :tag "evil" evil)
+           (const :tag "emacs" emacs))
+  :group 'lemacs)
+
+(defcustom lemacs-lsp-client 'eglot
   "The LSP implementation to use."
   :type '(choice
            (const :tag "eglot" eglot)
@@ -728,7 +735,11 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
 ;;; --------------------------------- EXTERNAL PACKAGES
 (use-package evil
+  :if (eq lemacs-input-mode 'evil)
   :ensure t
+  :defer t
+  :hook
+  (after-init . evil-mode)
   :init
   (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
   (setq evil-want-keybinding nil)
@@ -740,7 +751,12 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (evil-set-leader 'visual (kbd "SPC"))
 
   ;; Define leader key bindings
-  (evil-define-key 'normal 'global (kbd "<leader> s f") 'save-buffer)
+  (evil-define-key 'normal 'global (kbd "C-d") 'scroll-up)
+  (evil-define-key 'normal 'global (kbd "C-u") 'scroll-down)
+  (evil-define-key 'normal 'global (kbd "<leader> e e") 'treemacs)
+  (evil-define-key 'normal 'global (kbd "<leader> s f") 'consult-find)
+  (evil-define-key 'normal 'global (kbd "<leader> s g") 'consult-grep)
+  (evil-define-key 'normal 'global (kbd "<leader> /") 'consult-line)
 
   (defun lemacs-open-eldoc ()
     "Toggle the Eldoc documentation buffer. Enable Eldoc if not already enabled."
@@ -754,13 +770,62 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
           (quit-window nil (get-buffer-window eldoc-buf))  ;; Close if visible
         (display-buffer eldoc-buf))))                      ;; Open if not visible
 
-  (evil-define-key 'normal 'global (kbd "K") 'lemacs-open-eldoc)
+  (if (display-graphic-p)
+      (evil-define-key 'normal 'global (kbd "K") #'eldoc-box-help-at-point)
+    (evil-define-key 'normal 'global (kbd "K") #'lemacs-open-eldoc)
+    (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point))
 
-  
+  (evil-define-key 'normal 'global (kbd "gcc")
+    (lambda ()
+      (interactive)
+      (if (not (use-region-p))
+          (comment-or-uncomment-region (line-beginning-position) (line-end-position)))))
+  (evil-define-key 'visual 'global (kbd "gc")
+    (lambda ()
+      (interactive)
+      (if (use-region-p)
+          (comment-or-uncomment-region (region-beginning) (region-end)))))
+
+  (evil-define-key 'normal 'global (kbd "<leader> u") 'undo-tree-visualize)
+  (evil-define-key 'normal 'global (kbd "<leader> x x") 'consult-flymake)
+  (evil-define-key 'normal 'global (kbd "] d") 'flymake-goto-next-error)
+  (evil-define-key 'normal 'global (kbd "[ d") 'flymake-goto-prev-error)
+
+
+  (evil-define-key 'normal 'global (kbd "] c") 'diff-hl-next-hunk)
+  (evil-define-key 'normal 'global (kbd "[ c") 'diff-hl-previous-hunk)
+
+  (evil-define-key 'normal 'global (kbd "<leader> g g") 'magit-status)
+  (evil-define-key 'normal 'global (kbd "<leader> g l") 'magit-log-current)
+  (evil-define-key 'normal 'global (kbd "<leader> g t") 'git-timemachine-toggle)
+  (evil-define-key 'normal 'global (kbd "<leader> g d") 'magit-diff-buffer-file)
+
+  (evil-define-key 'normal 'global (kbd "<leader> b i") 'ibuffer)
+  (evil-define-key 'normal 'global (kbd "<leader> b d") 'kill-current-buffer)
+  (evil-define-key 'normal 'global (kbd "<leader> b k") 'kill-current-buffer)
+  (evil-define-key 'normal 'global (kbd "<leader> b s") 'save-buffer)
+  (evil-define-key 'normal 'global (kbd "<leader> b l") 'consult-buffer)
+  (evil-define-key 'normal 'global (kbd "<leader>SPC") 'consult-buffer)
+
+  (evil-define-key 'normal 'global (kbd "<leader> p b") 'consult-project-buffer)
+  (evil-define-key 'normal 'global (kbd "<leader> p p") 'project-switch-project)
+  (evil-define-key 'normal 'global (kbd "<leader> p f") 'project-find-file)
+  (evil-define-key 'normal 'global (kbd "<leader> p g") 'project-find-regexp)
+
+  (evil-define-key 'normal 'global (kbd "P") 'consult-yank-pop)
+  (evil-define-key 'normal 'global (kbd "<leader> o") 'ace-window)
+
+  (evil-define-key 'normal 'global (kbd "C-a p") 'project-search)
+  (evil-define-key 'normal 'global (kbd "C-a a") 'move-beginning-of-line)
+  (evil-define-key 'normal 'global (kbd "C-a w") 'tab-bar-switch-to-tab)
+  (evil-define-key 'normal 'global (kbd "] t") 'tab-next)
+  (evil-define-key 'normal 'global (kbd "[ t") 'tab-previous)
+
   (evil-mode 1))
 
 (use-package evil-collection
   :after evil
+  :defer t
   :ensure t
   :config
   (evil-collection-init))
@@ -1945,7 +2010,7 @@ your override of `flymake-eslint-executable-name.'"
     ;; completion
     (lsp-completion-enable t)
     (lsp-completion-enable-additional-text-edit t) ; Ex: auto-insert an import for a completion candidate
-    (lsp-enable-snippet t)                         ; Important to provide full JSX completion
+    (lsp-enable-snippet nil)                         ; Important to provide full JSX completion
     (lsp-completion-show-kind t)                   ; Optional
     ;; lens
     (lsp-lens-enable t)
