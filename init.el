@@ -107,6 +107,13 @@
   (require 'nerd-icons)
   (nerd-icons-install-fonts)
 
+  (message ">>> Native compile 3rd-party packages...")
+  (native-compile-prune-cache)
+  (dolist (dir (directory-files package-user-dir t "^[^.]" t))
+    (when (file-directory-p dir)
+      (byte-recompile-directory dir 0 t)
+      (native-compile-async dir 'recursively)))
+ 
   (message ">>> LEmacs installed!!! Presss any key to close the installer and open Emacs normally.")
   (read-key)
   (kill-emacs))
