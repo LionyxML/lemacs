@@ -56,6 +56,7 @@ history
 /dirvish
 /eshell
 /elpa
+/persp-confs
 /tree-sitter/
 /tree-sitter/bin/*
 !/tree-sitter/bin/

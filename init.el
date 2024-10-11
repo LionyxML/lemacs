@@ -2,8 +2,8 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.1.56
-;; Package-Requires: ((emacs "29"))
+;; Version: 0.2.0
+;; Package-Requires: ((emacs "30"))
 
 ;;; Commentary:
 ;; My personal always evolving Emacs config file.
@@ -93,8 +93,6 @@
   "Install tree-sitter grammars and nerd-icons fonts on the first run."
   (interactive)
   (switch-to-buffer "*Messages*")
-  (ignore-errors
-	(load-theme 'catppuccin :no-confirm))
 
   (message ">>> All required packages installed.")
   (message ">>> Configuring LEmacs...")
@@ -126,7 +124,7 @@
            (const :tag "emacs" emacs))
   :group 'lemacs)
 
-(defcustom lemacs-lsp-client 'eglot
+(defcustom lemacs-lsp-client 'lsp-mode
   "The LSP implementation to use."
   :type '(choice
            (const :tag "eglot" eglot)
@@ -199,6 +197,9 @@ Notice this is a bit messy."
 ;;; --------------------------------- EMACS
 (use-package emacs
   :custom
+  (undo-limit 67108864) ; 64mb.
+  (undo-strong-limit 100663296) ; 96mb.
+  (undo-outer-limit 1006632960) ; 960mb.
   (auto-save-default nil)
   (create-lockfiles nil)
   (delete-by-moving-to-trash t)
@@ -360,7 +361,7 @@ Notice this is a bit messy."
     (interactive)
     (outline-minor-mode 1)
     (outline-hide-sublevels 1))
-  (add-hook 'emacs-lisp-mode-hook #'lemacs/elisp-mode-hook)
+  ;; (add-hook 'emacs-lisp-mode-hook #'lemacs/elisp-mode-hook)
 
 
   ;; Save manual customizations to other file than init.el
@@ -742,28 +743,153 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
 ;;; --------------------------------- EXTERNAL PACKAGES
 (use-package evil
-  :if (eq lemacs-input-mode 'evil)
   :ensure t
   :defer t
   :hook
   (after-init . evil-mode)
   :init
-  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-  (setq evil-want-keybinding nil)
+  (setq evil-want-integration t)      ;; Integrate `evil' with other Emacs features (optional as it's true by default).
+  (setq evil-want-keybinding nil)     ;; Disable default keybinding to set custom ones.
+  (setq evil-want-C-u-scroll t)       ;; Makes C-u scroll
+  (setq evil-want-C-u-delete t)       ;; Makes C-u delete on insert mode
   :config
-  ;; Set the leader key to space
-  (setq evil-want-leader t)
-  (setq evil-leader/in-all-states t)
+  (evil-set-undo-system 'undo-tree)   ;; Uses the undo-tree package as the default undo system
+
+  ;; Set the leader key to space for easier access to custom commands. (setq evil-want-leader t)
+  (setq evil-leader/in-all-states t)  ;; Make the leader key available in all states.
+  (setq evil-want-fine-undo t)        ;; Evil uses finer grain undoing steps
+
+  ;; Define the leader key as Space
   (evil-set-leader 'normal (kbd "SPC"))
   (evil-set-leader 'visual (kbd "SPC"))
 
-  ;; Define leader key bindings
-  (evil-define-key 'normal 'global (kbd "C-d") 'scroll-up)
-  (evil-define-key 'normal 'global (kbd "C-u") 'scroll-down)
-  (evil-define-key 'normal 'global (kbd "<leader> e e") 'treemacs)
+  ;; Keybindings for searching and finding files.
   (evil-define-key 'normal 'global (kbd "<leader> s f") 'consult-find)
   (evil-define-key 'normal 'global (kbd "<leader> s g") 'consult-grep)
+  (evil-define-key 'normal 'global (kbd "<leader> s G") 'consult-git-grep)
+  (evil-define-key 'normal 'global (kbd "<leader> s r") 'consult-ripgrep)
+  (evil-define-key 'normal 'global (kbd "<leader> s h") 'consult-info)
   (evil-define-key 'normal 'global (kbd "<leader> /") 'consult-line)
+
+  ;; Flymake navigation
+  (evil-define-key 'normal 'global (kbd "<leader> x x") 'consult-flymake);; Gives you something like `trouble.nvim'
+  (evil-define-key 'normal 'global (kbd "] d") 'flymake-goto-next-error) ;; Go to next Flymake error
+  (evil-define-key 'normal 'global (kbd "[ d") 'flymake-goto-prev-error) ;; Go to previous Flymake error
+
+  ;; Dired commands for file management
+  (evil-define-key 'normal 'global (kbd "<leader> x d") 'dired)
+  (evil-define-key 'normal 'global (kbd "<leader> x j") 'dired-jump)
+  (evil-define-key 'normal 'global (kbd "<leader> x f") 'find-file)
+
+  ;; Diff-HL navigation for version control
+  (evil-define-key 'normal 'global (kbd "] c") 'diff-hl-next-hunk) ;; Next diff hunk
+  (evil-define-key 'normal 'global (kbd "[ c") 'diff-hl-previous-hunk) ;; Previous diff hunk
+
+  (evil-define-key 'normal 'global (kbd "<leader> e e") 'treemacs)
+
+  ;; Magit keybindings for Git integration
+  (evil-define-key 'normal 'global (kbd "<leader> g g") 'magit-status)      ;; Open Magit status
+  (evil-define-key 'normal 'global (kbd "<leader> g l") 'magit-log-current) ;; Show current log
+  (evil-define-key 'normal 'global (kbd "<leader> g d") 'magit-diff-buffer-file) ;; Show diff for the current file
+  (evil-define-key 'normal 'global (kbd "<leader> g D") 'diff-hl-show-hunk) ;; Show diff for a hunk
+  (evil-define-key 'normal 'global (kbd "<leader> g b") 'vc-annotate)       ;; Annotate buffer with version control info
+
+  ;; Buffer management keybindings
+  (evil-define-key 'normal 'global (kbd "] b") 'switch-to-next-buffer) ;; Switch to next buffer
+  (evil-define-key 'normal 'global (kbd "[ b") 'switch-to-prev-buffer) ;; Switch to previous buffer
+  (evil-define-key 'normal 'global (kbd "<leader> b i") 'consult-buffer) ;; Open consult buffer list
+  (evil-define-key 'normal 'global (kbd "<leader> b b") 'ibuffer) ;; Open Ibuffer
+  (evil-define-key 'normal 'global (kbd "<leader> b d") 'kill-current-buffer) ;; Kill current buffer
+  (evil-define-key 'normal 'global (kbd "<leader> b k") 'kill-current-buffer) ;; Kill current buffer
+  (evil-define-key 'normal 'global (kbd "<leader> b x") 'kill-current-buffer) ;; Kill current buffer
+  (evil-define-key 'normal 'global (kbd "<leader> b s") 'save-buffer) ;; Save buffer
+  (evil-define-key 'normal 'global (kbd "<leader> b l") 'consult-buffer) ;; Consult buffer
+
+  ;; Project management keybindings
+  (evil-define-key 'normal 'global (kbd "<leader> p b") 'consult-project-buffer) ;; Consult project buffer
+  (evil-define-key 'normal 'global (kbd "<leader> p p") 'project-switch-project) ;; Switch project
+  (evil-define-key 'normal 'global (kbd "<leader> p f") 'project-find-file) ;; Find file in project
+  (evil-define-key 'normal 'global (kbd "<leader> p g") 'project-find-regexp) ;; Find regexp in project
+  (evil-define-key 'normal 'global (kbd "<leader> p k") 'project-kill-buffers) ;; Kill project buffers
+  (evil-define-key 'normal 'global (kbd "<leader> p D") 'project-dired) ;; Dired for project
+
+  (evil-define-key 'normal 'global (kbd "<leader> p s") 'persp-switch)
+
+  (defun my/consult-or-persp-buffer ()
+    "Use `persp-switch-to-buffer` if `persp-mode` is active, otherwise `consult-buffer`."
+    (interactive)
+    (if (bound-and-true-p persp-mode)
+        (call-interactively #'persp-switch-to-buffer)
+      (consult-buffer)))
+  (evil-define-key 'normal 'global (kbd "<leader>SPC") 'my/consult-or-persp-buffer )
+
+
+  ;; Yank from kill ring
+  (evil-define-key 'normal 'global (kbd "P") 'consult-yank-from-kill-ring)
+  (evil-define-key 'normal 'global (kbd "<leader> P") 'consult-yank-from-kill-ring)
+
+  ;; Embark actions for contextual commands
+  (evil-define-key 'normal 'global (kbd "<leader> .") 'embark-act)
+
+  ;; Undo tree visualization
+  (evil-define-key 'normal 'global (kbd "<leader> u") 'undo-tree-visualize)
+
+  ;; Help keybindings
+  (evil-define-key 'normal 'global (kbd "<leader> h m") 'describe-mode) ;; Describe current mode
+  (evil-define-key 'normal 'global (kbd "<leader> h f") 'describe-function) ;; Describe function
+  (evil-define-key 'normal 'global (kbd "<leader> h v") 'describe-variable) ;; Describe variable
+  (evil-define-key 'normal 'global (kbd "<leader> h k") 'describe-key) ;; Describe key
+
+  ;; Tab navigation
+  (evil-define-key 'normal 'global (kbd "] t") 'tab-next) ;; Go to next tab
+  (evil-define-key 'normal 'global (kbd "[ t") 'tab-previous) ;; Go to previous tab
+
+
+  ;; Custom example. Formatting with prettier tool.
+  (evil-define-key 'normal 'global (kbd "<leader> m p") 
+    (lambda ()
+      (interactive)
+      (shell-command (concat "prettier --write " (shell-quote-argument (buffer-file-name))))
+      (revert-buffer t t t)))
+
+  ;; LSP commands keybindings
+  (evil-define-key 'normal lsp-mode-map
+    ;; (kbd "gd") 'lsp-find-definition                ;; evil-collection already provides gd
+    (kbd "gr") 'lsp-find-references                   ;; Finds LSP references
+    (kbd "<leader> c a") 'lsp-execute-code-action     ;; Execute code actions
+    (kbd "<leader> r n") 'lsp-rename                  ;; Rename symbol
+    (kbd "gI") 'lsp-find-implementation               ;; Find implementation
+    (kbd "<leader> l f") 'lsp-format-buffer)          ;; Format buffer via lsp
+
+
+  (defun ek/lsp-describe-and-jump ()
+	"Show hover documentation and jump to *lsp-help* buffer."
+	(interactive)
+	(lsp-describe-thing-at-point)
+	(let ((help-buffer "*lsp-help*"))
+      (when (get-buffer help-buffer)
+		(switch-to-buffer-other-window help-buffer))))
+  ;; Open hover documentation
+  (evil-define-key 'normal 'global (kbd "K") 'ek/lsp-describe-and-jump)
+  ;; Yeah, on terminals, Emacs doesn't support (YET), the use of floating windows,
+  ;; thus, this will open a small buffer bellow your window.
+  ;; This floating frames are called "child frames" and some recent effort is being put
+  ;; into having a translation of those marvelous GUI stuff to terminal. Let's hope
+  ;; we add this to Emacs Kick soom :)
+
+  ;; Commenting functionality for single and multiple lines
+  (evil-define-key 'normal 'global (kbd "gcc")
+    (lambda ()
+      (interactive)
+      (if (not (use-region-p))
+          (comment-or-uncomment-region (line-beginning-position) (line-end-position)))))
+  
+  (evil-define-key 'visual 'global (kbd "gc")
+    (lambda ()
+      (interactive)
+      (if (use-region-p)
+          (comment-or-uncomment-region (region-beginning) (region-end)))))
+
 
   (defun lemacs-open-eldoc ()
     "Toggle the Eldoc documentation buffer. Enable Eldoc if not already enabled."
@@ -782,60 +908,17 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
     (evil-define-key 'normal 'global (kbd "K") #'lemacs-open-eldoc)
     (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point))
 
-  (evil-define-key 'normal 'global (kbd "gcc")
-    (lambda ()
-      (interactive)
-      (if (not (use-region-p))
-          (comment-or-uncomment-region (line-beginning-position) (line-end-position)))))
-  (evil-define-key 'visual 'global (kbd "gc")
-    (lambda ()
-      (interactive)
-      (if (use-region-p)
-          (comment-or-uncomment-region (region-beginning) (region-end)))))
-
-  (evil-define-key 'normal 'global (kbd "<leader> u") 'undo-tree-visualize)
-  (evil-define-key 'normal 'global (kbd "<leader> x x") 'consult-flymake)
-  (evil-define-key 'normal 'global (kbd "] d") 'flymake-goto-next-error)
-  (evil-define-key 'normal 'global (kbd "[ d") 'flymake-goto-prev-error)
-
-
-  (evil-define-key 'normal 'global (kbd "] c") 'diff-hl-next-hunk)
-  (evil-define-key 'normal 'global (kbd "[ c") 'diff-hl-previous-hunk)
-
-  (evil-define-key 'normal 'global (kbd "<leader> g g") 'magit-status)
-  (evil-define-key 'normal 'global (kbd "<leader> g l") 'magit-log-current)
-  (evil-define-key 'normal 'global (kbd "<leader> g t") 'git-timemachine-toggle)
-  (evil-define-key 'normal 'global (kbd "<leader> g d") 'magit-diff-buffer-file)
-
-  (evil-define-key 'normal 'global (kbd "<leader> b i") 'ibuffer)
-  (evil-define-key 'normal 'global (kbd "<leader> b d") 'kill-current-buffer)
-  (evil-define-key 'normal 'global (kbd "<leader> b k") 'kill-current-buffer)
-  (evil-define-key 'normal 'global (kbd "<leader> b s") 'save-buffer)
-  (evil-define-key 'normal 'global (kbd "<leader> b l") 'consult-buffer)
-  (evil-define-key 'normal 'global (kbd "<leader>SPC") 'consult-buffer)
-
-  (evil-define-key 'normal 'global (kbd "<leader> p b") 'consult-project-buffer)
-  (evil-define-key 'normal 'global (kbd "<leader> p p") 'project-switch-project)
-  (evil-define-key 'normal 'global (kbd "<leader> p f") 'project-find-file)
-  (evil-define-key 'normal 'global (kbd "<leader> p g") 'project-find-regexp)
-
-  (evil-define-key 'normal 'global (kbd "P") 'consult-yank-pop)
-  (evil-define-key 'normal 'global (kbd "<leader> o") 'ace-window)
-
-  (evil-define-key 'normal 'global (kbd "C-a p") 'project-search)
-  (evil-define-key 'normal 'global (kbd "C-a a") 'move-beginning-of-line)
-  (evil-define-key 'normal 'global (kbd "C-a w") 'tab-bar-switch-to-tab)
-  (evil-define-key 'normal 'global (kbd "] t") 'tab-next)
-  (evil-define-key 'normal 'global (kbd "[ t") 'tab-previous)
-
+  ;; Enable evil mode
   (evil-mode 1))
 
 (use-package evil-collection
-  :after evil
   :defer t
   :ensure t
-  :config
-  (evil-collection-init))
+  :custom
+  (evil-collection-want-find-usages-bindings t)
+  ;; Hook to initialize `evil-collection' when `evil-mode' is activated.
+  :hook
+- (evil-mode . evil-collection-init))
 
 (use-package 0x0
   :ensure t
@@ -868,24 +951,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :config)
 
-(use-package auto-dark
-  :ensure t
-  :config
-  (ignore-errors
-    (setq auto-dark-themes '((catppuccin) (catppuccin)))
-
-    (add-hook 'auto-dark-dark-mode-hook
-              (lambda ()
-                (setq catppuccin-flavor 'mocha)
-                (catppuccin-reload)))
-
-    (add-hook 'auto-dark-light-mode-hook
-              (lambda ()
-                (setq catppuccin-flavor 'frappe)
-                (catppuccin-reload)))
-
-    (auto-dark-mode 1)))
-
 (use-package catppuccin-theme
   :defer t
   :ensure t
@@ -900,14 +965,12 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (add-hook 'after-make-frame-functions 'lemacs/catppuccin-hack)
   
   ;; Custom diff-hl colors
-  (custom-set-faces `(diff-hl-change ((t (:background ,(catppuccin-get-color 'blue))))))
-  (custom-set-faces `(diff-hl-delete ((t (:background ,(catppuccin-get-color 'red))))))
-  (custom-set-faces `(diff-hl-insert ((t (:background ,(catppuccin-get-color 'green))))))
-
-  ;; Custom goggles
-  (custom-set-faces `(goggles-changed ((t (:background ,(catppuccin-get-color 'blue))))))
-  (custom-set-faces `(goggles-added ((t (:background ,(catppuccin-get-color 'green))))))
-  (custom-set-faces `(goggles-removed ((t (:background ,(catppuccin-get-color 'red))))))
+  (custom-set-faces
+   `(diff-hl-change ((t (:background unspecified :foreground ,(catppuccin-get-color 'blue))))))
+  (custom-set-faces
+   `(diff-hl-delete ((t (:background unspecified :foreground ,(catppuccin-get-color 'red))))))
+  (custom-set-faces
+   `(diff-hl-insert ((t (:background unspecified :foreground ,(catppuccin-get-color 'green))))))
 
   ;; Custom vhl/default-face
   (custom-set-faces `(vhl/default-face ((t (:background ,(catppuccin-get-color 'surface2)))))))
@@ -962,21 +1025,16 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :hook
   (find-file . (lambda ()
-                 (global-diff-hl-mode)
-                 (diff-hl-flydiff-mode)
-                 (diff-hl-margin-mode)))
+                 (global-diff-hl-mode)           ;; Enable Diff-HL mode for all files.
+                 (diff-hl-flydiff-mode)          ;; Automatically refresh diffs.
+                 (diff-hl-margin-mode)))         ;; Show diff indicators in the margin.
   :custom
-  (diff-hl-side 'left)
-  (diff-hl-margin-symbols-alist
-   '((insert . " ")
-	 (delete . " ")
-	 (change . " ")
-	 (unknown . " ")
-	 (ignored . " ")))
-  :bind
-  (("M-9" . 'diff-hl-previous-hunk)
-   ("M-0" . 'diff-hl-next-hunk))
-  :config)
+  (diff-hl-side 'left)                           ;; Set the side for diff indicators.
+  (diff-hl-margin-symbols-alist '((insert . "│") ;; Customize symbols for each change type.
+                                   (delete . "-")
+                                   (change . "│")
+                                   (unknown . "?")
+                                   (ignored . "i"))))
 
 (use-package diredfl
   :defer t
@@ -1159,7 +1217,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :after (:all eldoc)
   :custom-face
-  (eldoc-box-border ((t (:background "#80adf0"))))
+  ;; (eldoc-box-border ((t (:background "#333"))))
   :config
   (setq eldoc-box-frame-parameters
       '((left . -1)
@@ -1372,31 +1430,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :defer t
   :config)
 
-(use-package project-x
-  :load-path "site-lisp/project-x"
-  :after project
-  :config
-  (setq project-x-save-interval 600)    ;Save project state every 10 min
-  ;; C-x p j -> opens a project with its saved state
-  ;; C-x p w -> writes a project state
-  (project-x-mode 1))
-
-(use-package prettier
-  :ensure t
-  :defer t
-  :hook
-  ((js-mode . prettier-mode)
-   (js-jsx-mode . prettier-mode)
-   (js-ts-mode . prettier-mode)
-   (typescript-mode . prettier-mode)
-   (typescriptreact-mode . prettier-mode)
-   (typescript-ts-mode . prettier-mode)
-   (tsx-ts-mode . prettier-mode)
-   (html-mode . prettier-mode)
-   (css-mode . prettier-mode)
-   (scss-mode . prettier-mode))
-  :config)
-
 (use-package prisma-mode
   :defer t
   :mode "\\.prisma?\\'"
@@ -1407,11 +1440,45 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :after (:any prisma-mode)
   :load-path "site-lisp/prisma-mode/")
 
-(use-package python-black
+(use-package pulsar
   :defer t
   :ensure t
+  :hook
+  (after-init . pulsar-global-mode)
   :config
-  (python-black-extra-args '("--line-length" "79")))
+  (setq pulsar-pulse t)
+  (setq pulsar-delay 0.025)
+  (setq pulsar-iterations 10)
+  (setq pulsar-face 'evil-ex-lazy-highlight)
+
+  (add-to-list 'pulsar-pulse-functions 'evil-scroll-down)
+  (add-to-list 'pulsar-pulse-functions 'flymake-goto-next-error)
+  (add-to-list 'pulsar-pulse-functions 'flymake-goto-prev-error)
+  (add-to-list 'pulsar-pulse-functions 'evil-yank)
+  (add-to-list 'pulsar-pulse-functions 'evil-yank-line)
+  (add-to-list 'pulsar-pulse-functions 'evil-delete)
+  (add-to-list 'pulsar-pulse-functions 'evil-delete-line)
+  (add-to-list 'pulsar-pulse-functions 'evil-jump-item)
+  (add-to-list 'pulsar-pulse-functions 'diff-hl-next-hunk)
+  (add-to-list 'pulsar-pulse-functions 'diff-hl-previous-hunk))
+
+
+(use-package persp-mode
+  :defer t
+  :ensure t 
+  :hook
+  (after-init . persp-mode))
+
+(use-package persp-mode-project-bridge
+  :defer nil
+  :ensure t
+  :hook
+  (persp-mode-project-bridge-mode . (lambda ()
+                                      (if persp-mode-project-bridge-mode
+                                          (persp-mode-project-bridge-find-perspectives-for-all-buffers)
+                                        (persp-mode-project-bridge-kill-perspectives))))
+  (persp-mode . persp-mode-project-bridge-mode))
+
 
 (use-package pyvenv
   :defer t
@@ -1502,6 +1569,10 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (setq treemacs-silent-refresh t)
   (setq treemacs--project-follow-delay 0.05)
   (treemacs-project-follow-mode +1))
+
+(use-package treemacs-evil
+  :after (treemacs evil)
+  :ensure t)
 
 (use-package treemacs-icons-dired
   :defer t
@@ -1621,7 +1692,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :defer t
   :ensure t
   :custom-face
-  (corfu-border ((t (:background "#80adf0"))))
+  ;; (corfu-border ((t (:background  "#333"))))
   :custom
   ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                    ;; Enable auto completion
@@ -1943,32 +2014,7 @@ your override of `flymake-eslint-executable-name.'"
 			 ("C-c ! n" . flymake-goto-next-error)
 			 ("C-c ! p" . flymake-goto-prev-error)
              ("M-7" . flymake-goto-prev-error)
-             ("M-8" . flymake-goto-next-error))
-
-  ;; Magic in order to display markings on margin, not the fringe
-  ;; Probably when this becomes ready, we wont need it to display
-  ;; flymake on the margin:
-  ;; https://mail.gnu.org/archive/html/emacs-devel/2024-03/msg00715.html
-  ;; (advice-add #'flymake--fringe-overlay-spec :override
-  ;;     (lambda (bitmap &optional recursed)
-  ;;   	(set-window-margins nil 2 2)
-  ;;   	(set-window-fringes nil 0 0)
-
-  ;;     (if (and (symbolp bitmap)
-  ;;           (boundp bitmap)
-  ;;           (not recursed))
-  ;;       (flymake--fringe-overlay-spec
-  ;;         (symbol-value bitmap) t)
-  ;;       (and flymake-fringe-indicator-position
-  ;;         bitmap
-  ;;         (propertize "!" 'display
-  ;;           `((margin left-margin)
-  ;;              ,bitmap))))))
-
-  ;; (put 'flymake-error 'flymake-bitmap (propertize "»" 'face `(:inherit (error default) :underline nil)))
-  ;; ;; (put 'flymake-warning 'flymake-bitmap (propertize "»" 'face `(:inherit (warning default) :underline nil)))
-  ;; (put 'flymake-note 'flymake-bitmap (propertize "»" 'face `(:inherit (success default) :underline nil)))
-  )
+             ("M-8" . flymake-goto-next-error)))
 
 ;; This is ugly but the only way I managed to make it work, manual hooks didn't do the trick :/
 (when (eq lemacs-lsp-client 'lsp-mode)
@@ -2031,7 +2077,8 @@ your override of `flymake-eslint-executable-name.'"
     
     :init
     (setq lsp-use-plists t)
-	(lsp-inlay-hints-mode)))
+	;; (lsp-inlay-hints-mode)
+    ))
 
 (use-package ellama
   :defer t
