@@ -1147,6 +1147,36 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
                              (setq-local line-number-mode nil)
                              (setq-local column-number-mode nil))))
 
+(use-package elfeed
+  :defer t
+  :ensure t
+  :config
+  (define-advice elfeed-search--header (:around (oldfun &rest args))
+  (if elfeed-db
+      (apply oldfun args)
+    "No database loaded yet"))
+
+  (add-hook 'elfeed-new-entry-hook
+            (elfeed-make-tagger :feed-url "youtube\\.com"
+                                :add '(video youtube)))
+
+  (add-hook 'elfeed-new-entry-hook
+            (elfeed-make-tagger :before "2 weeks ago"
+                                :remove 'unread)))
+
+(use-package elfeed-tube
+  :ensure t
+  :after elfeed
+  :demand t
+  :config
+  ;; (setq elfeed-tube-auto-save-p nil) ; default value
+  ;; (setq elfeed-tube-auto-fetch-p t)  ; default value
+  (elfeed-tube-setup))
+
+(use-package elfeed-tube-mpv
+  :ensure t
+  :after elfeed-tube)
+
 (use-package emms
   :defer t
   :ensure t
