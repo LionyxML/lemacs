@@ -1571,7 +1571,9 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
 (use-package persp-mode
   :defer t
-  :ensure t 
+  :ensure t
+  :custom
+  (persp-auto-save-opt 0)
   :hook
   (after-init . persp-mode))
 
