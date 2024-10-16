@@ -1164,9 +1164,71 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
    emms-player-mpv-environment '("PULSE_PROP_media.role=music")
    emms-player-mpv-parameters '("--quiet" "--really-quiet" "--no-video" "--no-audio-display" "--force-window=no" "--vo=null"))
   (setq emms-player-mpv-update-metadata t)
-  (setq emms-info-functions '(emms-info-tinytag)) ;; When using Tinytag
+
+  ;; The tinytag python package is a dependency
+  ;; Install it with: python3 -m pip install tinytag
+  (setq emms-info-functions '(emms-info-tinytag))
+
   ;; Load cover images
-  (setq emms-browser-covers 'emms-browser-cache-thumbnail-async))
+  (setq emms-browser-covers 'emms-browser-cache-thumbnail-async)
+
+  (defun pad-string (str len)
+    "Return a string of length LEN starting with STR, truncating or padding as necessary."
+    (let* ((str-len (length str))
+	       (extra-len (- len str-len)))
+	  (if (>= extra-len 0)
+	      (concat str (make-string extra-len ? ))
+	    (concat (substring str 0 (- len 3)) "..."))))
+
+  (defun my-emms-track-description-function (track)
+    "Detailed track listing for TRACK."
+    (let ((type (emms-track-get track 'type))
+	      (name (emms-track-get track 'name))
+	      (artist (emms-track-get track 'info-artist))
+	      (album (emms-track-get track 'info-album))
+	      (title (emms-track-get track 'info-title))
+	      (tracknumber (emms-track-get track 'info-tracknumber))
+	      (year (emms-track-get-year track))
+	      (timet (emms-track-get track 'info-playing-time)))
+	  (cond ((eq type 'file)
+	         ;; If it has a minimum of metadata
+	         (if (and artist title)
+		         (concat
+		          " "
+		          (pad-string
+		           (if title
+			           (if tracknumber
+			               (concat "["
+				                   (format "%02d" (string-to-number tracknumber))
+				                   "] "
+				                   title)
+			             title)
+		             "Unknown Title")
+		           33)
+		          "  "
+		          (pad-string (if timet
+				                  (format "%02d:%02d" (/ timet 60) (% timet 60))
+				                "")
+				              5)
+		          "  "
+		          (pad-string (or artist "Unknown Artist") 18)
+		          "  "
+		          (pad-string (if album
+				                  (if year
+					                  
+					                  album)
+				                "Unknown Album")
+				              25)
+		          "  "
+		          (pad-string (or year "")
+				              4))
+		       name))
+	        ((eq 'url type)
+             (emms-format-url-track-name name))
+	        ;; E.g. playlists
+	        (t (concat (symbol-name type) ":" name)))))
+  
+  (setq emms-track-description-function 'my-emms-track-description-function))
 
 (use-package erc-hl-nicks
   :defer t
