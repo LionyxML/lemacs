@@ -1713,7 +1713,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :bind
   (("M-2" . 'vc-msg-show))
   :config
-  (setq-default pos-tip-background-color "#4F4F4F")
+  (setq-default pos-tip-background-color "#2A2A39")
   (setq-default pos-tip-foreground-color "#FFFFEF")
   (setq vc-msg-show-at-line-beginning-p nil))
 
