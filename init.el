@@ -764,6 +764,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (setq evil-want-keybinding nil)     ;; Disable default keybinding to set custom ones.
   (setq evil-want-C-u-scroll t)       ;; Makes C-u scroll
   (setq evil-want-C-u-delete t)       ;; Makes C-u delete on insert mode
+  (setq evil-want-minibuffer t)       ;; Makes mini-buffer evil (so you can edit it, paste, etc.)
   :config
   (evil-set-undo-system 'undo-tree)   ;; Uses the undo-tree package as the default undo system
 
@@ -858,7 +859,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
 
   ;; Custom example. Formatting with prettier tool.
-  (evil-define-key 'normal 'global (kbd "<leader> m p") 
+  (evil-define-key 'normal 'global (kbd "<leader> m p")
     (lambda ()
       (interactive)
       (shell-command (concat "prettier --write " (shell-quote-argument (buffer-file-name))))
@@ -924,6 +925,14 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (evil-define-key 'normal gnus-group-mode-map
     (kbd "o") 'gnus-topic-select-group
     (kbd "i") 'gnus-group-list-all-groups)
+
+  ;; On minibuffer, makes C-p C-n work with selections on vertico
+  (eval-after-load "evil-maps"
+    (dolist (map '(evil-motion-state-map
+                   evil-insert-state-map
+                   evil-emacs-state-map))
+      (define-key (eval map) "\C-n" nil)
+      (define-key (eval map) "\C-p" nil)))
 
   (evil-mode 1))
 
