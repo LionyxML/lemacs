@@ -321,6 +321,15 @@ Notice this is a bit messy."
   (add-hook 'prog-mode-hook #'lemacs/prefer-tabs)
 
 
+  ;; Play media from eww through MPV
+  (defun lemacs/eww-play-media ()
+    "Play the current media link in MPV."
+    (interactive)
+    (eww-copy-page-url)
+    (let ((url (current-kill 0)))
+    (message (concat ">>> Sent to mpv: " url))
+      (start-process "mpv" nil "mpv" "--cache=yes" "--force-window=yes" url)))
+
   ;; Add prompt indicator to `completing-read-multiple'.
   ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
   (defun crm-indicator (args)
