@@ -616,13 +616,35 @@ negative N, comment out original line and use the absolute value."
            (concat (if (>= (length (eshell/pwd)) 40)
                        (concat "..." (car (last (butlast (split-string (eshell/pwd) "/") 0))))
                      (abbreviate-file-name (eshell/pwd))))
-            ")\n"
-         (when (and (fboundp 'vc-git-root) (vc-git-root default-directory))
+           ")\n"
+           (when (and (fboundp 'vc-git-root) (vc-git-root default-directory))
              (concat
               "├─("
               (nerd-icons-devicon "nf-dev-git_branch")
               " "
               (car (vc-git-branches))
+              (let* ((branch (car (vc-git-branches)))
+                     (behind (string-to-number
+                              (shell-command-to-string
+                               (concat "git rev-list --count HEAD..origin/" branch)))))
+                (if (> behind 0)
+                    (concat "  " (nerd-icons-faicon "nf-fa-cloud_download") " " (number-to-string behind))
+                  ""))
+
+              (let ((modified (length (split-string
+                                       (shell-command-to-string
+                                        "git ls-files --modified") "\n" t)))
+                    (untracked (length (split-string
+                                        (shell-command-to-string
+                                         "git ls-files --others --exclude-standard") "\n" t))))
+                (concat
+                 (if (> modified 0)
+                     (concat "  " (nerd-icons-octicon "nf-oct-file_diff") " "
+                             (number-to-string modified)))
+                 (if (> untracked 0)
+                     (concat "  " (nerd-icons-faicon "nf-fa-question_circle") " "
+                             (number-to-string untracked)))))
+
               ")\n"
               ))
            "└─➜ ")))
