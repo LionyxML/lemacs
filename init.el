@@ -1,4 +1,4 @@
-;; init.el --- LEmacs (Lionyx Emacs)
+;;; init.el --- LEmacs (Lionyx Emacs) -*- lexical-binding: t; -*-
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
@@ -187,8 +187,8 @@ Notice this is a bit messy."
 
 ")
 
-(defcustom lemacs-start-transparent 'nil
-  "Enables ASCII art on GUI Emacs."
+(defcustom lemacs-start-transparent 't
+  "Makes Emacs use Transparency when loaded."
   :type '(choice
            (const :tag "t" t)
            (const :tag "nil" nil))
