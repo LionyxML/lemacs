@@ -1561,6 +1561,25 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (("C-S-p" . org-ros))
   :config)
 
+(use-package olivetti
+  :defer t
+  :ensure t
+  :init
+  (defun lemacs/center-visual-fill-on ()
+    (interactive)
+    (visual-line-mode 1)
+    (setq olivetti-body-width 100)
+    (olivetti-mode 1))
+
+  (defun lemacs/center-visual-fill-off ()
+    (interactive)
+    (visual-line-mode 0)
+    (kill-local-variable 'olivetti-body-width)
+    (olivetti-mode 0))
+
+  (add-hook 'elfeed-show-mode-hook 'lemacs/center-visual-fill-on)
+  (add-hook 'gnus-article-mode-hook 'lemacs/center-visual-fill-on))
+
 (use-package package-lint
   :ensure t
   :defer t
