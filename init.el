@@ -2154,6 +2154,16 @@ your override of `flymake-eslint-executable-name.'"
              ("M-7" . flymake-goto-prev-error)
              ("M-8" . flymake-goto-next-error)))
 
+(use-package flymake-popon
+  :ensure t
+  :defer t
+  :config
+  (custom-set-faces
+   '(flymake-popon ((t (:inherit default :background "#2a2a39"))))
+   '(flymake-popon-posframe-border ((t nil))))
+  :hook
+  (flymake-mode . global-flymake-popon-mode))
+
 ;; This is ugly but the only way I managed to make it work, manual hooks didn't do the trick :/
 (when (eq lemacs-lsp-client 'lsp-mode)
   (use-package lsp-mode
