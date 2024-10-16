@@ -197,6 +197,8 @@ Notice this is a bit messy."
 ;;; --------------------------------- EMACS
 (use-package emacs
   :custom
+  (auth-sources
+   '(path (expand-file-name "/.authinfo.gpg" user-emacs-directory)))
   (undo-limit 67108864) ; 64mb.
   (undo-strong-limit 100663296) ; 96mb.
   (undo-outer-limit 1006632960) ; 960mb.
@@ -205,7 +207,6 @@ Notice this is a bit messy."
   (delete-by-moving-to-trash t)
   (display-line-numbers-type 'relative)
   (enable-recursive-minibuffers t)
-  (gnus-init-file "~/.gnus.el")
   (ibuffer-show-empty-filter-groups nil)
   (indent-tabs-mode nil)
   (inhibit-splash-screen t)
@@ -469,6 +470,14 @@ negative N, comment out original line and use the absolute value."
   (setq lazy-count-prefix-format "(%s/%s) ")
   (setq lazy-count-suffix-format nil)
   (setq search-whitespace-regexp ".*?"))
+
+
+;;; --------------------------------- GNUS
+(use-package gnus
+  :ensure nil
+  :defer t
+  :custom
+  (gnus-init-file (expand-file-name "gnus/.gnus.el" user-emacs-directory)))
 
 ;;; --------------------------------- ERC
 (use-package erc
@@ -908,7 +917,11 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
     (evil-define-key 'normal 'global (kbd "K") #'lemacs-open-eldoc)
     (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point))
 
-  ;; Enable evil mode
+  ;; Gnus special
+  (evil-define-key 'normal gnus-group-mode-map
+    (kbd "o") 'gnus-topic-select-group
+    (kbd "i") 'gnus-group-list-all-groups)
+
   (evil-mode 1))
 
 (use-package evil-collection
