@@ -694,6 +694,7 @@ negative N, comment out original line and use the absolute value."
   ;; This aims to substitute tmux (or gnu/screen) with Emacs
   ;; Tabs are our tmux windows (new one with C-x t 2)
   ;; Windows are emacs windows (new one with C-x 5 2)
+  ;; Or even better Windows are Perspectives of `persp-mode' (persp-switch)
 
   (setq tab-bar-position t)
 
@@ -1605,7 +1606,19 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :custom
   (persp-auto-save-opt 0)
   :hook
-  (after-init . persp-mode))
+  (after-init . persp-mode)
+  :config
+  ;; Makes tab-bar-tabs also restorable via persp-mode
+  (add-hook 'persp-before-deactivate-functions
+            (defun +workspaces-save-tab-bar-data-h (_)
+              (when (get-current-persp)
+                (set-persp-parameter
+                 'tab-bar-tabs (tab-bar-tabs)))))
+
+  (add-hook 'persp-activated-functions
+            (defun +workspaces-load-tab-bar-data-h (_)
+              (tab-bar-tabs-set (persp-parameter 'tab-bar-tabs))
+              (tab-bar--update-tab-bar-lines t))))
 
 (use-package persp-mode-project-bridge
   :defer nil
