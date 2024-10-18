@@ -166,6 +166,12 @@ Notice this is a bit messy."
            (const :tag "nil" nil))
   :group 'lemacs)
 
+
+(defcustom lemacs-default-projects-foler "~/Projects"
+  "Default place to search for projects with 'lemacs/find-projects-and-switch'."
+  :type 'string
+  :group 'lemacs)
+
 ;;; --------------------------------- EMACS
 (use-package emacs
   :custom
@@ -252,6 +258,16 @@ Notice this is a bit messy."
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  (defun lemacs/find-projects-and-switch (&optional directory)
+    "Find and switch to a project directory from ~/Projects."
+    (interactive)
+    (let* ((d (or directory lemacs-default-projects-foler))
+           (find-command (concat "find " d " -mindepth 1 -maxdepth 4 -type d"))
+           (project-list (split-string (shell-command-to-string find-command) "\n" t))
+           (selected-project (completing-read "Select project: " project-list)))
+      (when (and selected-project (file-directory-p selected-project))
+        (project-switch-project selected-project))))
 
   (defun lemacs/transparency-set ()
     "Set frame transparency (Graphical Mode)."
@@ -821,7 +837,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
   ;; Project management keybindings
   (evil-define-key 'normal 'global (kbd "<leader> p b") 'consult-project-buffer) ;; Consult project buffer
-  (evil-define-key 'normal 'global (kbd "<leader> p p") 'project-switch-project) ;; Switch project
+  (evil-define-key 'normal 'global (kbd "<leader> p p") 'lemacs/find-projects-and-switch ) ;; Find projects
   (evil-define-key 'normal 'global (kbd "<leader> p f") 'project-find-file) ;; Find file in project
   (evil-define-key 'normal 'global (kbd "<leader> p g") 'project-find-regexp) ;; Find regexp in project
   (evil-define-key 'normal 'global (kbd "<leader> p k") 'project-kill-buffers) ;; Kill project buffers
