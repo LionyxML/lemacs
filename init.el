@@ -175,8 +175,19 @@ Notice this is a bit messy."
 ;;; --------------------------------- EMACS
 (use-package emacs
   :custom
+  ;; PLEASE DO NOT FORGET!!!!
+  ;; Each system uses gnupg with a diferent agent.
+  ;; From TUI, maybe it is enough to set something like (bash)
+  ;;   export GPG_TTY=$(tty)
+  ;; On the other hand for GUI, you need to have something
+  ;; on the ~/.gnupg/gpg-agent.conf, like for macos,
+  ;;   brew install pinentry-mac
+  ;;   echo "pinentry-program /opt/homebrew/bin/pinentry-mac" > ~/.gnupg/gpg-agent.conf
+  ;; on Linux it might be something like:
+  ;;   pinentry-program /usr/bin/pinentry-gtk-2
+  ;; or... pinentry, pinentry-gnome3, pinentry-x11, etc.
   (auth-sources
-   '(path (expand-file-name "/.authinfo.gpg" user-emacs-directory)))
+   (list (expand-file-name ".authinfo.gpg" user-emacs-directory)))
   (undo-limit 67108864) ; 64mb.
   (undo-strong-limit 100663296) ; 96mb.
   (undo-outer-limit 1006632960) ; 960mb.
