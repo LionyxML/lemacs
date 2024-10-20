@@ -1041,17 +1041,16 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :hook
   (after-init . dashboard-open)
   :config
-  (setq dashboard-banner-logo-title "")
   ;; (setq dashboard-startup-banner (".....logo.png" . ".....logo.txt"))
   ;; (setq dashboard-startup-banner 'logo)
   (when lemacs-ascii-art
     (setq dashboard-startup-banner
-      (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))
+          (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))
 
   (unless lemacs-ascii-art
     (setq dashboard-startup-banner
 		  (cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
-        (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory))))
+                (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory))))
 
   (setq dashboard-center-content t)
   (setq dashboard-vertically-center-content nil)
@@ -1060,16 +1059,39 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (when lemacs-nerd-icons
     (setq dashboard-icon-type 'nerd-icons))
 
-  (when lemacs-start-transparent
-    (lemacs/transparency-set))
+
+  (setq dashboard-show-shortcuts nil)
+  (setq dashboard-set-heading-icons nil)
+
+  (setq dashboard-startupify-list '(dashboard-insert-newline
+				                    dashboard-insert-banner
+				                    dashboard-insert-newline
+				                    dashboard-insert-init-info
+				                    dashboard-insert-newline
+				                    dashboard-insert-newline
+				                    dashboard-insert-navigator
+				                    dashboard-insert-newline
+				                    dashboard-insert-newline
+                                    dashboard-insert-items
+				                    ))
 
   (setq dashboard-items '(
-                        ;; (recents   . 5)
-                        ;; (bookmarks . 5)
-                        ;; (projects  . 5)
-                        ;; (agenda    . 5)
-                        ;; (registers . 5)
-						))
+                          ;; (recents   . 5)
+                          ;; (bookmarks . 5)
+                          ;; (projects  . 5)
+                          ;; (agenda    . 5)
+                          ;; (registers . 5)
+						  ))
+
+  (setq dashboard-navigator-buttons ;; format: icon title help action face prefix suffix`.
+        `((
+           (,(nerd-icons-faicon "nf-fa-envelope") "gnus" "" (lambda (&rest _) (gnus)))
+           (,(nerd-icons-faicon "nf-fa-rss") "elfeed" "" (lambda (&rest _) (elfeed)))
+           (,(nerd-icons-faicon "nf-fa-firefox") "eww" "" (lambda (&rest _) (call-interactively 'eww)))
+           (,(nerd-icons-faicon "nf-fa-music") "emms" "" (lambda (&rest _) (emms-browser)))
+           (,(nerd-icons-faicon "nf-fa-youtube_play") "yeetube" "" (lambda (&rest _) (call-interactively 'yeetube-search)))
+           (,(nerd-icons-faicon "nf-fa-hashtag") "erc" "" (lambda (&rest _) (call-interactively 'erc-tls)))
+           )))
 
   (dashboard-setup-startup-hook))
 
