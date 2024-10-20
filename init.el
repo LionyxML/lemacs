@@ -1111,6 +1111,13 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
                                    (unknown . "?")
                                    (ignored . "i"))))
 
+(use-package async
+  :defer t
+  :ensure t
+  :hook
+  ((dired-mode . dired-async-mode)
+   (after-init . async-bytecomp-package-mode)))
+
 (use-package diredfl
   :defer t
   :ensure t
