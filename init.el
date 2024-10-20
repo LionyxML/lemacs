@@ -88,6 +88,35 @@
   (setq use-package-always-ensure t
         use-package-expand-minimally t))
 
+
+;;; --------------------------------- LEMACS INSTALLER
+(defun lemacs/first-install ()
+  "Install tree-sitter grammars and nerd-icons fonts on the first run."
+  (interactive)
+  (switch-to-buffer "*Messages*")
+
+  (message ">>> All required packages installed.")
+  (message ">>> Configuring LEmacs...")
+
+  (message ">>> Configuring Tree Sitter parsers...")
+  (require 'treesit-auto)
+  (treesit-auto-install-all)
+
+  (message ">>> Configuring Nerd Fonts...")
+  (require 'nerd-icons)
+  (nerd-icons-install-fonts)
+
+  (message ">>> Native compile 3rd-party packages...")
+  (native-compile-prune-cache)
+  (dolist (dir (directory-files package-user-dir t "^[^.]" t))
+    (when (file-directory-p dir)
+      (byte-recompile-directory dir 0 t)
+      (native-compile-async dir 'recursively)))
+ 
+  (message ">>> LEmacs installed!!! Presss any key to close the installer and open Emacs normally.")
+  (read-key)
+  (kill-emacs))
+
 ;;; --------------------------------- LEMACS CUSTOM OPTIONS
 (defcustom lemacs-input-mode 'evil
   "The LSP implementation to use."
@@ -2400,35 +2429,6 @@ your override of `flymake-eslint-executable-name.'"
 		  ("v" . 'yeetube-mpv-toggle-video)
 		  ("V" . 'yeetube-mpv-toggle-no-video-flag)
 		  ("k" . 'yeetube-remove-saved-video)))
-
-
-;;; --------------------------------- LEMACS INSTALLER
-(defun lemacs/first-install ()
-  "Install tree-sitter grammars and nerd-icons fonts on the first run."
-  (interactive)
-  (switch-to-buffer "*Messages*")
-
-  (message ">>> All required packages installed.")
-  (message ">>> Configuring LEmacs...")
-
-  (message ">>> Configuring Tree Sitter parsers...")
-  (require 'treesit-auto)
-  (treesit-auto-install-all)
-
-  (message ">>> Configuring Nerd Fonts...")
-  (require 'nerd-icons)
-  (nerd-icons-install-fonts)
-
-  (message ">>> Native compile 3rd-party packages...")
-  (native-compile-prune-cache)
-  (dolist (dir (directory-files package-user-dir t "^[^.]" t))
-    (when (file-directory-p dir)
-      (byte-recompile-directory dir 0 t)
-      (native-compile-async dir 'recursively)))
- 
-  (message ">>> LEmacs installed!!! Presss any key to close the installer and open Emacs normally.")
-  (read-key)
-  (kill-emacs))
 
 ;;; -------------------------------- INIT/PROVIDE THIS CONFIG
 
