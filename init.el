@@ -949,10 +949,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
     (evil-define-key 'normal 'global (kbd "K") #'lemacs-open-eldoc)
     (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point))
 
-  ;; Gnus special
-  (evil-define-key 'normal gnus-group-mode-map
-    (kbd "o") 'gnus-topic-select-group
-    (kbd "i") 'gnus-group-list-all-groups)
 
   ;; On minibuffer, makes C-p C-n work with selections on vertico
   (eval-after-load "evil-maps"
