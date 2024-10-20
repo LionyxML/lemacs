@@ -1187,13 +1187,31 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
       (apply oldfun args)
     "No database loaded yet"))
 
+  (setq elfeed-feeds
+        '(
+          "https://planet.emacslife.com/atom.xml"
+          "https://www.rahuljuliato.com/rss.xml"
+          "https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ"
+          ))
+
   (add-hook 'elfeed-new-entry-hook
             (elfeed-make-tagger :feed-url "youtube\\.com"
                                 :add '(video youtube)))
 
   (add-hook 'elfeed-new-entry-hook
             (elfeed-make-tagger :before "2 weeks ago"
-                                :remove 'unread)))
+                                :remove 'unread))
+
+(defun lemacs/elfeed-play-enclosure ()
+  "Play elfeed enclosure file (for podcasts)."
+  (interactive)
+  (require 'mpv)
+  (let ((entry elfeed-show-entry))
+    (if entry
+        (let ((entry elfeed-show-entry)
+              (url (car (elt (elfeed-entry-enclosures entry)  0 ))))
+          (message (concat ">>> Loading: " url))
+          (mpv-play-url url))))))
 
 (use-package elfeed-tube
   :ensure t
