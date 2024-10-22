@@ -1666,6 +1666,16 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :defer t
   :config)
 
+(use-package proced-narrow
+  :ensure t
+  :defer t
+  :after proced)
+
+(use-package package-lint
+  :ensure t
+  :defer t
+  :config)
+
 (use-package prisma-mode
   :defer t
   :mode "\\.prisma?\\'"

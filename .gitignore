@@ -58,6 +58,7 @@ var/
 /tree-sitter/
 /tree-sitter/bin/*
 /url/
+/erc
 custom-vars.el
 gnus.el
 gnus/
