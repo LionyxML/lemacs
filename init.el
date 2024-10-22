@@ -1501,17 +1501,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :bind ("M-g t" . git-timemachine-toggle))
 
-;; (use-package goggles
-;;   :defer t
-;;   :ensure t
-;;   :hook ((prog-mode text-mode) . goggles-mode)
-;;   :config
-;;   (goggles-define save kill-ring-save)
-;;   (goggles-define undo-tree-undo undo-tree-visualize-undo-redo)
-;;   (goggles-define undo-tree-redo undo-tree-visualize-undo-redo)
-  
-;;   (setq-default goggles-pulse t))
-
 (use-package volatile-highlights
   :defer t
   :ensure t
