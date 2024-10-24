@@ -1291,10 +1291,10 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (defun pad-string (str len)
     "Return a string of length LEN starting with STR, truncating or padding as necessary."
     (let* ((str-len (length str))
-	       (extra-len (- len str-len)))
-	  (if (>= extra-len 0)
-	      (concat str (make-string extra-len ? ))
-	    (concat (substring str 0 (- len 3)) "..."))))
+           (extra-len (- len str-len)))
+      (if (>= extra-len 0)
+          (concat str (make-string extra-len ? ))
+        (concat (substring str 0 (- len 3)) "..."))))
 
   (defun my-emms-track-description-function (track)
     "Detailed track listing for TRACK."
