@@ -520,15 +520,32 @@ negative N, comment out original line and use the absolute value."
 (use-package erc
   :ensure nil
   :defer t
-  :custom
+  :init
+  (with-eval-after-load 'erc
+    (add-to-list 'erc-modules 'sasl))
+  
+  (setopt erc-sasl-mechanism 'external)
+
+  (defun erc-liberachat ()
+    (interactive)
+    (erc-tls :server "irc.libera.chat"
+             :port 6697
+             :user ""
+             :password ""
+             :client-certificate
+             (list
+              ;; Put your certificate on ~/.emacs.d/erc/ or change this
+              (expand-file-name "erc/cert.pem" user-emacs-directory)
+              (expand-file-name "erc/cert.pem" user-emacs-directory))))
 
   (defun lemacs-erc-enable-flyspell ()
     "Enable Flyspell mode in ERC buffers."
     (flyspell-mode 1))
-
   (add-hook 'erc-join-hook 'lemacs-erc-enable-flyspell)
 
+  :custom
   (erc-join-buffer 'window)
+  (erc-buffer-display 'window)
   ;; (erc-interactive-display ...) ;; this option will be available on next ERC release (5.6)
   (erc-hide-list '("JOIN" "PART" "QUIT"))
   (erc-timestamp-format "[%H:%M]")
