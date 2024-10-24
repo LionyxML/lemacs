@@ -2,7 +2,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.2.0
+;; Version: 0.2.1
 ;; Package-Requires: ((emacs "30"))
 
 ;;; Commentary:
@@ -195,6 +195,14 @@ Notice this is a bit messy."
            (const :tag "nil" nil))
   :group 'lemacs)
 
+(defcustom lemacs-default-terminal-emulator 'eat
+  "Default terminal emulator/shell for lemacs.
+Possible values are 'eshell' or 'eat'.  Yes, I known,
+eshell is not a term emulator, but on broader terms,
+it is a shell inside a window, hence I'm threading
+both as options to ~when I need to run a term~."
+  :type 'symbol
+  :group 'lemacs)
 
 (defcustom lemacs-default-projects-foler "~/Projects"
   "Default place to search for projects with 'lemacs/find-projects-and-switch'."
@@ -318,6 +326,10 @@ Notice this is a bit messy."
     "Unset frame transparency (Graphical Mode)."
     (interactive)
     (set-frame-parameter (selected-frame) 'alpha '(100 100)))
+
+  ;; Apply transparency
+  (when lemacs-start-transparent
+    (lemacs/transparency-set))
 
   (defun lemacs/rename-buffer-and-move-to-new-window ()
     (interactive)
@@ -561,46 +573,58 @@ negative N, comment out original line and use the absolute value."
   (setq eshell-cmpl-ignore-case t)
   (setq eshell-ask-to-save-history (quote always))
 
-  (defun lemacs/open-eshell ()
-    "Open a new instance of eshell."
+  (defun lemacs/open-term  ()
+    "Open the default terminal emulator based on lemacs-default-terminal-emulator."
     (interactive)
-    (eshell 'N))
+    (pcase lemacs-default-terminal-emulator
+      ('eshell (eshell 'N))
+      ('eat (eat nil 'N))
+      (_ (error "Unknown terminal emulator: %s" lemacs-default-terminal-emulator))))
 
-  (defun lemacs/close-eshell ()
+  (defun lemacs/close-term ()
     "Closes the eshell (or any buffer), killing the window."
     (interactive)
     (kill-buffer (current-buffer))
     (delete-window))
 
-  (defun lemacs/split-eshell-vertical ()
+  (defun lemacs/split-term-vertical ()
     "Split the window vertically and open a new instance of eshell."
     (interactive)
     (split-window-right)
     (other-window 1)
-    (lemacs/open-eshell))
+    (lemacs/open-term))
 
-  (defun lemacs/split-eshell-horizontal ()
+  (defun lemacs/split-term-horizontal ()
     "Split the window horizontally and open a new instance of eshell."
     (interactive)
     (split-window-below)
     (other-window 1)
-    (lemacs/open-eshell))
+    (lemacs/open-term))
 
-  (defun lemacs/open-eshell-new-tab ()
+  (defun lemacs/open-term-new-tab ()
     "Open eshell in a new tab."
     (interactive)
-    (let ((new-tab (generate-new-buffer-name "*eshell*")))
+    (let ((new-tab (generate-new-buffer-name
+                    (pcase lemacs-default-terminal-emulator
+                      ('eshell "*eshell*")
+                      ('eat "*eat*")
+                      (_ (error "Unknown terminal emulator: %s" lemacs-default-terminal-emulator))))))
       (tab-new)
-      (eshell)
+      (lemacs/open-term)
       (rename-buffer new-tab)))
 
-  (defun lemacs/kill-all-eshell-buffers ()
+  (defun lemacs/kill-all-shell-buffers ()
     "Kill all *eshell* buffers."
     (interactive)
     (let ((eshell-buffers
            (cl-remove-if-not
             (lambda (buffer)
-              (string-prefix-p "*eshell*" (buffer-name buffer)))
+              (string-prefix-p
+               (pcase lemacs-default-terminal-emulator
+                 ('eshell "*eshell*")
+                 ('eat "*eat*")
+                 (_ (error "Unknown terminal emulator: %s" lemacs-default-terminal-emulator)))
+               (buffer-name buffer)))
             (buffer-list))))
 
       (if eshell-buffers
@@ -611,18 +635,19 @@ negative N, comment out original line and use the absolute value."
               (kill-buffer buffer)))
         (message "No *eshell* buffers to kill."))))
 
-  (global-set-key (kbd "C-c e e") 'lemacs/open-eshell)
-  (global-set-key (kbd "C-c e v") 'lemacs/split-eshell-vertical)
-  (global-set-key (kbd "C-c e \\") 'lemacs/split-eshell-vertical)
-  (global-set-key (kbd "C-c e |") 'lemacs/split-eshell-vertical)
+  (global-set-key (kbd "C-c e e") 'lemacs/open-term )
+  (global-set-key (kbd "C-c e v") 'lemacs/split-term-vertical)
+  (global-set-key (kbd "C-c e \\") 'lemacs/split-term-vertical)
+  (global-set-key (kbd "C-c e |") 'lemacs/split-term-vertical)
 
-  (global-set-key (kbd "C-c e h") 'lemacs/split-eshell-horizontal)
-  (global-set-key (kbd "C-c e -") 'lemacs/split-eshell-horizontal)
+  (global-set-key (kbd "C-c e h") 'lemacs/split-term-horizontal)
+  (global-set-key (kbd "C-c e -") 'lemacs/split-term-horizontal)
+  (global-set-key (kbd "C-c e s") 'lemacs/split-term-horizontal)
 
-  (global-set-key (kbd "C-c e k") 'lemacs/kill-all-eshell-buffers)
-  (global-set-key (kbd "C-c e t") 'lemacs/open-eshell-new-tab)
+  (global-set-key (kbd "C-c e k") 'lemacs/kill-all-shell-buffers)
+  (global-set-key (kbd "C-c e t") 'lemacs/open-term-new-tab)
 
-  (global-set-key (kbd "C-c e x") 'lemacs/close-eshell)
+  (global-set-key (kbd "C-c e x") 'lemacs/close-term)
 
   (add-hook 'eshell-mode-hook
 			(lambda ()
@@ -872,7 +897,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (evil-define-key 'normal 'global (kbd "] c") 'diff-hl-next-hunk) ;; Next diff hunk
   (evil-define-key 'normal 'global (kbd "[ c") 'diff-hl-previous-hunk) ;; Previous diff hunk
 
-  (evil-define-key 'normal 'global (kbd "<leader> e e") 'treemacs)
 
   ;; Magit keybindings for Git integration
   (evil-define-key 'normal 'global (kbd "<leader> g g") 'magit-status)      ;; Open Magit status
@@ -892,6 +916,31 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (evil-define-key 'normal 'global (kbd "<leader> b s") 'save-buffer) ;; Save buffer
   (evil-define-key 'normal 'global (kbd "<leader> b l") 'consult-buffer) ;; Consult buffer
 
+  ;; Treemacs keybindings
+  (evil-define-key 'normal 'global (kbd "<leader> e f") 'treemacs)
+  (evil-define-key 'normal 'global (kbd "<leader> e e") 'treemacs)
+
+  ;; Eshell/Eat management keybindings
+  (evil-define-key 'normal 'global (kbd "<leader> t e") 'lemacs/open-term )
+  (evil-define-key 'normal 'global (kbd "<leader> t v") 'lemacs/split-term-vertical)
+  (evil-define-key 'normal 'global (kbd "<leader> t \\") 'lemacs/split-term-vertical)
+  (evil-define-key 'normal 'global (kbd "<leader> t |") 'lemacs/split-term-vertical)
+
+  (evil-define-key 'normal 'global (kbd "<leader> t h") 'lemacs/split-term-horizontal)
+  (evil-define-key 'normal 'global (kbd "<leader> t -") 'lemacs/split-term-horizontal)
+  (evil-define-key 'normal 'global (kbd "<leader> t s") 'lemacs/split-term-horizontal)
+
+  (evil-define-key 'normal 'global (kbd "<leader> t k") 'lemacs/kill-all-shell-buffers)
+  (evil-define-key 'normal 'global (kbd "<leader> t t") 'lemacs/open-term-new-tab)
+
+  (evil-define-key 'normal 'global (kbd "<leader> t x") 'lemacs/close-term)
+
+  ;; Managing tabs
+  ;; ]t and [t are already set
+  (evil-define-key 'normal 'global (kbd "<leader> t n") 'tab-new)
+  (evil-define-key 'normal 'global (kbd "<leader> t c") 'tab-close)
+  (evil-define-key 'normal 'global (kbd "<leader> t l") 'lemacs/switch-tab-or-tab-bar)
+
   ;; Project management keybindings
   (evil-define-key 'normal 'global (kbd "<leader> p b") 'consult-project-buffer) ;; Consult project buffer
   (evil-define-key 'normal 'global (kbd "<leader> p p") 'lemacs/find-projects-and-switch ) ;; Find projects
@@ -900,23 +949,24 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (evil-define-key 'normal 'global (kbd "<leader> p k") 'project-kill-buffers) ;; Kill project buffers
   (evil-define-key 'normal 'global (kbd "<leader> p D") 'project-dired) ;; Dired for project
 
-  (evil-define-key 'normal 'global (kbd "<leader> p s") 'persp-switch)
+  ;; Perspective keybindings
+  (evil-define-key 'normal 'global (kbd "<leader> p a") 'persp-add-buffer)
 
-  (defun my/consult-or-persp-buffer ()
+  (evil-define-key 'normal 'global (kbd "<leader> p s") 'persp-switch)
+  (defun lemacs/consult-or-persp-buffer ()
     "Use `persp-switch-to-buffer` if `persp-mode` is active, otherwise `consult-buffer`."
     (interactive)
     (if (bound-and-true-p persp-mode)
         (call-interactively #'persp-switch-to-buffer)
       (consult-buffer)))
-  (evil-define-key 'normal 'global (kbd "<leader>SPC") 'my/consult-or-persp-buffer )
-
+  (evil-define-key 'normal 'global (kbd "<leader>SPC") 'lemacs/consult-or-persp-buffer )
 
   ;; Yank from kill ring
   (evil-define-key 'normal 'global (kbd "P") 'consult-yank-from-kill-ring)
   (evil-define-key 'normal 'global (kbd "<leader> P") 'consult-yank-from-kill-ring)
 
   ;; Embark actions for contextual commands
-  (evil-define-key 'normal 'global (kbd "<leader> .") 'embark-act)
+  (evil-define-key 'normal 'global (kbd "C-;") 'embark-act)
 
   ;; Undo tree visualization
   (evil-define-key 'normal 'global (kbd "<leader> u") 'undo-tree-visualize)
