@@ -994,9 +994,14 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :custom
   (evil-collection-want-find-usages-bindings t)
-  ;; Hook to initialize `evil-collection' when `evil-mode' is activated.
   :hook
-- (evil-mode . evil-collection-init))
+  (evil-mode . evil-collection-init))
+
+(use-package evil-surround
+  :ensure t
+  :after evil-collection
+  :config
+  (global-evil-surround-mode 1))
 
 (use-package 0x0
   :ensure t
