@@ -1070,6 +1070,12 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :config
   (global-evil-surround-mode 1))
 
+(use-package evil-matchit
+  :ensure t
+  :after evil-collection
+  :config
+  (global-evil-matchit-mode 1))
+
 (use-package 0x0
   :ensure t
   :defer t)
