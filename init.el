@@ -204,7 +204,7 @@ both as options to ~when I need to run a term~."
   :type 'symbol
   :group 'lemacs)
 
-(defcustom lemacs-default-projects-foler "~/Projects"
+(defcustom lemacs-default-projects-folder "~/Projects"
   "Default place to search for projects with 'lemacs/find-projects-and-switch'."
   :type 'string
   :group 'lemacs)
@@ -310,7 +310,7 @@ both as options to ~when I need to run a term~."
   (defun lemacs/find-projects-and-switch (&optional directory)
     "Find and switch to a project directory from ~/Projects."
     (interactive)
-    (let* ((d (or directory lemacs-default-projects-foler))
+    (let* ((d (or directory lemacs-default-projects-folder))
            (find-command (concat "find " d " -mindepth 1 -maxdepth 4 -type d"))
            (project-list (split-string (shell-command-to-string find-command) "\n" t))
            (selected-project (completing-read "Select project: " project-list)))
@@ -1325,14 +1325,16 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
 (use-package elfeed-tube
   :ensure t
-  :after elfeed
-  :demand t
+  :defer t
+  :hook
+  (elfeed-search-update . elfeed-tube-setup)
   :config
   ;; (setq elfeed-tube-auto-save-p nil) ; default value
   ;; (setq elfeed-tube-auto-fetch-p t)  ; default value
-  (elfeed-tube-setup))
+  )
 
 (use-package elfeed-tube-mpv
+  ;; :defer t
   :ensure t
   :after elfeed-tube)
 
@@ -1626,18 +1628,18 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
   ;; Enable all Cascadia Code ligatures in programming modes
   (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
-                                        ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
-                                        "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
-                                        "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
-                                        "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
-                                        "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
-                                        "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
-                                        "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
-                                        ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
-                                        "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
-                                        "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
-                                        "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
-                                        "\\\\" "://")))
+                                       ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+                                       "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+                                       "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+                                       "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+                                       "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+                                       "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+                                       "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+                                       ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+                                       "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+                                       "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+                                       "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+                                       "\\\\" "://")))
 
 (use-package magit
   :defer t
