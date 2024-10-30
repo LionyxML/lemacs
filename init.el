@@ -209,6 +209,14 @@ both as options to ~when I need to run a term~."
   :type 'string
   :group 'lemacs)
 
+(defcustom lemacs-default-theme 'catppuccin
+  "Default LEmacs Theme.  Change it to nil to set your own."
+  :type '(choice
+           (const :tag "catppuccin" "catppuccin")
+           (const :tag "modus" "modus")
+           (const :tag "nil" nil))
+  :group 'lemacs)
+
 ;;; --------------------------------- EMACS
 (use-package emacs
   :custom
@@ -461,8 +469,9 @@ negative N, comment out original line and use the absolute value."
   :bind
   (("C-x C-b" . 'ibuffer))
   :init
-  (ignore-errors
-    (load-theme 'catppuccin :no-confirm))
+  (when (eq lemacs-default-theme 'catppuccin)
+    (ignore-errors
+      (load-theme 'catppuccin :no-confirm)))
 
   ;; Makes everything accept utf-8 as default, so buffers with tsx and so
   ;; won't ask for encoding (because undecided-unix) every single keystroke
@@ -1108,6 +1117,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :config)
 
 (use-package catppuccin-theme
+  :if (eq lemacs-default-theme 'catppuccin)
   :defer t
   :ensure t
   :config
@@ -2510,6 +2520,56 @@ your override of `flymake-eslint-executable-name.'"
 		  ("k" . 'yeetube-remove-saved-video)))
 
 ;;; -------------------------------- INIT/PROVIDE THIS CONFIG
+(use-package modus-themes
+  :if (eq lemacs-default-theme 'modus)
+  :ensure t
+  :defer t
+  :init
+  (load-theme 'modus-vivendi t)
+  :config
+
+  ;; Regular modus options
+  (setq modus-themes-italic-constructs t
+	    modus-themes-bold-constructs t
+	    modus-themes-mixed-fonts t
+        modus-themes-prompts '(bold intense))
+
+  (customize-set-variable
+   'modus-themes-common-palette-overrides
+   `(
+     ;; Make the mode-line borderless and stand out less
+     (bg-mode-line-active bg-main)
+     (fg-mode-line-active fg-main)
+     (bg-mode-line-inactive bg-main)
+     (fg-mode-line-active fg-dim)
+     (border-mode-line-active bg-transparent)
+     (border-mode-line-inactive bg-transparent)))
+
+
+  (modus-themes-with-colors
+    (custom-set-faces
+     `(fringe ((,c
+                 :background ,bg-main
+                 :box nil)))
+     `(line-number ((,c
+                 :background ,bg-main
+                 :box nil)))
+     `(line-number-current-line ((,c
+                 :background ,bg-main
+                 :box nil)))
+     `(tab-bar ((,c
+                 ;; :height 0.8
+                 :background ,bg-main
+                 :box nil)))
+     `(tab-bar-tab ((,c
+                     :background ,bg-main
+                     :underline (:color ,blue-intense :style line)
+                     :box (:line-width 2 :style flat-button))))
+     `(tab-bar-tab-inactive ((,c
+                              :background ,bg-main
+                              :box (:line-width 2 :style flat-button))))))
+
+  )
 
 (provide 'init)
 ;;; init.el ends here
