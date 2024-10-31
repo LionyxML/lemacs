@@ -993,9 +993,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (evil-define-key 'normal 'global (kbd "P") 'consult-yank-from-kill-ring)
   (evil-define-key 'normal 'global (kbd "<leader> P") 'consult-yank-from-kill-ring)
 
-  ;; Embark actions for contextual commands
-  (evil-define-key 'normal 'global (kbd "C-;") 'embark-act)
-
   ;; Undo tree visualization
   (evil-define-key 'normal 'global (kbd "<leader> u") 'undo-tree-visualize)
 
