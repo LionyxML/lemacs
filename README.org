@@ -5,6 +5,10 @@
 
 NOTE: README UNDER RECONSTRUCTION
 
+DO NOT BELIEVE ANYTHING BELOW THIS LINE ;)
+
+
+
 [[./doc/img_00.png]]
 
 Emacs for the modern developer. Focused on seamlessly TUI/GUI experience, either standalone or in

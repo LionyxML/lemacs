@@ -217,6 +217,14 @@ both as options to ~when I need to run a term~."
            (const :tag "nil" nil))
   :group 'lemacs)
 
+(defcustom lemacs-default-initial-buffer 'terminal
+  "Default LEmacs initial buffer."
+  :type '(choice
+           (const :tag "scratch" "scratch")
+           (const :tag "dashboard" "dashboard")
+           (const :tag "terminal" "terminal"))
+  :group 'lemacs)
+
 ;;; --------------------------------- EMACS
 (use-package emacs
   :custom
@@ -466,6 +474,17 @@ negative N, comment out original line and use the absolute value."
                   lemacs-art
                   (emacs-init-time)
                   (number-to-string (length package-activated-list)))))))
+
+  ;; LEmacs default starting
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (pcase lemacs-default-initial-buffer
+                ('scratch (scratch-buffer))
+                ('dashboard (dashboard-open))
+                ('terminal (lemacs/open-term))
+                )))
+
+
   :bind
   (("C-x C-b" . 'ibuffer))
   :init
@@ -1151,8 +1170,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 (use-package dashboard
   :ensure t
   :defer t
-  :hook
-  (after-init . dashboard-open)
   :config
   ;; (setq dashboard-startup-banner (".....logo.png" . ".....logo.txt"))
   ;; (setq dashboard-startup-banner 'logo)
