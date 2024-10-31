@@ -618,10 +618,13 @@ negative N, comment out original line and use the absolute value."
       (_ (error "Unknown terminal emulator: %s" lemacs-default-terminal-emulator))))
 
   (defun lemacs/close-term ()
-    "Closes the eshell (or any buffer), killing the window."
+    "Closes the eshell (or any buffer). If it is the last window, close the current tab instead of deleting the window."
     (interactive)
-    (kill-buffer (current-buffer))
-    (delete-window))
+    (let ((current-tab (tab-bar--current-tab)))
+      (kill-buffer (current-buffer))       ; Kill the current buffer
+      (if (one-window-p)
+          (tab-bar-close-tab current-tab)  ; Close the tab if it's the last window
+        (delete-window))))                 ; Otherwise, just delete the window
 
   (defun lemacs/split-term-vertical ()
     "Split the window vertically and open a new instance of eshell."
