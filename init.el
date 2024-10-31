@@ -1301,6 +1301,9 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   ;; [ -n "$EAT_SHELL_INTEGRATION_DIR" ] && \
   ;; source "$EAT_SHELL_INTEGRATION_DIR/bash"
 
+  ;; Makes eat quicker
+  (setq process-adaptive-read-buffering nil)
+
   (setq eat-term-name "xterm-256color")
 
   ;; Runs not compatible eshell term stuff with eat on the same buffer
