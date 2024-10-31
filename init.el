@@ -1796,6 +1796,14 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :after (:any prisma-mode)
   :load-path "site-lisp/prisma-mode/")
 
+(use-package lsp-tailwindcss
+  :ensure t
+  :defer t
+  :config
+  (add-to-list 'lsp-language-id-configuration '(".*\\.erb$" . "html"))
+  :init
+  (setq lsp-tailwindcss-add-on-mode t))
+
 (use-package pulsar
   :defer t
   :ensure t
