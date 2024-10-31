@@ -1218,6 +1218,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
            (,(nerd-icons-faicon "nf-fa-music") "emms" "" (lambda (&rest _) (emms-browser)))
            (,(nerd-icons-faicon "nf-fa-youtube_play") "yeetube" "" (lambda (&rest _) (call-interactively 'yeetube-search)))
            (,(nerd-icons-faicon "nf-fa-hashtag") "erc" "" (lambda (&rest _) (call-interactively 'erc-tls)))
+           (,(nerd-icons-faicon "nf-fa-cog") "config" "" (lambda (&rest _) (call-interactively (customize-group 'lemacs))))
            )))
 
   (dashboard-setup-startup-hook))
