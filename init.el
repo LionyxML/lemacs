@@ -1239,7 +1239,9 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
                                    (delete . "-")
                                    (change . "│")
                                    (unknown . "?")
-                                   (ignored . "i"))))
+                                   (ignored . "i")))
+  :config
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
 (use-package async
   :defer t
