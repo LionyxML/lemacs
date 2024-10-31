@@ -601,6 +601,14 @@ negative N, comment out original line and use the absolute value."
   (setq eshell-cmpl-ignore-case t)
   (setq eshell-ask-to-save-history (quote always))
 
+  (defun eshell/x (&rest args)
+    "Run a command in a vertical split `eat` buffer."
+    (let ((command (car args))
+          (arguments (cdr args)))
+      (split-window-right)
+      (other-window 1)
+      (apply 'eat command arguments)))
+
   (defun lemacs/open-term  ()
     "Open the default terminal emulator based on lemacs-default-terminal-emulator."
     (interactive)
