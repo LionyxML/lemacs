@@ -1654,7 +1654,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :hook
   (prog-mode . indent-guide-mode)
   :config
-  (setq indent-guide-char "│"))
+  (setq indent-guide-char "¦"))
 
 (use-package ligature
   :if (eq lemacs-ligatures 'on)
