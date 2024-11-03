@@ -226,6 +226,14 @@ both as options to ~when I need to run a term~."
            (const :tag "terminal" "terminal"))
   :group 'lemacs)
 
+(defcustom lemacs-codeium-scope 'nil
+  "Default Codeium (IA assist) scope."
+  :type '(choice
+           (const :tag "everywhere" "everywhere")
+           (const :tag "prog-mode" "prog-mode")
+           (const :tag "nil" nil))
+  :group 'lemacs)
+
 ;;; --------------------------------- EMACS
 (use-package emacs
   :custom
