@@ -2556,6 +2556,31 @@ your override of `flymake-eslint-executable-name.'"
 		  ("V" . 'yeetube-mpv-toggle-no-video-flag)
 		  ("k" . 'yeetube-remove-saved-video)))
 
+
+;;; --------------------------------- PIM
+(use-package vdirel
+  :ensure t
+  :defer t)
+
+(use-package khalel
+  :ensure t
+  :after org
+  :config
+  ;; (setq khalel-khal-command "~/.local/bin/khal")
+  (setq org-agenda-files  (list (concat org-directory "/" "calendar.org")))
+  (setq khalel-import-org-file (concat org-directory "/" "calendar.org"))
+  (setq khalel-vdirsyncer-command "vdirsyncer")
+  (setq khalel-capture-key "e")
+  (setq khalel-import-org-file-confirm-overwrite nil)
+  (setq khalel-import-end-date "+30d")
+
+  (defun lemacs/calendar-sync ()
+    (interactive)
+    (khalel-run-vdirsyncer)
+    (khalel-import-events))
+
+  (khalel-add-capture-template))
+
 ;;; --------------------------------- AI Assistant
 (use-package codeium
   :if (not (eq lemacs-codeium-scope 'nil))
