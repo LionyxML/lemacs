@@ -13,8 +13,8 @@
 var/
 
 #  Emacs tmp files & Misc
-.authinfo*
 !/tree-sitter/bin/
+.authinfo*
 .dap-breakpoints
 .org-generic-id-locations
 .org-id-locations
@@ -34,6 +34,7 @@ var/
 /eln-cache
 /elpa
 /emms
+/erc
 /eshell
 /eshell/history
 /eshell/lastdir
@@ -58,13 +59,13 @@ var/
 /tree-sitter/
 /tree-sitter/bin/*
 /url/
-/erc
 custom-vars.el
+eww-bookmarks
 gnus.el
 gnus/
 history
 oauth2-auto.plist
+private.el
 project-window-list
 viper
 yeetube
-eww-bookmarks
