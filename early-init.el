@@ -1,4 +1,4 @@
-;; early-init.el --- LEmacs (Lionyx Emacs)
+;; early-init.el --- LEmacs (Lionyx Emacs)  -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;; Early init configuration for LEmacs
 
@@ -10,7 +10,8 @@
   ;; These colors should match your selected theme for maximum effect
   ;; Note that for catppuccin whenever we create a new frame or open it on terminal
   ;; it is necessary to reload the theme.
-  (set-face-attribute 'mode-line nil :background "#1E1E2D" :foreground "#1E1E2D" :box 'unspecified))
+  ;; (set-face-attribute 'mode-line nil :background "#1E1E2D" :foreground "#1E1E2D" :box 'unspecified)
+  )
 
 (lemacs/avoid-initial-flash-of-light)
 
@@ -26,4 +27,3 @@
 
 (provide 'early-init)
 ;;; early-init.el ends here
-
