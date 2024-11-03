@@ -1361,12 +1361,13 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
       (apply oldfun args)
     "No database loaded yet"))
 
-  (setq elfeed-feeds
-        '(
-          "https://planet.emacslife.com/atom.xml"
-          "https://www.rahuljuliato.com/rss.xml"
-          "https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ"
-          ))
+  ;; NOTE: set your feeds like these
+  ;; (setq elfeed-feeds
+  ;;       '(
+  ;;         "https://planet.emacslife.com/atom.xml"
+  ;;         "https://www.rahuljuliato.com/rss.xml"
+  ;;         "https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ"
+  ;;         ))
 
   (add-hook 'elfeed-new-entry-hook
             (elfeed-make-tagger :feed-url "youtube\\.com"
@@ -1872,7 +1873,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
               (tab-bar--update-tab-bar-lines t))))
 
 (use-package persp-mode-project-bridge
-  :defer nil
+  :defer t
   :ensure t
   :hook
   (persp-mode-project-bridge-mode . (lambda ()
