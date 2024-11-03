@@ -1174,31 +1174,6 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :config)
 
-(use-package catppuccin-theme
-  :if (eq lemacs-default-theme 'catppuccin)
-  :defer t
-  :ensure t
-  :config
-  ;; NOTE reloading catppuccin "undoes" what early init does to screen NOT to flash on GUI boot
-  (defun lemacs/catppuccin-hack (_)
-    "A catppuccin hack to make sure everything is loaded"
-    (catppuccin-reload))
-  (add-hook 'after-init-hook (lambda ()
-                               (run-with-timer 0.3 nil
-                                               (lambda ()(lemacs/catppuccin-hack nil)))))
-  (add-hook 'after-make-frame-functions 'lemacs/catppuccin-hack)
-  
-  ;; Custom diff-hl colors
-  (custom-set-faces
-   `(diff-hl-change ((t (:background unspecified :foreground ,(catppuccin-get-color 'blue))))))
-  (custom-set-faces
-   `(diff-hl-delete ((t (:background unspecified :foreground ,(catppuccin-get-color 'red))))))
-  (custom-set-faces
-   `(diff-hl-insert ((t (:background unspecified :foreground ,(catppuccin-get-color 'green))))))
-
-  ;; Custom vhl/default-face
-  (custom-set-faces `(vhl/default-face ((t (:background ,(catppuccin-get-color 'surface2)))))))
-
 (use-package breadcrumb
   :defer t
   :ensure t
@@ -2581,7 +2556,6 @@ your override of `flymake-eslint-executable-name.'"
 		  ("V" . 'yeetube-mpv-toggle-no-video-flag)
 		  ("k" . 'yeetube-remove-saved-video)))
 
-;;; -------------------------------- INIT/PROVIDE THIS CONFIG
 ;;; --------------------------------- AI Assistant
 (use-package codeium
   :if (not (eq lemacs-codeium-scope 'nil))
@@ -2612,6 +2586,33 @@ your override of `flymake-eslint-executable-name.'"
             :chat-model "codellama" :embedding-model "codellama")))
 
 
+;;; --------------------------------- THEMES
+(use-package catppuccin-theme
+  :if (eq lemacs-default-theme 'catppuccin)
+  :defer t
+  :ensure t
+  :config
+  ;; NOTE reloading catppuccin "undoes" what early init does to screen NOT to flash on GUI boot
+  (defun lemacs/catppuccin-hack (_)
+    "A catppuccin hack to make sure everything is loaded"
+    (catppuccin-reload))
+  (add-hook 'after-init-hook (lambda ()
+                               (run-with-timer 0.3 nil
+                                               (lambda ()(lemacs/catppuccin-hack nil)))))
+  (add-hook 'after-make-frame-functions 'lemacs/catppuccin-hack)
+  
+  ;; Custom diff-hl colors
+  (custom-set-faces
+   `(diff-hl-change ((t (:background unspecified :foreground ,(catppuccin-get-color 'blue))))))
+  (custom-set-faces
+   `(diff-hl-delete ((t (:background unspecified :foreground ,(catppuccin-get-color 'red))))))
+  (custom-set-faces
+   `(diff-hl-insert ((t (:background unspecified :foreground ,(catppuccin-get-color 'green))))))
+
+  ;; Custom vhl/default-face
+  (custom-set-faces `(vhl/default-face ((t (:background ,(catppuccin-get-color 'surface2)))))))
+
+
 (use-package modus-themes
   :if (eq lemacs-default-theme 'modus)
   :ensure t
@@ -2633,22 +2634,61 @@ your override of `flymake-eslint-executable-name.'"
      (bg-mode-line-active bg-main)
      (fg-mode-line-active fg-main)
      (bg-mode-line-inactive bg-main)
-     (fg-mode-line-active fg-dim)
+     (fg-mode-line-inactive fg-dim)
      (border-mode-line-active bg-transparent)
      (border-mode-line-inactive bg-transparent)))
 
-
   (modus-themes-with-colors
     (custom-set-faces
+     ;; Treemacs faces with Modus color variables
+     `(treemacs-async-loading-face ((,c :foreground ,fg-main)))
+     `(treemacs-directory-face ((,c :foreground ,blue)))
+     `(treemacs-directory-collapsed-face ((,c :foreground ,blue)))
+     `(treemacs-file-face ((,c :foreground ,fg-main)))
+     `(treemacs-fringe-indicator-face ((,c :foreground ,fg-main)))
+     `(treemacs-git-added-face ((,c :inherit success)))
+     `(treemacs-git-commit-diff-face ((,c :foreground ,green)))
+     `(treemacs-git-conflict-face ((,c :inherit error)))
+     `(treemacs-git-ignored-face ((,c :inherit shadow)))
+     `(treemacs-git-modified-face ((,c :inherit warning)))
+     `(treemacs-git-renamed-face ((,c :inherit italic)))
+     `(treemacs-git-unmodified-face ((,c :foreground ,fg-main)))
+     `(treemacs-git-untracked-face ((,c :inherit shadow)))
+     `(treemacs-header-button-face ((,c :foreground ,fg-main)))
+     `(treemacs-help-column-face ((,c :foreground ,blue)))
+     `(treemacs-help-title-face ((,c :foreground ,fg-main)))
+     `(treemacs-hl-line-face ((,c :background ,bg-hl-line :extend t)))
+     `(treemacs-marked-file-face ((,c :foreground ,red)))
+     `(treemacs-nerd-icons-face ((,c :foreground ,blue)))
+     `(treemacs-on-failure-pulse-face ((,c :foreground ,fg-main)))
+     `(treemacs-on-success-pulse-face ((,c :foreground ,fg-main)))
+     `(treemacs-peek-mode-indicator-face ((,c :foreground ,fg-main)))
+     `(treemacs-remote-face ((,c :foreground ,fg-main)))
+     `(treemacs-root-face ((,c :foreground ,blue :background ,bg-main)))
+     `(treemacs-root-remote-disconnected-face ((,c :foreground ,yellow)))
+     `(treemacs-root-remote-unreadable-face ((,c :foreground ,yellow)))
+     `(treemacs-root-unreadable-face ((,c :foreground ,red)))
+     `(treemacs-tags-face ((,c :foreground ,fg-main)))
+     `(treemacs-term-node-face ((,c :foreground ,blue)))
+     `(treemacs-window-background-face ((,c :background ,bg-main)))
+     `(treemacs-nerd-icons-root-face ((,c :foreground ,blue)))
+     `(treemacs-nerd-icons-file-face ((,c :foreground ,blue)))
+
+     ;; Custom diff-hl colors
+     `(diff-hl-change ((,c :foreground ,blue :background unspecified)))
+     `(diff-hl-delete ((,c :foreground ,red :background unspecified)))
+     `(diff-hl-insert ((,c :foreground ,green :background unspecified)))
+
+     ;; Other faces
      `(fringe ((,c
-                 :background ,bg-main
-                 :box nil)))
+                :background ,bg-main
+                :box nil)))
      `(line-number ((,c
-                 :background ,bg-main
-                 :box nil)))
+                     :background ,bg-main
+                     :box nil)))
      `(line-number-current-line ((,c
-                 :background ,bg-main
-                 :box nil)))
+                                  :background ,bg-main
+                                  :box nil)))
      `(tab-bar ((,c
                  ;; :height 0.8
                  :background ,bg-main
@@ -2659,9 +2699,10 @@ your override of `flymake-eslint-executable-name.'"
                      :box (:line-width 2 :style flat-button))))
      `(tab-bar-tab-inactive ((,c
                               :background ,bg-main
-                              :box (:line-width 2 :style flat-button))))))
+                              :box (:line-width 2 :style flat-button)))))))
 
-  )
 
+
+;;; -------------------------------- INIT/PROVIDE THIS CONFIG
 (provide 'init)
 ;;; init.el ends here
