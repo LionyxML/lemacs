@@ -76,10 +76,11 @@
   (require 'use-package))
 
 (require 'package)
-(add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
+(setq package-check-signature nil)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
 (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
-(add-to-list 'load-path "~/.emacs.d/lisp")
+(add-to-list 'load-path "~/.emacs.d/site-lisp")
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
