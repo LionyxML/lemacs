@@ -2493,16 +2493,6 @@ your override of `flymake-eslint-executable-name.'"
 	;; (lsp-inlay-hints-mode)
     ))
 
-(use-package ellama
-  :defer t
-  :ensure t
-  :init
-  (setopt ellama-language "English")
-  (require 'llm-ollama)
-  (setopt ellama-provider
-          (make-llm-ollama
-            :chat-model "codellama" :embedding-model "codellama")))
-
 (use-package tempel
   ;; Require trigger prefix before template name when completing.
   ;; :custom
@@ -2584,6 +2574,36 @@ your override of `flymake-eslint-executable-name.'"
 		  ("k" . 'yeetube-remove-saved-video)))
 
 ;;; -------------------------------- INIT/PROVIDE THIS CONFIG
+;;; --------------------------------- AI Assistant
+(use-package codeium
+  :if (not (eq lemacs-codeium-scope 'nil))
+  :load-path "site-lisp/codeium/"
+  :config
+  ;; First time loading this package, you need to set up your API key:
+  ;; (setq codeium/metadata/api_key "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
+  ;;
+  ;; You can do this from within Emacs by running: M-x codeium-install
+  (when lemacs-codeium-scope
+    (pcase lemacs-codeium-scope
+      ('everywhere (add-to-list 'completion-at-point-functions #'codeium-completion-at-point))
+      ('prog-mode  (add-hook 'prog-mode-hook
+                             (lambda ()
+                               (require 'cape)
+                               (setq-local completion-at-point-functions
+                                           (list (cape-capf-super #'codeium-completion-at-point #'lsp-completion-at-point)))))))
+    (codeium-init)))
+
+(use-package ellama
+  :defer t
+  :ensure t
+  :init
+  (setopt ellama-language "English")
+  (require 'llm-ollama)
+  (setopt ellama-provider
+          (make-llm-ollama
+            :chat-model "codellama" :embedding-model "codellama")))
+
+
 (use-package modus-themes
   :if (eq lemacs-default-theme 'modus)
   :ensure t
