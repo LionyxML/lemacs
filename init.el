@@ -197,8 +197,8 @@ Notice this is a bit messy."
   :group 'lemacs)
 
 (defcustom lemacs-default-terminal-emulator 'eat
-  "Default terminal emulator/shell for lemacs.
-Possible values are 'eshell' or 'eat'.  Yes, I known,
+  "Default terminal `emulator/shell' for lemacs.
+Possible values are `eshell' or `eat'.  Yes, I known,
 eshell is not a term emulator, but on broader terms,
 it is a shell inside a window, hence I'm threading
 both as options to ~when I need to run a term~."
@@ -206,7 +206,7 @@ both as options to ~when I need to run a term~."
   :group 'lemacs)
 
 (defcustom lemacs-default-projects-folder "~/Projects"
-  "Default place to search for projects with 'lemacs/find-projects-and-switch'."
+  "Default place to search for projects with `lemacs/find-projects-and-switch'."
   :type 'string
   :group 'lemacs)
 
@@ -218,7 +218,7 @@ both as options to ~when I need to run a term~."
            (const :tag "nil" nil))
   :group 'lemacs)
 
-(defcustom lemacs-default-initial-buffer 'terminal
+(defcustom lemacs-default-initial-buffer 'dashboard
   "Default LEmacs initial buffer."
   :type '(choice
            (const :tag "scratch" "scratch")
@@ -297,27 +297,27 @@ both as options to ~when I need to run a term~."
   ;; Modeline fonts ajustments per OS
   (unless (eq system-type 'darwin)
     (if (facep 'mode-line-active)
-      (set-face-attribute 'mode-line-active nil
-        :family "JetBrainsMono Nerd Font"
-        :height 100) ; For 29+
+        (set-face-attribute 'mode-line-active nil
+                            :family "JetBrainsMono Nerd Font"
+                            :height 100) ; For 29+
       (set-face-attribute 'mode-line nil
-        :family "JetBrainsMono Nerd Font"
-        :height 100))
+                          :family "JetBrainsMono Nerd Font"
+                          :height 100))
     (set-face-attribute 'mode-line-inactive nil
-      :family "JetBrainsMono Nerd Font"
-      :height 100))
+                        :family "JetBrainsMono Nerd Font"
+                        :height 100))
 
   (when (eq system-type 'darwin)
     (if (facep 'mode-line-active)
-      (set-face-attribute 'mode-line-active nil
-        :family "JetBrainsMono Nerd Font"
-        :height 130) ; For 29+
+        (set-face-attribute 'mode-line-active nil
+                            :family "JetBrainsMono Nerd Font"
+                            :height 130) ; For 29+
       (set-face-attribute 'mode-line nil
-        :family "JetBrainsMono Nerd Font"
-        :height 130))
+                          :family "JetBrainsMono Nerd Font"
+                          :height 130))
     (set-face-attribute 'mode-line-inactive nil
-      :family "JetBrainsMono Nerd Font"
-      :height 130))
+                        :family "JetBrainsMono Nerd Font"
+                        :height 130))
 
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
@@ -349,6 +349,7 @@ both as options to ~when I need to run a term~."
     (lemacs/transparency-set))
 
   (defun lemacs/rename-buffer-and-move-to-new-window ()
+    "Promotes a side buffer to a new window."
     (interactive)
     (let ((temp-name (make-temp-name "temp-buffer-")))
       (rename-buffer temp-name t)
@@ -384,7 +385,7 @@ both as options to ~when I need to run a term~."
     (interactive)
     (eww-copy-page-url)
     (let ((url (current-kill 0)))
-    (message (concat ">>> Sent to mpv: " url))
+      (message (concat ">>> Sent to mpv: " url))
       (start-process "mpv" nil "mpv" "--cache=yes" "--force-window=yes" url)))
 
   ;; Add prompt indicator to `completing-read-multiple'.
@@ -423,7 +424,17 @@ both as options to ~when I need to run a term~."
 									(recenter midpoint)))))
 
 
-  ;; Starts elisp with outline collapsed
+  (defun lemacs/outline-set-buffer-local-ellipsis (ellipsis)
+    "Apply the ellipsis ELLIPSIS to outline mode locally to a buffer."
+    (let* ((display-table (or buffer-display-table (make-display-table)))
+           (face-offset (* (face-id 'shadow) (ash 1 22)))
+           (value (vconcat (mapcar (lambda (c) (+ face-offset c)) ellipsis))))
+      (set-display-table-slot display-table 'selective-display value)
+      (setq buffer-display-table display-table)))
+  (add-hook 'outline-minor-mode-hook
+            #'(lambda() (lemacs/outline-set-buffer-local-ellipsis " ▼ ")))
+
+  ;; Starts elisp with outline collapse
   (defun lemacs/elisp-mode-hook ()
     (interactive)
     (outline-minor-mode 1)
@@ -449,7 +460,7 @@ negative N, comment out original line and use the absolute value."
                         (end-of-line)
                         (if (< 0 (forward-line 1)) ;Go to beginning of next line, or make a new one
                             (newline))))))
-          (dotimes (i (abs (or n 1)))               ;Insert N times, or once if not specified
+          (dotimes (_ (abs (or n 1)))               ;Insert N times, or once if not specified
             (insert text))))
       (if use-region nil                                   ;Only if we're working with a line (not a region)
         (let ((pos (- (point) (line-beginning-position)))) ;Save column
@@ -460,31 +471,42 @@ negative N, comment out original line and use the absolute value."
 
   ;; Welcome to LEmacs
   (add-hook 'emacs-startup-hook
-    (lambda ()
-      (message "Emacs has fully loaded. This code runs after startup.")
+            (lambda ()
+              (message "Emacs has fully loaded. This code runs after startup.")
 
-      ;; (profiler-report)
-      ;; (profiler-stop)
+              ;; (profiler-report)
+              ;; (profiler-stop)
 
-      (with-current-buffer (get-buffer-create "*scratch*")
-        (insert (format "%s
+              (with-current-buffer (get-buffer-create "*scratch*")
+                (insert (format "%s
 
     Loading time : %s
     Packages     : %s
 "
-                  lemacs-art
-                  (emacs-init-time)
-                  (number-to-string (length package-activated-list)))))))
+                                lemacs-art
+                                (emacs-init-time)
+                                (number-to-string (length package-activated-list)))))))
 
-  ;; LEmacs default starting
+  ;; LEmacs default starting buffer if no arguments or file
   (add-hook 'emacs-startup-hook
             (lambda ()
-              (pcase lemacs-default-initial-buffer
-                ('scratch (scratch-buffer))
-                ('dashboard (dashboard-open))
-                ('terminal (lemacs/open-term))
-                )))
+              (let* ((filtered-args (seq-filter
+                                     (lambda (arg)
+                                       (not (member arg '("-Q" "-nw" "--eval"))))
+                                     command-line-args)))
+                (when (= (length filtered-args) 1)
+                  (ignore-errors
+                    (pcase lemacs-default-initial-buffer
+                      ('scratch (scratch-buffer))
+                      ('dashboard (dashboard-open))
+                      ('terminal (lemacs/open-term))))))))
 
+  ;; Runs 'private.el' after Emacs inits
+  (add-hook 'after-init-hook
+            (lambda ()
+              (let ((private-file (expand-file-name "private.el" user-emacs-directory)))
+                (when (file-exists-p private-file)
+                  (load private-file)))))
 
   :bind
   (("C-x C-b" . 'ibuffer))
@@ -877,14 +899,14 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 (use-package org
   :ensure nil
   :defer t
-  :mode ("\\.org\\'" . org-mode)
-  :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
+  :mode ("\\.org\\'" . org-mode))
 
 (use-package recentf
   :ensure nil
   :defer t
   :hook
-  (after-init . recentf-mode))
+  ;; (after-init . recentf-mode)
+  )
 
 (use-package column-number
   :ensure nil
