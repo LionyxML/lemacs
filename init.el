@@ -196,7 +196,7 @@ Notice this is a bit messy."
            (const :tag "nil" nil))
   :group 'lemacs)
 
-(defcustom lemacs-default-terminal-emulator 'eat
+(defcustom lemacs-default-terminal-emulator 'eshell
   "Default terminal `emulator/shell' for lemacs.
 Possible values are `eshell' or `eat'.  Yes, I known,
 eshell is not a term emulator, but on broader terms,
@@ -661,11 +661,46 @@ negative N, comment out original line and use the absolute value."
 (use-package eshell
   :ensure nil
   :defer nil
+  :custom
+  (eshell-hist-ignoredups t)
+  (eshell-cmpl-cycle-completions nil)
+  (eshell-cmpl-ignore-case t)
+  (eshell-ask-to-save-history (quote always))
+  (eshell-cd-on-directory t)
+  (eshell-history-size 1024)
+  (eshell-input-filter 'lemacs/eshell-input-filter)
   :config
-  (setq eshell-hist-ignoredups t)
-  (setq eshell-cmpl-cycle-completions nil)
-  (setq eshell-cmpl-ignore-case t)
-  (setq eshell-ask-to-save-history (quote always))
+  (defun lemacs/eshell-input-filter (input)
+    "Do not save on the following:
+       - empty lines
+       - commands that start with a space, `ls`/`l`/`lsd`
+    NOTE: stolen from https://github.com/gopar/.emacs.d"
+    (and
+     (eshell-input-filter-default input)
+     (eshell-input-filter-initial-space input)
+     (not (string-prefix-p "ls " input))
+     (not (string-prefix-p "lsd " input))
+     (not (string-prefix-p "l " input))))
+
+  (defun eshell/cat-with-syntax-highlighting (filename)
+    "Like cat(1) but with syntax highlighting.
+Stole from aweshell"
+    (let ((existing-buffer (get-file-buffer filename))
+          (buffer (find-file-noselect filename)))
+      (eshell-print
+       (with-current-buffer buffer
+         (if (fboundp 'font-lock-ensure)
+             (font-lock-ensure)
+           (with-no-warnings
+             (font-lock-fontify-buffer)))
+         (let ((contents (buffer-string)))
+           (remove-text-properties 0 (length contents) '(read-only nil) contents)
+           contents)))
+      (unless existing-buffer
+        (kill-buffer buffer))
+      nil))
+  (advice-add 'eshell/cat :override #'eshell/cat-with-syntax-highlighting)
+
 
   (defun eshell/x (&rest args)
     "Run a command in a vertical split `eat` buffer."
@@ -755,18 +790,18 @@ negative N, comment out original line and use the absolute value."
   (global-set-key (kbd "C-c e x") 'lemacs/close-term)
 
   (add-hook 'eshell-mode-hook
-			(lambda ()
+            (lambda ()
               (progn
                (define-key eshell-mode-map "\C-a" 'eshell-bol)
                (define-key eshell-mode-map "\C-r" 'consult-history)
                (define-key eshell-mode-map [up] 'previous-line)
                (define-key eshell-mode-map [down] 'next-line))
               (local-set-key (kbd "C-l")
-							 (lambda ()
+                             (lambda ()
                                (interactive)
                                (eshell/clear 1)
-							   (eshell-send-input)
-							   ))))
+                               (eshell-send-input)
+                               ))))
 
   (setq eshell-prompt-function
         (lambda ()
@@ -829,9 +864,9 @@ negative N, comment out original line and use the absolute value."
   (add-hook 'eshell-mode-hook (lambda () (setenv "TERM" "xterm-256color")))
 
   (setq eshell-visual-commands
-		'("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
-		  "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
-		   "ncmpcpp" "newsbeuter" "nethack" "mutt" "yarn" "pnpm" "sudo" "mpv" "cava")))
+        '("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
+          "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
+           "ncmpcpp" "newsbeuter" "nethack" "mutt" "mpv" "cava")))
 
 ;;; --------------------------------- VC
 (use-package vc
@@ -860,11 +895,12 @@ negative N, comment out original line and use the absolute value."
   :defer t
   :custom
   (display-buffer-alist
-   '(("\\*.*-e?shell\\*"  ;; we only want <project_name>-eshell to follow this rule
-      (display-buffer-in-side-window)
-      (window-height . 0.25)
-      (side . bottom)
-      (slot . -1))
+   '(
+     ;; ("\\*.*-e?shell\\*"  ;; we only want <project_name>-eshell to follow this rule
+     ;;  (display-buffer-in-side-window)
+     ;;  (window-height . 0.25)
+     ;;  (side . bottom)
+     ;;  (slot . -1))
      ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\|sh\\|env\\|python3\\|sudo\\)\\*"
       (display-buffer-in-side-window)
       (window-height . 0.25)
@@ -991,6 +1027,24 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (after-init . column-number-mode))
 
 ;;; --------------------------------- EXTERNAL PACKAGES
+(use-package eshell-z
+  :ensure t
+  ;; :defer t
+  :hook
+  (eshell-load . (lambda ()
+                   (require 'eshell-z))))
+
+(use-package eshell-syntax-highlighting
+  :ensure t
+  :config
+  (eshell-syntax-highlighting-global-mode +1)
+  :init
+  (defface eshell-syntax-highlighting-invalid-face
+    '((t :inherit error))
+    "Face used for invalid Eshell commands."
+    :group 'eshell-syntax-highlighting)
+  )
+
 (use-package evil
   :ensure t
   :defer t
@@ -1623,7 +1677,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :config
   (setq eldoc-echo-area-use-multiline-p nil)
   (setq eldoc-echo-area-display-truncation-message nil)
-  
+
   (if (display-graphic-p)
       (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point)
     (global-set-key (kbd "C-h C-.") #'eldoc-doc-buffer)))
