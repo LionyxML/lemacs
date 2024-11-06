@@ -1344,19 +1344,23 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :bind ("C-c d" . docker)
   :config
-  (when (eq lemacs-docker-executable 'docker)
-    (setq docker-command "docker")
-    (setq docker-compose-command "docker-compose"))
-
-  (when (eq lemacs-docker-executable 'podman)
-    (setq docker-command "podman")
-    (setq docker-compose-command "podman-compose")))
+  (pcase lemacs-docker-executable
+    ('docker
+     (setf docker-command "docker"
+           docker-compose-command "docker-compose"))
+    ('podman
+     (setf docker-command "podman"
+           docker-compose-command "podman-compose"))))
 
 (use-package dockerfile-mode
   :defer t
   :ensure t
-  :mode "\\Dockerfile\\'"
-  :config)
+  :config
+  (pcase lemacs-docker-executable
+    ('docker
+     (setq dockerfile-mode-command "docker"))
+    ('podman
+     (setq dockerfile-docker-command "podman"))))
 
 (use-package doom-modeline
   :defer t
