@@ -630,7 +630,7 @@ negative N, comment out original line and use the absolute value."
   :init
   (with-eval-after-load 'erc
     (add-to-list 'erc-modules 'sasl))
-  
+
   (setopt erc-sasl-mechanism 'external)
 
   (defun erc-liberachat ()
@@ -653,7 +653,6 @@ negative N, comment out original line and use the absolute value."
   :custom
   (erc-join-buffer 'window)
   (erc-buffer-display 'window)
-  ;; (erc-interactive-display ...) ;; this option will be available on next ERC release (5.6)
   (erc-hide-list '("JOIN" "PART" "QUIT"))
   (erc-timestamp-format "[%H:%M]")
   (erc-autojoin-channels-alist '((".*\\.libera\\.chat" "#emacs" "#systemcrafters"))))
