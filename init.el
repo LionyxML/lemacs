@@ -615,6 +615,14 @@ negative N, comment out original line and use the absolute value."
      ("America/Vancouver" "Vancouver"))))
 
 
+;;; --------------------------------- PROCED
+(use-package proced
+  :ensure nil
+  :defer t
+  :custom
+  (proced-enable-color-flag t)
+  (proced-tree-flag t))
+
 ;;; --------------------------------- ERC
 (use-package erc
   :ensure nil
