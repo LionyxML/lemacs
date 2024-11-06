@@ -113,7 +113,7 @@
     (when (file-directory-p dir)
       (byte-recompile-directory dir 0 t)
       (native-compile-async dir 'recursively)))
- 
+
   (message ">>> LEmacs installed!!! Presss any key to close the installer and open Emacs normally.")
   (read-key)
   (kill-emacs))
@@ -413,23 +413,23 @@ both as options to ~when I need to run a term~."
 
   ;; Page down and center
   (global-set-key (kbd "C-v") (lambda ()
-								(interactive)
-								(scroll-up-command)
-								(recenter)
-								))
+                                (interactive)
+                                (scroll-up-command)
+                                (recenter)
+                                ))
 
 
   ;; Page up and center if not on beginning of buffer
   (global-set-key (kbd "M-v") (lambda ()
-								(interactive)
-								(scroll-down-command)
-								(unless (= (window-start) (point-min))
-								  (recenter))
-								(when (= (window-start) (point-min))
-								  (let ((midpoint (/ (window-height) 2)))
-									(goto-char (window-start))
-									(forward-line midpoint)
-									(recenter midpoint)))))
+                                (interactive)
+                                (scroll-down-command)
+                                (unless (= (window-start) (point-min))
+                                  (recenter))
+                                (when (= (window-start) (point-min))
+                                  (let ((midpoint (/ (window-height) 2)))
+                                    (goto-char (window-start))
+                                    (forward-line midpoint)
+                                    (recenter midpoint)))))
 
 
   (defun lemacs/outline-set-buffer-local-ellipsis (ellipsis)
@@ -2106,7 +2106,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
   :config
   (when lemacs-nerd-icons
-	(add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
   (setq corfu--frame-parameters
         '((no-accept-focus . t)
@@ -2130,23 +2130,23 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
           (cursor-type)
           (no-special-glyphs . t)
           (desktop-dont-save . t)))
-  
+
 
   :init
   (global-corfu-mode)
   (corfu-popupinfo-mode t)
 
   (when (not window-system)
-	(add-to-list 'load-path "~/.emacs.d/site-lisp/corfu-terminal/")
-	(require 'corfu-terminal)
-	(corfu-terminal-mode)))
+    (add-to-list 'load-path "~/.emacs.d/site-lisp/corfu-terminal/")
+    (require 'corfu-terminal)
+    (corfu-terminal-mode)))
 
 (use-package nerd-icons-corfu
   :if lemacs-nerd-icons
-	:ensure t
+    :ensure t
   :defer t
-	:after (:all corfu)
-	:config)
+    :after (:all corfu)
+    :config)
 
 (use-package consult
   :ensure t
@@ -2175,7 +2175,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
          ("M-y" . consult-yank-pop)                ;; orig. yank-pop
          ;; M-g bindings in `goto-map'
          ("M-g e" . consult-compile-error)
-		     ("M-g f" . consult-flymake)
+             ("M-g f" . consult-flymake)
          ("M-g g" . consult-goto-line)             ;; orig. goto-line
          ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
          ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
@@ -2296,37 +2296,37 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
                  (window-parameters (mode-line-format . none))))
 
   (defun embark-which-key-indicator ()
-	"An embark indicator that displays keymaps using which-key.
+    "An embark indicator that displays keymaps using which-key.
 The which-key help message will show the type and value of the
 current target followed by an ellipsis if there are further
 targets."
-	(lambda (&optional keymap targets prefix)
+    (lambda (&optional keymap targets prefix)
       (if (null keymap)
           (which-key--hide-popup-ignore-command)
-		(which-key--show-keymap
-		 (if (eq (plist-get (car targets) :type) 'embark-become)
-			 "Become"
+        (which-key--show-keymap
+         (if (eq (plist-get (car targets) :type) 'embark-become)
+             "Become"
            (format "Act on %s '%s'%s"
                    (plist-get (car targets) :type)
                    (embark--truncate-target (plist-get (car targets) :target))
                    (if (cdr targets) "…" "")))
-		 (if prefix
-			 (pcase (lookup-key keymap prefix 'accept-default)
+         (if prefix
+             (pcase (lookup-key keymap prefix 'accept-default)
                ((and (pred keymapp) km) km)
                (_ (key-binding prefix 'accept-default)))
            keymap)
-		 nil nil t (lambda (binding)
-					 (not (string-suffix-p "-argument" (cdr binding))))))))
+         nil nil t (lambda (binding)
+                     (not (string-suffix-p "-argument" (cdr binding))))))))
 
   (setq embark-indicators
-		'(embark-which-key-indicator
-		  embark-highlight-indicator
-		  embark-isearch-highlight-indicator))
+        '(embark-which-key-indicator
+          embark-highlight-indicator
+          embark-isearch-highlight-indicator))
 
   (defun embark-hide-which-key-indicator (fn &rest args)
-	"Hide the which-key indicator immediately when using the completing-read prompter."
-	(which-key--hide-popup-ignore-command)
-	(let ((embark-indicators
+    "Hide the which-key indicator immediately when using the completing-read prompter."
+    (which-key--hide-popup-ignore-command)
+    (let ((embark-indicators
            (remq #'embark-which-key-indicator embark-indicators)))
       (apply fn args)))
 
@@ -2370,9 +2370,9 @@ your override of `flymake-eslint-executable-name.'"
 
 
   (defun lemacs/configure-eslint-with-flymake ()
-	(when (or (eq major-mode 'tsx-ts-mode)
-			  (eq major-mode 'typescript-ts-mode)
-			  (eq major-mode 'typescriptreact-mode))
+    (when (or (eq major-mode 'tsx-ts-mode)
+              (eq major-mode 'typescript-ts-mode)
+              (eq major-mode 'typescriptreact-mode))
       (lemacs/use-local-eslint)))
 
   (add-hook 'eglot-managed-mode-hook #'lemacs/use-local-eslint)
@@ -2394,11 +2394,11 @@ your override of `flymake-eslint-executable-name.'"
   (set-window-fringes nil 0 0)
 
   (bind-keys :map flymake-mode-map
-			 ;; ("C-c ! l" . flymake-show-buffer-diagnostics)
-			 ("C-c ! l" . consult-flymake)
-			 ("C-c ! P" . flymake-show-project-diagnostics)
-			 ("C-c ! n" . flymake-goto-next-error)
-			 ("C-c ! p" . flymake-goto-prev-error)
+             ;; ("C-c ! l" . flymake-show-buffer-diagnostics)
+             ("C-c ! l" . consult-flymake)
+             ("C-c ! P" . flymake-show-project-diagnostics)
+             ("C-c ! n" . flymake-goto-next-error)
+             ("C-c ! p" . flymake-goto-prev-error)
              ("M-7" . flymake-goto-prev-error)
              ("M-8" . flymake-goto-next-error)))
 
@@ -2415,8 +2415,8 @@ your override of `flymake-eslint-executable-name.'"
 ;; This is ugly but the only way I managed to make it work, manual hooks didn't do the trick :/
 (when (eq lemacs-lsp-client 'lsp-mode)
   (use-package lsp-mode
-	:if (eq lemacs-lsp-client 'lsp-mode)
-	:defer t
+    :if (eq lemacs-lsp-client 'lsp-mode)
+    :defer t
     :hook ((lsp-mode . lsp-diagnostics-mode)
            (lsp-mode . lsp-enable-which-key-integration)
            ((tsx-ts-mode
@@ -2427,9 +2427,9 @@ your override of `flymake-eslint-executable-name.'"
              web-mode
              prisma-mode
              js-ts-mode) . lsp))
-	:ensure t
+    :ensure t
     :custom
-	(lsp-keymap-prefix "C-c l")
+    (lsp-keymap-prefix "C-c l")
     (lsp-inlay-hint-enable t)
     (lsp-completion-provider :none)
     (lsp-session-file (locate-user-emacs-file ".lsp-session"))
@@ -2470,10 +2470,10 @@ your override of `flymake-eslint-executable-name.'"
     (lsp-headerline-breadcrumb-icons-enable nil)
     ;; semantic
     (lsp-semantic-tokens-enable nil)
-    
+
     :init
     (setq lsp-use-plists t)
-	;; (lsp-inlay-hints-mode)
+    ;; (lsp-inlay-hints-mode)
     ))
 
 (use-package tempel
@@ -2548,13 +2548,13 @@ your override of `flymake-eslint-executable-name.'"
   (setf yeetube-mpv-disable-video t) ;; Disable video output
   :bind (("C-c y" . 'my/yeetube-map)
           :map my/yeetube-map
-		  ("s" . 'yeetube-search)
-		  ("b" . 'yeetube-play-saved-video)
-		  ("d" . 'yeetube-download-videos)
-		  ("p" . 'yeetube-mpv-toggle-pause)
-		  ("v" . 'yeetube-mpv-toggle-video)
-		  ("V" . 'yeetube-mpv-toggle-no-video-flag)
-		  ("k" . 'yeetube-remove-saved-video)))
+          ("s" . 'yeetube-search)
+          ("b" . 'yeetube-play-saved-video)
+          ("d" . 'yeetube-download-videos)
+          ("p" . 'yeetube-mpv-toggle-pause)
+          ("v" . 'yeetube-mpv-toggle-video)
+          ("V" . 'yeetube-mpv-toggle-no-video-flag)
+          ("k" . 'yeetube-remove-saved-video)))
 
 
 ;;; --------------------------------- PIM
@@ -2648,8 +2648,8 @@ your override of `flymake-eslint-executable-name.'"
 
   ;; Regular modus options
   (setq modus-themes-italic-constructs t
-	    modus-themes-bold-constructs t
-	    modus-themes-mixed-fonts t
+        modus-themes-bold-constructs t
+        modus-themes-mixed-fonts t
         modus-themes-prompts '(bold intense))
 
   (customize-set-variable
