@@ -886,6 +886,13 @@ negative N, comment out original line and use the absolute value."
       (side . right)
       (slot . 1)))))
 
+
+;;; --------------------------------- WHITESPACE
+(use-package whitespace
+  :ensure nil
+  :defer
+  :hook (before-save . whitespace-cleanup))
+
 ;;; --------------------------------- TAB-BAR
 (use-package tab-bar
   :ensure nil
