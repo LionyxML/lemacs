@@ -1155,7 +1155,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
       (interactive)
       (if (not (use-region-p))
           (comment-or-uncomment-region (line-beginning-position) (line-end-position)))))
-  
+
   (evil-define-key 'visual 'global (kbd "gc")
     (lambda ()
       (interactive)
@@ -1293,7 +1293,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
                           ;; (projects  . 5)
                           ;; (agenda    . 5)
                           ;; (registers . 5)
-						  ))
+                          ))
 
   (setq dashboard-navigator-buttons ;; format: icon title help action face prefix suffix`.
         `((
@@ -1812,6 +1812,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
 (use-package ibuffer-project
   :ensure t
+  ;; :defer t
   :config
   (add-hook
    'ibuffer-hook
