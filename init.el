@@ -156,7 +156,7 @@ Notice this is a bit messy."
            (const :tag "off" nil))
   :group 'lemacs)
 
-(defcustom lemacs-docker-executable 'docker
+(defcustom lemacs-docker-executable 'podman
   "The executable to be used with docker-mode."
   :type '(choice
            (const :tag "docker" docker)
