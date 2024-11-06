@@ -549,6 +549,8 @@ negative N, comment out original line and use the absolute value."
 (use-package dired
   :ensure nil
   :defer t
+  :hook ((dired-mode . dired-hide-details-mode)
+         (dired-mode . hl-line-mode))
   :custom
   (dired-dwim-target t)
   (dired-guess-shell-alist-user
@@ -556,7 +558,12 @@ negative N, comment out original line and use the absolute value."
      ("\\.\\(mp[34]\\|m4a\\|ogg\\|flac\\|webm\\|mkv\\)" "mpv" "xdg-open" "open")
      (".*" "xdg-open")))
   (dired-kill-when-opening-new-dired-buffer t)
-  (dired-listing-switches "-lah --group-directories-first")
+  ;; (dired-listing-switches "-lah --group-directories-first")
+  (dired-listing-switches "-alhoF --group-directories-first")
+  (delete-by-moving-to-trash t)
+  (dired-mouse-drag-files t)
+  (dired-do-revert-buffer t)
+  (dired-auto-revert-buffer t)
   :init
   (defun dired-get-size ()
     "On hitting ? gets the selected or under cursor file/dir size."
