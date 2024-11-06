@@ -1,0 +1,246 @@
+#+TITLE: Verb Examples
+#+AUTHOR: Rahul M. Juliato
+#+FILETAGS: :verb:
+
+* Get users list
+get https://reqres.in/api/users
+
+
+* Get users list
+get https://reqres.in/api/users
+Accept: application/json
+Content-Language: de-DE
+
+
+* Create a user
+post https://reqres.in/api/users
+Accept: application/json
+Content-Type: application/json; charset=utf-8
+
+{
+    "name": "John",
+    "age": 42
+}
+
+* Create a user
+post https://reqres.in/api/users
+Accept: application/json
+Content-Type: application/json; charset=utf-8
+
+#+begin_src javascript
+{
+    "name": "John",
+    "age": 42
+}
+#+end_src
+
+
+* User management
+template https://reqres.in/api/users
+Accept: application/json
+
+** Get users list
+get
+Content-Language: de-DE
+
+** Create a user
+post
+Content-Type: application/json; charset=utf-8
+
+{
+    "name": "John",
+    "age": 42
+}
+
+* Foobar Blog API                                                      :verb:
+template https://foobar-blog-api.org/api/v1
+Accept: application/json
+
+** Users
+template /users
+
+*** Create a user
+post
+Content-Type: application/json; charset=utf-8
+
+{
+    "name": "John",
+    "posts": []
+}
+
+*** Search users
+get ?name=John
+
+*** Delete all users
+delete
+
+** Posts
+template /posts?lang=en
+
+*** Search posts
+get ?text=example
+
+*** Delete all posts
+delete
+
+* User management - with varibles                                      :verb:
+template https://reqres.in/api/users
+Accept: application/json
+
+** Get users list
+get
+Content-Language: de-DE
+
+** Create a user
+post
+Content-Type: application/json; charset=utf-8
+
+{
+    "name": "{{(user-full-name)}}",
+    "age": "{{(read-string "Age: ")}}"
+}
+
+
+* User management - with auth                                          :verb:
+template https://reqres.in/api/users
+Accept: application/json
+Authentication: {{(verb-var token)}}
+
+** Get users list
+get
+Content-Language: de-DE
+
+** Create a user
+post
+Content-Type: application/json; charset=utf-8
+
+{
+    "name": "{{(user-full-name)}}",
+    "age": "{{(read-string "Age: ")}}"
+}
+
+
+** Get last created user
+# Extract the "id" value from the previous
+# JSON response body.
+
+get /{{(verb-json-get (oref verb-last body) "id")}}
+Accept: application/json
+
+
+** Create a user
+:properties:
+:Verb-Store: new-user
+:end:
+
+post
+Content-Type: application/json; charset=utf-8
+
+{
+    "name": "{{(user-full-name)}}",
+    "age": "{{(read-string "Age: ")}}"
+}
+
+** Get last created user
+get /{{(verb-json-get (oref (verb-stored-response "new-user") body) "id")}}
+Accept: application/json
+
+
+(defun remove-body-newlines (rs)
+  ;; RS is of type `verb-request-spec'
+  (oset rs body (replace-regexp-in-string "\n" " " (oref rs body)))
+  rs)
+
+
+(...)
+
+** Upload file to user storage
+:properties:
+:Verb-Map-Request: remove-body-newlines
+:end:
+
+post /{{(verb-var user-id)}}/upload
+Content-Type: text/plain; charset=utf-8
+
+foo,
+bar,
+baz
+
+
+** Upload file to user storage
+:properties:
+:Verb-Map-Request:  (lambda (rs)
+:Verb-Map-Request+:   (thread-last
+:Verb-Map-Request+:     (oref rs body)
+:Verb-Map-Request+:     (replace-regexp-in-string "\n" " ")
+:Verb-Map-Request+:     (oset rs body))
+:Verb-Map-Request+:   rs)
+:end:
+
+post /{{(verb-var user-id)}}/upload
+Content-Type: text/plain; charset=utf-8
+
+foo,
+bar,
+baz
+
+
+** Upload file to user storage
+post /{{(verb-var user-id)}}/upload
+Content-Type: text/markdown; charset=utf-8
+
+# Sample Markdown file
+
+{{}}**This text is bold.**
+{{}}*This text is italicized.*
+
+
+** Upload file to user storage
+post /{{(verb-var user-id)}}/upload
+Content-Type: text/markdown; charset=utf-8
+
+{{(verb-read-file "documents/myfile.md")}}
+
+
+
+** Upload two files to user storage
+post /{{(verb-var user-id)}}/upload
+Content-Type: multipart/form-data; boundary={{(verb-boundary)}}
+
+{{(verb-part "file" "file1.txt")}}
+Content-Type: text/plain
+
+{{(verb-read-file "documents/file1.txt")}}
+{{(verb-part "file" "file2.xml")}}
+Content-Type: application/xml
+
+{{(verb-read-file "documents/file2.xml")}}
+{{(verb-part)}}
+
+
+** Upload two files to user storage
+post /{{(verb-var user-id)}}/upload
+Content-Type: multipart/form-data; boundary={{(verb-boundary)}}
+
+{{(verb-part "file" "file1.txt")}}^M
+Content-Type: text/plain^M
+^M
+{{(verb-read-file "documents/file1.txt")}}^M
+{{(verb-part "file" "file2.xml")}}^M
+Content-Type: application/xml^M
+^M
+{{(verb-read-file "documents/file2.xml")}}^M
+{{(verb-part)}}^M
+
+
+
+(setq verb-base-headers '(("User-Agent" . "my-user-agent")))
+
+
+** Make a request using an HTTP proxy         :verb:
+:properties:
+:Verb-Proxy: my-proxy:5050
+:end:
+
+get http://internal-api/users
+
