@@ -594,6 +594,27 @@ negative N, comment out original line and use the absolute value."
   :custom
   (gnus-init-file (expand-file-name "gnus/.gnus.el" user-emacs-directory)))
 
+
+;;; --------------------------------- TIME
+(use-package time
+  :ensure nil
+  ;; :hook (after-init . display-time-mode) ;; If we'd like to see it on the modeline
+  :custom
+  (world-clock-time-format "%A %d %B %r %Z")
+  (display-time-day-and-date t)
+  (display-time-default-load-average nil)
+  (display-time-mail-string "")
+  (zoneinfo-style-world-list
+   '(("America/Los_Angeles" "Seattle")
+     ("America/New_York" "New York")
+     ("America/Halifax" "Nova Scotia")
+     ("Asia/Tokyo" "Tokyo")
+     ("Europe/Athens" "Greece")
+     ("Europe/London" "London")
+     ("America/Sao_Paulo" "São Paulo")
+     ("America/Vancouver" "Vancouver"))))
+
+
 ;;; --------------------------------- ERC
 (use-package erc
   :ensure nil
