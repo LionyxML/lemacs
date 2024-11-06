@@ -1073,15 +1073,15 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
     (kbd "<leader> l f") 'lsp-format-buffer)          ;; Format buffer via lsp
 
 
-  (defun ek/lsp-describe-and-jump ()
-	"Show hover documentation and jump to *lsp-help* buffer."
-	(interactive)
-	(lsp-describe-thing-at-point)
-	(let ((help-buffer "*lsp-help*"))
+  (defun lemacs/lsp-describe-and-jump ()
+    "Show hover documentation and jump to *lsp-help* buffer."
+    (interactive)
+    (lsp-describe-thing-at-point)
+    (let ((help-buffer "*lsp-help*"))
       (when (get-buffer help-buffer)
-		(switch-to-buffer-other-window help-buffer))))
+        (switch-to-buffer-other-window help-buffer))))
   ;; Open hover documentation
-  (evil-define-key 'normal 'global (kbd "K") 'ek/lsp-describe-and-jump)
+  (evil-define-key 'normal 'global (kbd "K") 'lemacs/lsp-describe-and-jump)
   ;; Yeah, on terminals, Emacs doesn't support (YET), the use of floating windows,
   ;; thus, this will open a small buffer bellow your window.
   ;; This floating frames are called "child frames" and some recent effort is being put
@@ -1161,13 +1161,13 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   ;; Makes sure you are using the local bin for your
   ;; node project. Local eslint, typescript server...
   (eval-after-load 'typescript-ts-mode
-	'(add-hook 'typescript-ts-mode-hook #'add-node-modules-path))
+    '(add-hook 'typescript-ts-mode-hook #'add-node-modules-path))
   (eval-after-load 'tsx-ts-mode
-	'(add-hook 'tsx-ts-mode-hook #'add-node-modules-path))
+    '(add-hook 'tsx-ts-mode-hook #'add-node-modules-path))
   (eval-after-load 'typescriptreact-mode
-	'(add-hook 'typescriptreact-mode-hook #'add-node-modules-path))
+    '(add-hook 'typescriptreact-mode-hook #'add-node-modules-path))
   (eval-after-load 'js-mode
-	'(add-hook 'js-mode-hook #'add-node-modules-path)))
+    '(add-hook 'js-mode-hook #'add-node-modules-path)))
 
 (use-package ace-window
   :ensure t
@@ -1200,7 +1200,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
 
   (unless lemacs-ascii-art
     (setq dashboard-startup-banner
-		  (cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
+          (cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
                 (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory))))
 
   (setq dashboard-center-content t)
@@ -1215,16 +1215,16 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (setq dashboard-set-heading-icons nil)
 
   (setq dashboard-startupify-list '(dashboard-insert-newline
-				                    dashboard-insert-banner
-				                    dashboard-insert-newline
-				                    dashboard-insert-init-info
-				                    dashboard-insert-newline
-				                    dashboard-insert-newline
-				                    dashboard-insert-navigator
-				                    dashboard-insert-newline
-				                    dashboard-insert-newline
+                                    dashboard-insert-banner
+                                    dashboard-insert-newline
+                                    dashboard-insert-init-info
+                                    dashboard-insert-newline
+                                    dashboard-insert-newline
+                                    dashboard-insert-navigator
+                                    dashboard-insert-newline
+                                    dashboard-insert-newline
                                     dashboard-insert-items
-				                    ))
+                                    ))
 
   (setq dashboard-items '(
                           ;; (recents   . 5)
@@ -1429,51 +1429,51 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   (defun my-emms-track-description-function (track)
     "Detailed track listing for TRACK."
     (let ((type (emms-track-get track 'type))
-	      (name (emms-track-get track 'name))
-	      (artist (emms-track-get track 'info-artist))
-	      (album (emms-track-get track 'info-album))
-	      (title (emms-track-get track 'info-title))
-	      (tracknumber (emms-track-get track 'info-tracknumber))
-	      (year (emms-track-get-year track))
-	      (timet (emms-track-get track 'info-playing-time)))
-	  (cond ((eq type 'file)
-	         ;; If it has a minimum of metadata
-	         (if (and artist title)
-		         (concat
-		          " "
-		          (pad-string
-		           (if title
-			           (if tracknumber
-			               (concat "["
-				                   (format "%02d" (string-to-number tracknumber))
-				                   "] "
-				                   title)
-			             title)
-		             "Unknown Title")
-		           33)
-		          "  "
-		          (pad-string (if timet
-				                  (format "%02d:%02d" (/ timet 60) (% timet 60))
-				                "")
-				              5)
-		          "  "
-		          (pad-string (or artist "Unknown Artist") 18)
-		          "  "
-		          (pad-string (if album
-				                  (if year
-					                  
-					                  album)
-				                "Unknown Album")
-				              25)
-		          "  "
-		          (pad-string (or year "")
-				              4))
-		       name))
-	        ((eq 'url type)
+          (name (emms-track-get track 'name))
+          (artist (emms-track-get track 'info-artist))
+          (album (emms-track-get track 'info-album))
+          (title (emms-track-get track 'info-title))
+          (tracknumber (emms-track-get track 'info-tracknumber))
+          (year (emms-track-get-year track))
+          (timet (emms-track-get track 'info-playing-time)))
+      (cond ((eq type 'file)
+             ;; If it has a minimum of metadata
+             (if (and artist title)
+                 (concat
+                  " "
+                  (pad-string
+                   (if title
+                       (if tracknumber
+                           (concat "["
+                                   (format "%02d" (string-to-number tracknumber))
+                                   "] "
+                                   title)
+                         title)
+                     "Unknown Title")
+                   33)
+                  "  "
+                  (pad-string (if timet
+                                  (format "%02d:%02d" (/ timet 60) (% timet 60))
+                                "")
+                              5)
+                  "  "
+                  (pad-string (or artist "Unknown Artist") 18)
+                  "  "
+                  (pad-string (if album
+                                  (if year
+
+                                      album)
+                                "Unknown Album")
+                              25)
+                  "  "
+                  (pad-string (or year "")
+                              4))
+               name))
+            ((eq 'url type)
              (emms-format-url-track-name name))
-	        ;; E.g. playlists
-	        (t (concat (symbol-name type) ":" name)))))
-  
+            ;; E.g. playlists
+            (t (concat (symbol-name type) ":" name)))))
+
   (setq emms-track-description-function 'my-emms-track-description-function))
 
 (use-package erc-hl-nicks
@@ -1516,12 +1516,12 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
     (fset #'jsonrpc--log-event #'ignore)
 
     (progn
-	    (bind-keys :map eglot-mode-map
-				("C-c l a" . eglot-code-actions)
-				("C-c l o" . eglot-code-action-organize-imports)
-				("C-c l r" . eglot-rename)
-				("C-c l f" . eglot-format))))
-  
+        (bind-keys :map eglot-mode-map
+                ("C-c l a" . eglot-code-actions)
+                ("C-c l o" . eglot-code-action-organize-imports)
+                ("C-c l r" . eglot-rename)
+                ("C-c l f" . eglot-format))))
+
   (cl-delete-duplicates (nconc eglot-server-programs
                           '((((js-mode :language-id "javascript")
                                (js-ts-mode :language-id "javascript")
@@ -1610,14 +1610,14 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   ;; This extends expand-region to also expand from treesit nodes
   (add-to-list 'load-path "~/.emacs.d/site-lisp/treesit-er-expansions")
   (when (and (functionp 'treesit-available-p)
-			 (treesit-available-p))
-	(require 'treesit-er-expansions))
+             (treesit-available-p))
+    (require 'treesit-er-expansions))
 
   (defun my/expand-region-wrapper ()
-	"Wrapper function for expand-region in Tree-sitter mode."
-	(interactive)
-	(condition-case nil
-		(er/treesit-er-parent-node)
+    "Wrapper function for expand-region in Tree-sitter mode."
+    (interactive)
+    (condition-case nil
+        (er/treesit-er-parent-node)
       (error
        (er/expand-region 1)))))
 
@@ -2360,7 +2360,7 @@ targets."
   :config
   ;; If Emacs is compiled with JSON support
   (setq flymake-eslint-prefer-json-diagnostics t)
-    
+
   (defun lemacs/use-local-eslint ()
     "Set project's `node_modules' binary eslint as first priority.
 If nothing is found, keep the default value flymake-eslint set or
@@ -2632,7 +2632,7 @@ your override of `flymake-eslint-executable-name.'"
                                (run-with-timer 0.3 nil
                                                (lambda ()(lemacs/catppuccin-hack nil)))))
   (add-hook 'after-make-frame-functions 'lemacs/catppuccin-hack)
-  
+
   ;; Custom diff-hl colors
   (custom-set-faces
    `(diff-hl-change ((t (:background unspecified :foreground ,(catppuccin-get-color 'blue))))))
