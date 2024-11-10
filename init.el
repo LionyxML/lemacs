@@ -1017,8 +1017,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure nil
   :defer t
   :hook
-  ;; (after-init . recentf-mode)
-  )
+  (after-init . recentf-mode))
 
 (use-package column-number
   :ensure nil
