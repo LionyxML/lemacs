@@ -60,21 +60,19 @@
 
 ;;; --------------------------------- NATIVE COMP SETTINGS
 (when (featurep 'native-compile)
-  ;; Set the right directory to store the native compilation cache
-  (let ((path (expand-file-name "eln-cache/" user-emacs-directory)))
-    (setq-default native-comp-eln-load-path       (list path)
-                  native-compile-target-directory path)
-    (when (fboundp 'startup-redirect-eln-cache)
-      (startup-redirect-eln-cache path)))
-  (setq-default native-comp-async-report-warnings-errors nil  ;; Silence compiler warnings as they can be pretty disruptive
-                native-comp-deferred-compilation         t    ;; Make native compilation happens asynchronously
-                package-native-compile                   t))  ;; Compile installed packages
+ ;; Set the right directory to store the native compilation cache
+ (let ((path (expand-file-name "eln-cache/" user-emacs-directory)))
+   (setq-default native-comp-eln-load-path       (list path)
+                 native-compile-target-directory path)
+   (when (fboundp 'startup-redirect-eln-cache)
+     (startup-redirect-eln-cache path)))
+ (setq-default native-comp-async-report-warnings-errors nil  ;; Silence compiler warnings as they can be pretty disruptive
+               native-comp-deferred-compilation         t    ;; Make native compilation happens asynchronously
+               package-native-compile                   t))  ;; Compile installed packages
+
 
 ;;; --------------------------------- USE-PACKAGE INIT
 ;; Package sources
-(eval-when-compile
-  (require 'use-package))
-
 (require 'package)
 (setq package-check-signature nil)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
@@ -82,13 +80,9 @@
 (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
 (add-to-list 'load-path "~/.emacs.d/site-lisp")
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
 (eval-and-compile
   (setq use-package-always-ensure t
         use-package-expand-minimally t))
-
 
 ;;; --------------------------------- LEMACS INSTALLER
 (defun lemacs/first-install ()
@@ -96,7 +90,7 @@
   (interactive)
   (switch-to-buffer "*Messages*")
 
-  (message ">>> All required packages installed.")
+  (message ">>> All required packages installed and byte compiled.")
   (message ">>> Configuring LEmacs...")
 
   (message ">>> Configuring Tree Sitter parsers...")
@@ -105,14 +99,7 @@
 
   (message ">>> Configuring Nerd Fonts...")
   (require 'nerd-icons)
-  (nerd-icons-install-fonts)
-
-  (message ">>> Native compile 3rd-party packages...")
-  (native-compile-prune-cache)
-  (dolist (dir (directory-files package-user-dir t "^[^.]" t))
-    (when (file-directory-p dir)
-      (byte-recompile-directory dir 0 t)
-      (native-compile-async dir 'recursively)))
+  (nerd-icons-install-fonts 'always)
 
   (message ">>> LEmacs installed!!! Presss any key to close the installer and open Emacs normally.")
   (read-key)
@@ -2063,7 +2050,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :defer t
   :custom
-  (treesit-auto-install 'prompt)
+  (treesit-auto-install 'always)
   :hook
   (after-init . global-treesit-auto-mode)
   :config
