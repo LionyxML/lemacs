@@ -2050,7 +2050,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :defer t
   :custom
-  (treesit-auto-install 'always)
+  (treesit-auto-install t)
   :hook
   (after-init . global-treesit-auto-mode)
   :config
