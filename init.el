@@ -2459,10 +2459,10 @@ targets."
   (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package wgrep
-  :defer t
+  ;; :defer t
   :ensure t
-  :config
-  (wgrep-enable-key "e")
+  :custom
+  ;; (wgrep-enable-key "e")
   (wgrep-auto-save-buffer t)
   (wgrep-change-readonly-file t))
 
