@@ -2392,8 +2392,8 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   :ensure t
   :defer t
   :bind
-  (("C-." . embark-act)         ;; pick some comfortable binding
-   ("C-;" . embark-dwim)        ;; good alternative: M-.
+  (("C-c ." . embark-act)         ;; pick some comfortable binding
+   ("C-c ;" . embark-dwim)        ;; good alternative: M-.
    ("C-h B" . embark-bindings)  ;; alternative for `describe-bindings'
    ("C-h K" . embark-export))   ;; export candidates buffer
   :init
