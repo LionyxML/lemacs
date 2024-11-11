@@ -1097,6 +1097,7 @@ If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
   ;; Treemacs keybindings
   (evil-define-key 'normal 'global (kbd "<leader> e f") 'treemacs)
   (evil-define-key 'normal 'global (kbd "<leader> e e") 'treemacs)
+  (evil-define-key 'normal 'global (kbd "<leader> e d") 'dired-jump)
 
   ;; Eshell/Eat management keybindings
   (evil-define-key 'normal 'global (kbd "<leader> t e") 'lemacs/open-term )
