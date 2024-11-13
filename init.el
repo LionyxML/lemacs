@@ -197,7 +197,7 @@ both as options to ~when I need to run a term~."
   :type 'string
   :group 'lemacs)
 
-(defcustom lemacs-default-theme 'catppuccin
+(defcustom lemacs-default-theme 'modus
   "Default LEmacs Theme.  Change it to nil to set your own."
   :type '(choice
            (const :tag "catppuccin" "catppuccin")
@@ -2776,12 +2776,13 @@ your override of `flymake-eslint-executable-name.'"
    'modus-themes-common-palette-overrides
    `(
      ;; Make the mode-line borderless and stand out less
-     ;; (bg-mode-line-active bg-main)
-     ;; (fg-mode-line-active fg-main)
-     ;; (bg-mode-line-inactive bg-main)
-     ;; (fg-mode-line-inactive fg-dim)
+     (bg-mode-line-active bg-main)
+     (fg-mode-line-active fg-main)
+     (bg-mode-line-inactive bg-main)
+     (fg-mode-line-inactive fg-dim)
+     (border-mode-line-active bg-dim)
      ;; (border-mode-line-active bg-transparent)
-     ;; (border-mode-line-inactive bg-transparent)
+     (border-mode-line-inactive bg-transparent)
      ))
 
   (modus-themes-with-colors
@@ -2792,26 +2793,26 @@ your override of `flymake-eslint-executable-name.'"
      `(diff-hl-insert ((,c :foreground ,green :background unspecified)))
 
      ;; Other faces
-     ;; `(fringe ((,c
-     ;;            :background ,bg-main
-     ;;            :box nil)))
-     ;; `(line-number ((,c
-     ;;                 :background ,bg-main
-     ;;                 :box nil)))
-     ;; `(line-number-current-line ((,c
-     ;;                              :background ,bg-main
-     ;;                              :box nil)))
-     ;; `(tab-bar ((,c
-     ;;             ;; :height 0.8
-     ;;             :background ,bg-main
-     ;;             :box nil)))
-     ;; `(tab-bar-tab ((,c
-     ;;                 :background ,bg-main
-     ;;                 :underline (:color ,blue-intense :style line)
-     ;;                 :box (:line-width 2 :style flat-button))))
-     ;; `(tab-bar-tab-inactive ((,c
-     ;;                          :background ,bg-main
-     ;;                          :box (:line-width 2 :style flat-button))))
+     `(fringe ((,c
+                :background ,bg-main
+                :box nil)))
+     `(line-number ((,c
+                     :background ,bg-main
+                     :box nil)))
+     `(line-number-current-line ((,c
+                                  :background ,bg-main
+                                  :box nil)))
+     `(tab-bar ((,c
+                 ;; :height 0.8
+                 :background ,bg-main
+                 :box nil)))
+     `(tab-bar-tab ((,c
+                     :background ,bg-main
+                     :underline (:color ,blue-intense :style line)
+                     :box (:line-width 2 :style flat-button))))
+     `(tab-bar-tab-inactive ((,c
+                              :background ,bg-main
+                              :box (:line-width 2 :style flat-button))))
     ))
   )
 
