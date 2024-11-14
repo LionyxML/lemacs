@@ -60,16 +60,15 @@
 
 ;;; --------------------------------- NATIVE COMP SETTINGS
 (when (featurep 'native-compile)
- ;; Set the right directory to store the native compilation cache
- (let ((path (expand-file-name "eln-cache/" user-emacs-directory)))
-   (setq-default native-comp-eln-load-path       (list path)
-                 native-compile-target-directory path)
-   (when (fboundp 'startup-redirect-eln-cache)
-     (startup-redirect-eln-cache path)))
- (setq-default native-comp-async-report-warnings-errors nil  ;; Silence compiler warnings as they can be pretty disruptive
-               native-comp-deferred-compilation         t    ;; Make native compilation happens asynchronously
-               package-native-compile                   t))  ;; Compile installed packages
-
+  ;; Set the right directory to store the native compilation cache
+  (let ((path (expand-file-name (concat "eln-cache-" (system-name) "/") user-emacs-directory)))
+    (setq-default native-comp-eln-load-path       (list path)
+                  native-compile-target-directory path)
+    (when (fboundp 'startup-redirect-eln-cache)
+      (startup-redirect-eln-cache path)))
+  (setq-default native-comp-async-report-warnings-errors nil  ;; Silence compiler warnings as they can be pretty disruptive
+                native-comp-deferred-compilation         t    ;; Make native compilation happens asynchronously
+                package-native-compile                   t))  ;; Compile installed packages
 
 ;;; --------------------------------- USE-PACKAGE INIT
 ;; Package sources
