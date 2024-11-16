@@ -2363,6 +2363,22 @@ These are the 3rd party packages we use to extend our favorite editor.
 #+END_SRC
 
 ** Tools - LSP Clients
+**NOTE**:
+
+To use LSP (and also node/typescript/eslint, prettier), you can install Node JS globally or use a version
+management tool, in the case you have several projects with several node versions it is common to use **nvm**
+or **asdf**. I recommend to install Node JS via **asdf** (https://asdf-vm.com/).
+
+Note: asdf must be loaded on *.bash_profile* for macos, and *.bashrc* for Linux,
+for testing (after Lemacs install), run eshell and look at **asdf --version** output.
+
+You need to Install globally (and for every every asdf plugin shim if you're using asdf):
+#+BEGIN_SRC bash
+npm i -g vscode-langservers-extracted prettier
+npm i -g typescript-language-server typescript
+npm i -g eslint
+#+END_SRC
+
 *** EGLOT Family
 **** Breadcrumb
 #+BEGIN_SRC emacs-lisp

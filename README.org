@@ -1,59 +1,107 @@
-#+TITLE: LEmacs - L(ionyx)Emacs Config
+#+TITLE: LEmacs - L(ionyx)Emacs Configuration
 #+AUTHOR: Rahul M. Juliato
 #+EMAIL: rahul.juliato@gmail.com
 #+OPTIONS: toc:nil
 
-NOTE: README UNDER RECONSTRUCTION
+** Features
+As this is my fully-featured configuration for Emacs, you will find
+everything and some quirks around here. Looking for something simpler?
+Check the last section of this document (*Other Configurations*).
 
-DO NOT BELIEVE ANYTHING BELOW THIS LINE ;)
+I can't possibly walk you through all my thought processes, especially
+when designing new features like *a shortcut to quickly find a project
+folder, add it as a Project, and open it*, or explaining why I have
+tabs configured the way they are (tmux-like), or why my persp-mode is
+set up as a session manager (again, tmux-like).
 
+That said, I encourage readers to explore *lemacs-init.org*. Yes,
+LEmacs is now a literate configuration that you can read through,
+gradually discovering things to use (or ideas to borrow).
 
+Here are some examples of what you might find here:
 
-[[./doc/img_00.png]]
+LEmacs Splash Screen:
 
-Emacs for the modern developer. Focused on seamlessly TUI/GUI experience, either standalone or in
-a server/client mode.
+- Splash Screen:
+[[./doc/lemacs-01.png]]
 
-Left (Terminal User Interface) / Right (Graphical User Interface)
+- Elfeed for RSS Feed Reading:
+(yep, before programming, I'll show you some other stuff).
+[[./doc/lemacs-02.png]]
 
-Demo 01:
-[[./doc/demo01.png]]
+- EWW Web Wowser:
+[[./doc/lemacs-03.png]]
 
-Demo 02:
-[[./doc/demo02.png]]
+- EMMS for playing multimedia:
+[[./doc/lemacs-04.png]]
 
-Demo 03:
-[[./doc/demo03.png]]
+- Yeetube for playing youtube:
+[[./doc/lemacs-05.png]]
 
-Demo 04 (highlight guideline):
-[[./doc/demo04.png]]
+- LEmacs defcustoms:
+Do you prefer Emacs default keybindings? Change a toggle.
 
-Demo 05 (git gutter):
-[[./doc/demo05.png]]
+Don't want nerd-icons? Change a toggle.
 
-Demo 06 (line blame):
-[[./doc/demo06.png]]
+Prefer Eglot over LSP-Mode? Change a toggle.
 
-And all the power of Vertico, Orderless, Marginalia, Embark, Consult, LSP, TreeSitter, Vterm, and many more!
+Explore these customizable options! ;)
 
-Fork it at will! :)
+[[./doc/lemacs-06.png]]
+
+- Programming:
+Here we have Next.JS / React.JS app written on Typescript.
+
+All the modern goodies: Treesitter, LSP Server, Diff Highlights, and
+more:
+
+[[./doc/lemacs-07.png]]
+
+- Hovering Docs:
+
+[[./doc/lemacs-08.png]]
+
+- Completion with documentation using Corfu:
+
+[[./doc/lemacs-09.png]]
+
+- Jumping trough errors with Flymake and Consult:
+
+[[./doc/lemacs-10.png]]
+
+- Grepping with grep or rg and Consult for navigating:
+
+[[./doc/lemacs-11.png]]
+
+- Finding files in a project:
+
+[[./doc/lemacs-12.png]]
+
+- Tree navigation with Treemacs:
+
+[[./doc/lemacs-13.png]]
+
+And many more... AI Assistance, Containers manipulation, IRC
+Chat, and so on...
 
 ** Motivation
 
-Greetings to LEmacs, my customized configuration now shared with the community! This configuration
-is crafted to deliver a seamless and delightful Emacs experience, whether you're navigating through the
-Text User Interface (TUI) or the Graphical User Interface (GUI). It's designed to excel in both
-standalone mode and as a daemon/client setup.
+This configuration is crafted to deliver a seamless and delightful
+Emacs experience, whether you're navigating through the Text User
+Interface (TUI) or the Graphical User Interface (GUI). It's designed
+to excel in both standalone mode and as a daemon/client setup.
 
-This means (of course to my personal taste and opinions) that I will prefer packages that support
-both Terminal and Graphics, so you may never be worried about where to use Emacs or other editors.
+This means (of course to my personal taste and opinions) that I will
+prefer packages that support both Terminal and Graphics, so you may
+never be worried about where to use Emacs or other editors.
 
 You can use Emacs, everywhere, always ;)
 
 ** Installation
 *** Preparation
 **** Emacs Version
-Ensure you have Emacs version 29 or higher, compiled with native compilation, JSON, and tree-sitter support.
+Ensure you have Emacs version 30 or higher, compiled with native
+compilation, JSON, and tree-sitter support.
 
 #+BEGIN_SRC bash
   emacs --version
@@ -61,22 +109,27 @@ Ensure you have Emacs version 29 or higher, compiled with native compilation, JS
 #+END_SRC
 
 **** JS/TS LSP Servers
-To use LSP (and also node/typescript/eslint,  prettier), you can install Node JS globally or use a version
-management tool, in the case you have several projects with several node versions it is common to use **nvm**
-or **asdf**. I recommend to install Node JS via **asdf** (https://asdf-vm.com/).
+To use LSP (and also node/typescript/eslint, prettier), you can
+install Node JS globally or use a version management tool, in the case
+you have several projects with several node versions it is common to
+use **nvm** or **asdf**. I recommend to install Node JS via **asdf**
+(https://asdf-vm.com/).
 
-Note: asdf must be loaded on .bash_profile for macos, and .bashrc for Linux,
-for testing (after Lemacs install), run eshell and look at **asdf --version** output.
+Note: asdf must be loaded on *.bash_profile* for macos, and *.bashrc* for
+Linux, for testing (after Lemacs install), run eshell and look at
+**asdf --version** output.
 
-You need to Install globally (and for every every asdf plugin shim if you're using asdf):
+You need to Install globally (and for every every asdf plugin shim if
+you're using asdf):
 #+BEGIN_SRC bash
-npm i -g vscode-langservers-extracted prettier@2.8.8
+npm i -g vscode-langservers-extracted prettier
 npm i -g typescript-language-server typescript
 npm i -g eslint
-#+END_SRC 
+#+END_SRC
 
 **** Backup your config
-Make a backup of your ~/.emacs.d/, ~/.emacs files and delete them, recommended:
+Make a backup of your ~/.emacs.d/, ~/.emacs files and delete them,
+recommended:
 
 #+BEGIN_SRC bash
 cp -r ~/.emacs.d/ ~/.emacs.d_backup
@@ -93,22 +146,18 @@ git clone https://github.com/LionyxML/LEmacs ~/.emacs.d
 emacs -nw --eval="(lemacs/first-install)"
 #+END_SRC
 
-During installation, you'll be prompted to:
+If anything goes awry, exit and restart the installation script. If
+all goes smoothly, you'll be back at your shell prompt.
 
-- Choose whether to compile vterm now or later (recommended: yes)
-- Specify the Tree Sitter library bundle version (hit RET for default)
-- Opt to display installed grammars (recommended: yes)
-- Decide on downloading and installing fonts for use with NerdFonts (recommended: yes)
-
-If anything goes awry, exit and restart the installation script. If all goes smoothly, you'll be back at your shell prompt.
-
-Launch Emacs, whether from the GUI or TUI (emacs -nw or emacs), and you're good to roll!
+Launch Emacs, whether from the GUI or TUI (emacs -nw or emacs), and
+you're good to roll!
 
 ** Troubleshooting
 *** LSP-mode
-It's always a good idea to run **M-x lsp-doctor** to check that everything is working.
+It's always a good idea to run **M-x lsp-doctor** to check that
+everything is working.
 
-This might be necessary when dealing with nodeJS, watches, etc:
+This might be necessary when dealing with NodeJS, watches, etc:
 #+BEGIN_SRC bash
 echo fs.inotify.max_user_watches=393210 \
 | sudo tee -a /etc/sysctl.conf \
@@ -117,28 +166,31 @@ echo fs.inotify.max_user_watches=393210 \
 
 *** Emacs is hanging...
 
-If you're experiencing UI freezes in Emacs, here's a handy way to pinpoint the culprit:
+If you're experiencing UI freezes in Emacs, here's a handy way to
+pinpoint the culprit:
 #+BEGIN_SRC bash
 M-x profiler-start
 ;; choose CPU
 ;; do stuff and make the UI freeze
 M-x profiler-stop
 M-x profiler-report
-#+END_SRC 
+#+END_SRC
 
-This will help you identify what's causing the slowdown. Pay attention to the profiler
-report for insights into resource-intensive operations.
+This will help you identify what's causing the slowdown. Pay attention
+to the profiler report for insights into resource-intensive
+operations.
 
 
 It's worth noting that this configuration makes native compilation asynchronous.
-Consequently, the first time you use a package, there might be a background process
-compiling it. Check for any Async-native-compile-log buffers using:
+Consequently, the first time you use a package, there might be a
+background process compiling it. Check for any Async-native-compile-log buffers using:
 
 #+BEGIN_SRC bash
 M-x ibuffer
-#+END_SRC 
+#+END_SRC
 
-Inspect these buffers to ensure that compilation processes are running as expected.
+Inspect these buffers to ensure that compilation processes are running
+as expected.
 
 ** FAQ
 *** Why not X Feature?
@@ -148,6 +200,30 @@ Open an issue on our GitHub repository, and let's dive into the
 discussion. I am open to exploring new additions or substitutions.
 
 ** Extra: Emacs install
+*** Compile Emacs from scratch (Debian Biased)
+
+Before everything, this is optional, but may help on reducing
+troubleshooting time:
+
+#+BEGIN_SRC bash
+sudo apt-get build-dep emacs
+#+END_SRC
+
+Take a look on the repo first to make sure Emacs on master branch
+matches the above version requirement.
+
+#+BEGIN_SRC bash
+git clone git://git.savannah.gnu.org/emacs.git
+
+./configure --with-native-compilation=aot --with-tree-sitter --with-gif --with-png --with-jpeg --with-rsvg --with-tiff --with-imagemagick --with-x-toolkit=lucid --with-json --with-mailutils
+
+make clean
+
+make -j8
+
+sudo make install
+#+END_SRC
+
 *** Debian (or Debian Based distros)
 For Debian or Debian based Distros, such as Ubuntu and it's derivatives.
 
@@ -161,7 +237,7 @@ emacs --version
 #+END_SRC
 
 *** MacOS
-On macOS compiling with a brew formulae is the recommendated way:
+On MacOS compiling with a brew formulae is the recommendated way:
 #+BEGIN_SRC bash
 brew install \
   --ignore-dependencies \
@@ -173,26 +249,13 @@ brew install \
   --with-poll \
   --with-no-frame-refocus
 #+END_SRC
+** Other Configurations
 
-*** Compile Emacs from scratch (Debian)
+- Do you need something simpler like a Kickstart configuration you can
+  build on the top of it? Moving from neovim? Fear no more! Take a
+  look at: [[https://github.com/LionyxML/emacs-kick]]
 
-Before everything, this is optional, but may help on reducing troubleshooting time:
-
-#+BEGIN_SRC bash
-sudo apt-get build-dep emacs
-#+END_SRC
-
-Take a look on the repo first to make sure Emacs on master branch matches the above version requirement.
-
-
-#+BEGIN_SRC bash
-git clone git://git.savannah.gnu.org/emacs.git
-
-./configure --with-native-compilation=aot --with-tree-sitter --with-gif --with-png --with-jpeg --with-rsvg --with-tiff --with-imagemagick --with-x-toolkit=lucid --with-json --with-mailutils
-
-make clean
-
-make -j8
-
-sudo make install
-#+END_SRC
+- Would you like to explore how far you can go with only Emacs? No
+  external packages? Raw Emacs-Lisp? Take a look at **EMACS-SOLO** my
+  experimental configuration that aims exactly that:
+  [[https://github.com/LionyxML/emacs-solo]]
