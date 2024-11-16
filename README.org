@@ -168,7 +168,7 @@ echo fs.inotify.max_user_watches=393210 \
 
 If you're experiencing UI freezes in Emacs, here's a handy way to
 pinpoint the culprit:
-#+BEGIN_SRC bash
+#+BEGIN_SRC emacs-lisp
 M-x profiler-start
 ;; choose CPU
 ;; do stuff and make the UI freeze
