@@ -1046,7 +1046,7 @@ Deletes all trailing white-spaces when saving files.
 #+BEGIN_SRC emacs-lisp
   (use-package whitespace
     :ensure nil
-    :defer
+    :defer t
     :hook (before-save . whitespace-cleanup))
 #+END_SRC
 
