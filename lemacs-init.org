@@ -716,7 +716,11 @@ A package to watch for system processes, like **top** on Unix like systems.
     :defer t
     :custom
     (proced-enable-color-flag t)
-    (proced-tree-flag t))
+    (proced-tree-flag t)
+    (proced-auto-update-flag 'visible)
+    (proced-auto-update-interval 5)
+    (proced-descent t)
+    (proced-filter 'user)) ;; We can change interactively with `s'
 #+END_SRC
 
 *** ERC
