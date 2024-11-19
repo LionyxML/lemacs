@@ -1248,6 +1248,14 @@ This uniquifies buffers names.
     (setq uniquify-after-kill-buffer-p t))
 #+END_SRC
 
+*** Man
+#+BEGIN_SRC emacs-lisp
+  (use-package man
+    :ensure nil
+    :commands (man)
+    :config
+    (setq Man-notify-method 'pushy)) ; does not obey `display-buffer-alist'
+#+END_SRC
 * External Packages
 These are the 3rd party packages we use to extend our favorite editor.
 
