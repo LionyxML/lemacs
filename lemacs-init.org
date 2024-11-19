@@ -1218,6 +1218,24 @@ Makes current column number appear on the modeline.
     (after-init . column-number-mode))
 #+END_SRC
 
+*** Which-Key
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :defer t
+    :ensure nil
+    :hook
+    (after-init . which-key-mode)
+
+    :config
+    (setq which-key-separator "  ")
+    (setq which-key-prefix-prefix "... ")
+    (setq which-key-max-display-columns 3)
+    (setq which-key-idle-delay 1.5)
+    (setq which-key-idle-secondary-delay 0.25)
+    (setq which-key-add-column-padding 1)
+    (setq which-key-max-description-length 40))
+#+END_SRC
+
 * External Packages
 These are the 3rd party packages we use to extend our favorite editor.
 
