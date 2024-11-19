@@ -322,14 +322,16 @@ Utils provided ls lacks the **--dired** flag.
       :custom
       (auth-sources
        (list (expand-file-name ".authinfo.gpg" user-emacs-directory)))
+      (auto-revert-verbose t)
+      (bookmark-fringe-mark nil)
       (undo-limit 67108864) ; 64mb.
       (undo-strong-limit 100663296) ; 96mb.
       (undo-outer-limit 1006632960) ; 960mb.
       (auto-save-default nil)
       (create-lockfiles nil)
-      (delete-by-moving-to-trash t)
       (display-line-numbers-type 'relative)
       (enable-recursive-minibuffers t)
+      (help-window-select t)
       (ibuffer-show-empty-filter-groups nil)
       (indent-tabs-mode nil)
       (inhibit-splash-screen t)
