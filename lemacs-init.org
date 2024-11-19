@@ -347,11 +347,14 @@ Utils provided ls lacks the **--dired** flag.
       (org-babel-load-languages '((emacs-lisp . t) (python . t) (ruby . t) (shell . t)))
       (pixel-scroll-precision-use-momentum nil)
       (ring-bell-function 'ignore)
+      (remote-file-name-inhibit-delete-by-moving-to-trash t)
+      (remote-file-name-inhibit-auto-save t)
       (shr-use-colors nil)
       (split-width-threshold 300)
       (switch-to-buffer-obey-display-actions t)
       (tab-always-indent 'complete) ;; TAB serves as M-TAB to completion
       (tab-width 4)
+      (tramp-connection-timeout (* 60 10)) ; seconds
       (treesit-font-lock-level 4)
       (truncate-lines t)
       (tsx-ts-mode-indent-offset 4)
