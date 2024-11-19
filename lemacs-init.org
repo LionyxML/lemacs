@@ -1540,16 +1540,6 @@ These are the 3rd party packages we use to extend our favorite editor.
   ;
 #+END_SRC
 
-** Tools - Better help
-*** Which-Key
-#+BEGIN_SRC emacs-lisp
-  (use-package which-key
-    :defer t
-    :ensure t
-    :hook
-    (after-init . which-key-mode))
-#+END_SRC
-
 ** Tools - Checkers and Linting
 *** Flymake
 #+BEGIN_SRC emacs-lisp
@@ -2313,7 +2303,6 @@ These are the 3rd party packages we use to extend our favorite editor.
     :hook
     ((dired-mode . dired-async-mode)
      (after-init . async-bytecomp-package-mode)))
-
 #+END_SRC
 
 *** DiredFl
@@ -2323,7 +2312,21 @@ These are the 3rd party packages we use to extend our favorite editor.
     :ensure t
     :hook
     (dired-mode . diredfl-global-mode))
+#+END_SRC
 
+*** DiredSubtree
+#+BEGIN_SRC emacs-lisp
+  (use-package dired-subtree
+    :ensure t
+    :after dired
+    :bind
+    ( :map dired-mode-map
+      ("<tab>" . dired-subtree-toggle)
+      ("TAB" . dired-subtree-toggle)
+      ("<backtab>" . dired-subtree-remove)
+      ("S-TAB" . dired-subtree-remove))
+    :config
+    (setq dired-subtree-use-backgrounds nil))
 #+END_SRC
 
 *** Treemacs
