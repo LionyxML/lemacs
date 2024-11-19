@@ -631,6 +631,7 @@ The magic file explorer.
   (use-package dired
     :ensure nil
     :defer t
+    :commands (dired)
     :hook ((dired-mode . dired-hide-details-mode)
            (dired-mode . hl-line-mode))
     :custom
@@ -638,14 +639,19 @@ The magic file explorer.
     (dired-guess-shell-alist-user
      '(("\\.\\(png\\|jpe?g\\|tiff\\)" "feh" "xdg-open" "open")
        ("\\.\\(mp[34]\\|m4a\\|ogg\\|flac\\|webm\\|mkv\\)" "mpv" "xdg-open" "open")
-       (".*" "xdg-open")))
+       (".*" "xdg-open" "open")))
     (dired-kill-when-opening-new-dired-buffer t)
     ;; (dired-listing-switches "-lah --group-directories-first")
-    (dired-listing-switches "-alhoF --group-directories-first")
+    (dired-listing-switches "-alhoF --group-directories-first --time-style=long-iso")
     (delete-by-moving-to-trash t)
     (dired-mouse-drag-files t)
     (dired-do-revert-buffer t)
     (dired-auto-revert-buffer t)
+    (dired-free-space nil)
+    (dired-mouse-drag-files t)
+    (dired-make-directory-clickable t)
+    (dired-recursive-copies 'always)
+    (dired-recursive-deletes 'always)
     :init
     (defun dired-get-size ()
       "On hitting ? gets the selected or under cursor file/dir size."
@@ -657,6 +663,16 @@ The magic file explorer.
                    (progn
                      (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                      (match-string 1)))))))
+#+END_SRC
+
+*** WDired
+#+BEGIN_SRC emacs-lisp
+  (use-package wdired
+    :ensure nil
+    :commands (wdired-change-to-wdired-mode)
+    :config
+    (setq wdired-allow-to-change-permissions t)
+    (setq wdired-create-parent-directories t))
 #+END_SRC
 
 *** I-Search
