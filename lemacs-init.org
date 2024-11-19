@@ -1195,7 +1195,16 @@ new files/directories.
     :ensure nil
     :defer t
     :hook
-    (after-init . recentf-mode))
+    (after-init . recentf-mode)
+    :custom
+    (recentf-max-saved-items 100)
+    (recentf-max-menu-items 25) ; I don't use the `menu-bar-mode', but this is good to know
+    (recentf-save-file-modes nil)
+    (recentf-keep nil)
+    (recentf-auto-cleanup nil)
+    (recentf-initialize-file-name-history nil)
+    (recentf-filename-handlers nil)
+    (recentf-show-file-shortcuts-flag nil))
 #+END_SRC
 
 *** Column-Number
