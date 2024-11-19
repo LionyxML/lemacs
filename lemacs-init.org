@@ -1029,6 +1029,14 @@ Not that great for **git**, but still, very useful.
     :ensure nil
     :defer t
     :config
+    (setq vc-git-diff-switches '("--patch-with-stat" "--histogram")) ;; add stats to `git diff'
+    (setq vc-git-log-switches '("--stat")) ;; add statistics to `git log'
+    (setq vc-git-log-edit-summary-target-len 50)
+    (setq vc-git-log-edit-summary-max-len 70)
+    (setq vc-git-print-log-follow t)
+    (setq vc-git-revision-complete-only-branches nil) ; Emacs 28
+    (setq vc-annotate-display-mode 'scale) ; scale to oldest
+    (setq add-log-keep-changes-together t)
     (setq vc-annotate-color-map
           '((20 . "#f5e0dc")
             (40 . "#f2cdcd")
@@ -1043,7 +1051,67 @@ Not that great for **git**, but still, very useful.
             (220 . "#89dceb")
             (240 . "#74c7ec")
             (260 . "#89b4fa")
-            (280 . "#b4befe"))))
+            (280 . "#b4befe")))
+
+    ;; This one is for editing commit messages
+    (require 'log-edit)
+    (setq log-edit-confirm 'changed)
+    (setq log-edit-keep-buffer nil)
+    (setq log-edit-require-final-newline t)
+    (setq log-edit-setup-add-author nil)
+
+    (defun lemacs/insert-commit-editmsg ()
+      "Insert the contents of .git/COMMIT_EDITMSG into the *vc-log* buffer."
+      (interactive)
+      (let* ((default-directory (vc-root-dir)) ; Ensure we're in the repository root
+             (commit-editmsg-path (expand-file-name ".git/COMMIT_EDITMSG" default-directory)))
+        (when (file-exists-p commit-editmsg-path)
+          (goto-char (point-max)) ; Move to the end of the buffer
+          (insert "Summary:\n\n")
+          (insert-file-contents commit-editmsg-path))))
+
+    (add-hook 'log-edit-hook #'lemacs/insert-commit-editmsg)
+
+
+    ;; We can see the files from the Diff with C-c C-d
+    (remove-hook 'log-edit-hook #'log-edit-show-files)
+
+    ;; Extending vc-mode
+    (defun vc-git-push-all-remotes ()
+      "Push the current branch to all Git remotes."
+      (interactive)
+      (let* ((branch (string-trim (shell-command-to-string "git rev-parse --abbrev-ref HEAD")))
+             (remotes (split-string (shell-command-to-string "git remote") "\n" t)))
+        (dolist (remote remotes)
+          (vc-git-command nil 0 nil "push" remote branch))))
+    )
+#+END_SRC
+
+*** Diff
+#+BEGIN_SRC emacs-lisp
+  (use-package diff-mode
+    :ensure nil
+    :defer t
+    :config
+    (setq diff-default-read-only t)
+    (setq diff-advance-after-apply-hunk t)
+    (setq diff-update-on-the-fly t)
+    (setq diff-font-lock-syntax 'hunk-also))
+#+END_SRC
+
+*** EDiff
+#+BEGIN_SRC emacs-lisp
+  (use-package ediff
+    :ensure nil
+    :commands (ediff-buffers ediff-files ediff-buffers3 ediff-files3)
+    :init
+    (setq ediff-split-window-function 'split-window-horizontally)
+    (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+    :config
+    (setq ediff-keep-variants nil)
+    (setq ediff-make-buffers-readonly-at-startup nil)
+    (setq ediff-merge-revisions-with-ancestor t)
+    (setq ediff-show-clashes-only t))
 #+END_SRC
 
 *** Window
