@@ -1236,6 +1236,18 @@ Makes current column number appear on the modeline.
     (setq which-key-max-description-length 40))
 #+END_SRC
 
+*** Uniquify
+This uniquifies buffers names.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package uniquify
+    :ensure nil
+    :config
+    (setq uniquify-buffer-name-style 'forward)
+    (setq uniquify-strip-common-suffix t)
+    (setq uniquify-after-kill-buffer-p t))
+#+END_SRC
+
 * External Packages
 These are the 3rd party packages we use to extend our favorite editor.
 
