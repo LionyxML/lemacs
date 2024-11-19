@@ -1,9 +1,14 @@
-;; early-init.el --- LEmacs (Lionyx Emacs)  -*- lexical-binding: t; -*-
+;;; early-init.el --- LEmacs (Lionyx Emacs)  -*- lexical-binding: t; -*-
+;;
 ;;; Commentary:
 ;; Early init configuration for LEmacs
+;;
+;;; Code:
 
+;; LSP Flag to use PLISTS
 (setenv "LSP_USE_PLISTS" "true")
 
+;; Hack to avoid being flashbanged
 (defun lemacs/avoid-initial-flash-of-light ()
   "Avoid flash of light when starting Emacs."
   (setq mode-line-format nil)
@@ -15,12 +20,14 @@
 
 (lemacs/avoid-initial-flash-of-light)
 
+;; Better Window Management handling
 (setq frame-resize-pixelwise t
       frame-inhibit-implied-resize t
       frame-title-format '("Emacs"))
 
 (setq inhibit-compacting-font-caches t)
 
+;; Disables unused UI Elements
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
