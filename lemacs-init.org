@@ -73,6 +73,9 @@ Some hacks to make Emacs perform faster and feel snappier.
 
   ;;--- Starts with the most fundamental mode
   (setq initial-major-mode 'fundamental-mode)
+
+  ;;--- Ensure Emacs loads the most recent byte-compiled files.
+  (setq load-prefer-newer t)
 #+END_SRC
 
 * Compilation Settings
@@ -98,8 +101,13 @@ What we make here is actually define our **eln-cache** folder as **eln-cache-hos
       (when (fboundp 'startup-redirect-eln-cache)
         (startup-redirect-eln-cache path)))
     (setq-default native-comp-async-report-warnings-errors nil  ;; Silence compiler warnings as they can be pretty disruptive
-                  native-comp-deferred-compilation         t    ;; Make native compilation happens asynchronously
+                  native-comp-jit-compilation              t    ;; Make native compilation happens asynchronously
                   package-native-compile                   t))  ;; Compile installed packages
+
+  ;; Ensure that quitting only occurs once Emacs finishes native compiling,
+  ;; preventing incomplete or leftover compilation files in `/tmp`.
+  (setq native-comp-async-query-on-exit t)
+  (setq confirm-kill-processes t)
 #+END_SRC
 
 * Package Management
@@ -331,6 +339,7 @@ Utils provided ls lacks the **--dired** flag.
       (create-lockfiles nil)
       (display-line-numbers-type 'relative)
       (enable-recursive-minibuffers t)
+      (epa-keys-select-method 'minibuffer)
       (help-window-select t)
       (ibuffer-show-empty-filter-groups nil)
       (indent-tabs-mode nil)
@@ -624,6 +633,19 @@ Utils provided ls lacks the **--dired** flag.
 #+END_SRC
 
 ** Built-In Packages
+*** Auth-Source
+This is needed for open .gpg files without problems.
+
+#+BEGIN_SRC emacs-lisp
+(use-package auth-source
+  :ensure nil
+  :defer t
+  :config
+  (setq auth-sources '("~/.emacs.d/.authinfo.gpg")
+        user-full-name "Rahul Martim Juliato"
+        user-mail-address "rahul.juliato@gmail.com"))
+#+END_SRC
+
 *** Dired
 The magic file explorer.
 
@@ -633,7 +655,8 @@ The magic file explorer.
     :defer t
     :commands (dired)
     :hook ((dired-mode . dired-hide-details-mode)
-           (dired-mode . hl-line-mode))
+           (dired-mode . hl-line-mode)
+           (dired-mode . turn-on-gnus-dired-mode))
     :custom
     (dired-dwim-target t)
     (dired-guess-shell-alist-user
@@ -663,6 +686,7 @@ The magic file explorer.
                    (progn
                      (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                      (match-string 1)))))))
+
 #+END_SRC
 
 *** WDired
@@ -686,7 +710,20 @@ The magical in-buffer searcher.
     (setq isearch-lazy-count t)
     (setq lazy-count-prefix-format "(%s/%s) ")
     (setq lazy-count-suffix-format nil)
-    (setq search-whitespace-regexp ".*?"))
+    (setq search-whitespace-regexp ".*?")
+
+    (defun isearch-copy-selected-word ()
+      "Copy the current `isearch` selection to the kill ring."
+      (interactive)
+      (when isearch-other-end
+        (let ((selection (buffer-substring-no-properties isearch-other-end (point))))
+          (kill-new selection)
+          (isearch-exit))))
+
+    ;; Bind `M-w` in isearch to copy the selected word, so M-s M-. M-w
+    ;; does a great job of 'copying the current word under cursor'.
+    (define-key isearch-mode-map (kbd "M-w") 'isearch-copy-selected-word))
+
 #+END_SRC
 
 *** GNUS
@@ -1029,6 +1066,7 @@ Not that great for **git**, but still, very useful.
     :ensure nil
     :defer t
     :config
+    (setq vc-git-show-stash 0)
     (setq vc-git-diff-switches '("--patch-with-stat" "--histogram")) ;; add stats to `git diff'
     (setq vc-git-log-switches '("--stat")) ;; add statistics to `git log'
     (setq vc-git-log-edit-summary-target-len 50)
@@ -1060,19 +1098,6 @@ Not that great for **git**, but still, very useful.
     (setq log-edit-require-final-newline t)
     (setq log-edit-setup-add-author nil)
 
-    (defun lemacs/insert-commit-editmsg ()
-      "Insert the contents of .git/COMMIT_EDITMSG into the *vc-log* buffer."
-      (interactive)
-      (let* ((default-directory (vc-root-dir)) ; Ensure we're in the repository root
-             (commit-editmsg-path (expand-file-name ".git/COMMIT_EDITMSG" default-directory)))
-        (when (file-exists-p commit-editmsg-path)
-          (goto-char (point-max)) ; Move to the end of the buffer
-          (insert "Summary:\n\n")
-          (insert-file-contents commit-editmsg-path))))
-
-    (add-hook 'log-edit-hook #'lemacs/insert-commit-editmsg)
-
-
     ;; We can see the files from the Diff with C-c C-d
     (remove-hook 'log-edit-hook #'log-edit-show-files)
 
@@ -1083,8 +1108,8 @@ Not that great for **git**, but still, very useful.
       (let* ((branch (string-trim (shell-command-to-string "git rev-parse --abbrev-ref HEAD")))
              (remotes (split-string (shell-command-to-string "git remote") "\n" t)))
         (dolist (remote remotes)
-          (vc-git-command nil 0 nil "push" remote branch))))
-    )
+          (vc-git-command nil 0 nil "push" remote branch)))))
+
 #+END_SRC
 
 *** Diff
@@ -1228,6 +1253,9 @@ Customizes org-mode looks and feel.
     :mode ("\\.org\\'" . org-mode)
     :config
     (setq
+     ;; Start collapsed for speed
+     org-startup-folded t
+
      ;; Edit settings
      org-auto-align-tags nil
      org-tags-column 0
@@ -1565,7 +1593,6 @@ These are the 3rd party packages we use to extend our favorite editor.
                                     :background ,bg-main
                                     :box nil)))
        `(tab-bar ((,c
-                   ;; :height 0.8
                    :background ,bg-main
                    :box nil)))
        `(tab-bar-tab ((,c
@@ -1574,9 +1601,7 @@ These are the 3rd party packages we use to extend our favorite editor.
                        :box (:line-width 2 :style flat-button))))
        `(tab-bar-tab-inactive ((,c
                                 :background ,bg-main
-                                :box (:line-width 2 :style flat-button))))
-      ))
-    )
+                                :box (:line-width 2 :style flat-button)))))))
 #+END_SRC
 
 ** Tools - AI Assistency
@@ -2203,6 +2228,7 @@ These are the 3rd party packages we use to extend our favorite editor.
     (evil-define-key 'normal 'global (kbd "<leader> h f") 'describe-function) ;; Describe function
     (evil-define-key 'normal 'global (kbd "<leader> h v") 'describe-variable) ;; Describe variable
     (evil-define-key 'normal 'global (kbd "<leader> h k") 'describe-key) ;; Describe key
+    (evil-define-key 'normal 'global (kbd "<leader> h e") 'view-echo-area-messages) ;; Echo area *Messages*
 
     ;; Tab navigation
     (evil-define-key 'normal 'global (kbd "] t") 'tab-next) ;; Go to next tab
@@ -3082,6 +3108,7 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
     :defer t
     :ensure t
     :config
+    (setq elfeed-use-curl nil)
     (define-advice elfeed-search--header (:around (oldfun &rest args))
     (if elfeed-db
         (apply oldfun args)
@@ -3442,7 +3469,7 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
     (add-hook 'gnus-article-mode-hook 'lemacs/center-visual-fill-on))
 #+END_SRC
 
-** TOOLS - TUI EMACS ENHANCEMENTS
+** Tools - TUI Enhancements
 *** KKP
 #+BEGIN_SRC emacs-lisp
   (use-package kkp
