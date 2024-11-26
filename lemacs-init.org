@@ -341,8 +341,6 @@ Utils provided ls lacks the **--dired** flag.
   #+BEGIN_SRC emacs-lisp
     (use-package emacs
       :custom
-      (auth-sources
-       (list (expand-file-name ".authinfo.gpg" user-emacs-directory)))
       (auto-revert-verbose t)
       (bookmark-fringe-mark nil)
       (undo-limit 67108864) ; 64mb.
@@ -650,13 +648,14 @@ Utils provided ls lacks the **--dired** flag.
 This is needed for open .gpg files without problems.
 
 #+BEGIN_SRC emacs-lisp
-(use-package auth-source
-  :ensure nil
-  :defer t
-  :config
-  (setq auth-sources '("~/.emacs.d/.authinfo.gpg")
-        user-full-name "Rahul Martim Juliato"
-        user-mail-address "rahul.juliato@gmail.com"))
+  (use-package auth-source
+    :ensure nil
+    :defer t
+    :config
+    (setq auth-sources
+       (list (expand-file-name ".authinfo.gpg" user-emacs-directory)))
+    (setq user-full-name "Rahul Martim Juliato"
+          user-mail-address "rahul.juliato@gmail.com"))
 #+END_SRC
 
 *** Dired
