@@ -37,79 +37,6 @@ header-args :tangle yes
   ;;; Code:
 #+END_SRC
 
-* Performance Hacks
-Some hacks to make Emacs perform faster and feel snappier.
-
-#+BEGIN_SRC emacs-lisp
-  ;; --- Max GC Buffer while starting Emacs
-  ;; --- Quickier filename handling
-  ;; --- Both reseted after loading
-  (setq read-process-output-max (* 1024 1024 3)) ;; 3mb
-
-  (setq gc-cons-threshold most-positive-fixnum   ;; 2^61 bytes
-        gc-cons-percentage 0.6)
-
-  (defvar lemacs/file-name-handler-alist-cache file-name-handler-alist)
-
-  (setq file-name-handler-alist nil)
-
-  (defun lemacs/restore-post-init-settings ()
-    (setq gc-cons-threshold 16777216 ; 16mb
-          gc-cons-percentage 0.1)
-    (setq file-name-handler-alist lemacs/file-name-handler-alist-cache))
-
-  (add-hook 'emacs-startup-hook #'lemacs/restore-post-init-settings)
-
-  ;; --- Defer GC to "after" using the minibuffer, avoiding it to be unresponsive
-  (defun lemacs/defer-gc ()
-    (setq gc-cons-threshold most-positive-fixnum))
-  (defun lemacs/-do-restore-gc ()
-    (setq gc-cons-threshold 16777216))
-  (defun lemacs/restore-gc ()
-    (run-at-time 1 nil #'lemacs/-do-restore-gc))
-
-  (add-hook 'minibuffer-setup #'lemacs/defer-gc)
-  (add-hook 'minibuffer-exit #'lemacs/restore-gc)
-
-  ;;--- Starts with the most fundamental mode
-  (setq initial-major-mode 'fundamental-mode)
-
-  ;;--- Ensure Emacs loads the most recent byte-compiled files.
-  (setq load-prefer-newer t)
-#+END_SRC
-
-* Compilation Settings
-In order to make our Lisp Machine (Emacs) faster, we want every package
-Native Compiled.
-
-Notice that Emacs can load elisp from tree types of files:
-
-- .el:  Regular text file containing an emacs-lisp program
-- .elc: Byte compiled version of the oriignal .el (hence faster)
-- .eln: Native compiled version of the original .el (hence, much faster)
-
-Also, since we may use the same config in different machines with different
-architectures, native compiled code in one machine may not work with the other.
-What we make here is actually define our **eln-cache** folder as **eln-cache-hostname**,
-
-#+BEGIN_SRC emacs-lisp
-  (when (featurep 'native-compile)
-    ;; Set the right directory to store the native compilation cache
-    (let ((path (expand-file-name (concat "eln-cache-" (system-name) "/") user-emacs-directory)))
-      (setq-default native-comp-eln-load-path       (list path)
-                    native-compile-target-directory path)
-      (when (fboundp 'startup-redirect-eln-cache)
-        (startup-redirect-eln-cache path)))
-    (setq-default native-comp-async-report-warnings-errors nil  ;; Silence compiler warnings as they can be pretty disruptive
-                  native-comp-jit-compilation              t    ;; Make native compilation happens asynchronously
-                  package-native-compile                   t))  ;; Compile installed packages
-
-  ;; Ensure that quitting only occurs once Emacs finishes native compiling,
-  ;; preventing incomplete or leftover compilation files in `/tmp`.
-  (setq native-comp-async-query-on-exit t)
-  (setq confirm-kill-processes t)
-#+END_SRC
-
 * Package Management
 We use the built-in **package.el** in order to install packages, 3rd or 1st party.
 
@@ -2351,6 +2278,7 @@ These are the 3rd party packages we use to extend our favorite editor.
         (define-key (eval map) "\C-p" nil)))
 
     (evil-mode 1))
+
 #+END_SRC
 *** Evil Collection
 #+BEGIN_SRC emacs-lisp
@@ -2404,7 +2332,6 @@ These are the 3rd party packages we use to extend our favorite editor.
     (add-to-list 'pulsar-pulse-functions 'evil-jump-item)
     (add-to-list 'pulsar-pulse-functions 'diff-hl-next-hunk)
     (add-to-list 'pulsar-pulse-functions 'diff-hl-previous-hunk))
-
 
 #+END_SRC
 
