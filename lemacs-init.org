@@ -1675,19 +1675,6 @@ These are the 3rd party packages we use to extend our favorite editor.
                ("M-8" . flymake-goto-next-error)))
 #+END_SRC
 
-*** Flymake-Popon
-#+BEGIN_SRC emacs-lisp
-  (use-package flymake-popon
-    :ensure t
-    :defer t
-    :config
-    (custom-set-faces
-     '(flymake-popon ((t (:inherit default :background "#2a2a39"))))
-     '(flymake-popon-posframe-border ((t nil))))
-    :hook
-    (flymake-mode . global-flymake-popon-mode))
-#+END_SRC
-
 *** Package-Lint
 #+BEGIN_SRC emacs-lisp
   (use-package package-lint
