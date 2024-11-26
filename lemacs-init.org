@@ -1641,16 +1641,16 @@ These are the 3rd party packages we use to extend our favorite editor.
 
 *** Ellama
 #+BEGIN_SRC emacs-lisp
-  ;(use-package ellama
-  ;  :defer t
-  ;  :ensure t
-  ;  :init
-  ;  (setopt ellama-language "English")
-  ;  (require 'llm-ollama)
-  ;  (setopt ellama-provider
-  ;          (make-llm-ollama
-  ;            :chat-model "codellama" :embedding-model "codellama")))
-  ;
+  (use-package ellama
+    :defer t
+    :ensure t
+    :init
+    (setopt ellama-language "English")
+    (require 'llm-ollama)
+    (setopt ellama-provider
+            (make-llm-ollama
+             :chat-model "codellama" :embedding-model "codellama")))
+
 #+END_SRC
 
 ** Tools - Checkers and Linting
