@@ -156,6 +156,19 @@ actions, such as install fonts and treesitter grammars.
     (message ">>> LEmacs installed!!! Presss any key to close the installer and open Emacs normally.")
     (read-key)
     (kill-emacs))
+
+  (defun lemacs/recompile-all ()
+    "Flushes old packages compiled cache and recompiles all packages."
+    (interactive)
+    (switch-to-buffer "*Messages*")
+    (message ">>> Native compile 3rd-party packages...")
+    (native-compile-prune-cache)
+    (dolist (dir (directory-files package-user-dir t "^[^.]" t))
+      (when (file-directory-p dir)
+        (byte-recompile-directory dir 0 t)
+        (native-compile-async dir 'recursively)))
+    (switch-to-buffer "*Async-native-compile-log*"))
+
 #+END_SRC
 
 * LEMACS Custom Options
