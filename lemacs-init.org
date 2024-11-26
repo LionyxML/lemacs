@@ -2816,6 +2816,15 @@ npm i -g eslint
 
 #+END_SRC
 
+**** LSP-Biome
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-biome
+    :if nil
+    :ensure t
+    :vc (:url "https://github.com/cxa/lsp-biome"))
+
+#+END_SRC
+
 ** Tools - Session and Window Management
 *** Ace Window
 #+BEGIN_SRC emacs-lisp
