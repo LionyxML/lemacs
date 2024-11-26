@@ -2713,13 +2713,18 @@ npm i -g eslint
                 (eq major-mode 'typescriptreact-mode))
         (lemacs/use-local-eslint)))
 
+
+    ;; eglot can't yet deal with 2 or more lsps per buffer... sad
     (add-hook 'eglot-managed-mode-hook #'lemacs/use-local-eslint)
-    (add-hook 'lsp-mode-hook #'lemacs/use-local-eslint)
+
+    ;; We trust lsp-mode to do the right thing
+    ;; (add-hook 'lsp-mode-hook #'lemacs/use-local-eslint)
 
     ;; With older projects without LSP or if eglot fails
     ;; you can call interactivelly M-x lemacs/use-local-eslint RET
     ;; or add a hook like:
-    (add-hook 'js-ts-mode-hook #'lemacs/use-local-eslint))
+    ;; (add-hook 'js-ts-mode-hook #'lemacs/use-local-eslint)
+    )
 #+END_SRC
 
 *** LSP-MODE Family
