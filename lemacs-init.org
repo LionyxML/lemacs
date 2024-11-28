@@ -3092,7 +3092,7 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
     :defer t
     :ensure t
     :config
-    (setq elfeed-use-curl nil)
+    (setq elfeed-use-curl t)
     (define-advice elfeed-search--header (:around (oldfun &rest args))
     (if elfeed-db
         (apply oldfun args)
