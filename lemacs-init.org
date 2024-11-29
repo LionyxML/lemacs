@@ -772,6 +772,8 @@ The great IRC client.
     (erc-join-buffer 'window)
     (erc-buffer-display 'window)
     (erc-hide-list '("JOIN" "PART" "QUIT"))
+    (erc-kill-buffer-on-part t)
+    (erc-track-shorten-start 6)
     (erc-timestamp-format "[%H:%M]")
     (erc-autojoin-channels-alist '((".*\\.libera\\.chat" "#emacs" "#systemcrafters"))))
 #+END_SRC
