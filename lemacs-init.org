@@ -580,9 +580,14 @@ This is needed for open .gpg files without problems.
     :defer t
     :config
     (setq auth-sources
-       (list (expand-file-name ".authinfo.gpg" user-emacs-directory)))
+          (list (expand-file-name ".authinfo.gpg" user-emacs-directory)))
     (setq user-full-name "Rahul Martim Juliato"
-          user-mail-address "rahul.juliato@gmail.com"))
+          user-mail-address "rahul.juliato@gmail.com")
+
+    ;; Use `pass` as an auth-source
+    (when (file-exists-p "~/.password-store")
+      (auth-source-pass-enable)))
+
 #+END_SRC
 
 *** Dired
@@ -1575,6 +1580,7 @@ These are the 3rd party packages we use to extend our favorite editor.
                                  (setq-local completion-at-point-functions
                                              (list (cape-capf-super #'codeium-completion-at-point #'lsp-completion-at-point)))))))
       (codeium-init)))
+
   #+END_SRC
 
 *** Ellama
