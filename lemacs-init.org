@@ -3273,8 +3273,7 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
     :defer t
     :ensure t
     :config
-    (when (eq system-type 'gnu/linux)
-      (xclip-mode 1)))
+    (xclip-mode 1))
 #+END_SRC
 
 ** Tools - Terminals / Shells
