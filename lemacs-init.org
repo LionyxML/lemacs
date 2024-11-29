@@ -1545,10 +1545,19 @@ These are the 3rd party packages we use to extend our favorite editor.
                                 :box (:line-width 2 :style flat-button)))))))
 #+END_SRC
 
+** Tools - Auth
+#+BEGIN_SRC emacs-lisp
+  (use-package pinentry
+    :ensure t
+    :demand t
+    :config
+    (pinentry-start))
+
+#+END_SRC
+
 ** Tools - AI Assistency
 *** Codeium
 #+BEGIN_SRC emacs-lisp
-  ;;; --------------------------------- AI Assistant
   (use-package codeium
     :if (not (eq lemacs-codeium-scope 'nil))
     :load-path "site-lisp/codeium/"
