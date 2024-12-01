@@ -937,6 +937,7 @@ Our version control aware **prompt** is set here also.
                                  (eshell-send-input)
                                  ))))
 
+    (require 'vc-git)
     (setq eshell-prompt-function
           (lambda ()
             (concat
