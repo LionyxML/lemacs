@@ -1002,6 +1002,7 @@ Our version control aware **prompt** is set here also.
           '("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
             "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
              "ncmpcpp" "newsbeuter" "nethack" "mutt" "mpv" "cava")))
+
 #+END_SRC
 
 *** VC
@@ -1336,8 +1337,18 @@ These are the 3rd party packages we use to extend our favorite editor.
   (use-package handlebars-mode
     :defer t
     :ensure t)
+
 #+END_SRC
 
+*** JS-PKG
+#+BEGIN_SRC emacs-lisp
+  (use-package js-pkg-mode
+    :vc (:url "https://github.com/ovistoica/js-pkg-mode"
+         :branch "main")
+    :ensure t
+    :defer t)
+
+#+END_SRC
 *** Markdown-Mode
 #+BEGIN_SRC emacs-lisp
   (use-package markdown-mode
@@ -2761,15 +2772,6 @@ npm i -g eslint
 
 #+END_SRC
 
-**** LSP-Biome
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-biome
-    :if nil
-    :ensure t
-    :vc (:url "https://github.com/cxa/lsp-biome"))
-
-#+END_SRC
-
 ** Tools - Session and Window Management
 *** Ace Window
 #+BEGIN_SRC emacs-lisp
@@ -3300,12 +3302,14 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
 
     (setq eat-term-name "xterm-256color")
 
+    (setq eat-kill-buffer-on-exit t)
+
     ;; Runs not compatible eshell term stuff with eat on the same buffer
-    (add-hook 'eshell-load-hook #'eat-eshell-mode)
+    (add-hook 'eshell-mode-hook #'eat-eshell-mode)
 
     ;; Runs listed 'visual-mode' eshell stuff with eat on separated buffer
     ;; (takes precedence over the above setting)
-    (add-hook 'eshell-load-hook #'eat-eshell-visual-command-mode)
+    ;; (add-hook 'eshell-mode-hook #'eat-eshell-visual-command-mode)
 
     ;; Disabled line/number minor modes on modeline
     (add-hook 'eat-mode-hook (lambda ()
