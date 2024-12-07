@@ -181,7 +181,7 @@ And many more...
     
     ")
 
-    (defcustom lemacs-start-transparent 'nil
+    (defcustom lemacs-start-transparent 't
       "Makes Emacs use Transparency when loaded."
       :type '(choice
                (const :tag "t" t)

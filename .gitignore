@@ -72,3 +72,5 @@ project-window-list
 viper
 yeetube
 lemacs-init.el*
+todos.org
+forge-database.sqlite
