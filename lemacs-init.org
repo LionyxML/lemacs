@@ -162,7 +162,7 @@ And many more...
                (const :tag "nil" nil))
       :group 'lemacs)
 
-    (defcustom lemacs-ascii-art 't
+    (defcustom lemacs-ascii-art 'nil
       "Enables ASCII art on GUI Emacs."
       :type '(choice
                (const :tag "t" t)
@@ -1560,6 +1560,7 @@ These are the 3rd party packages we use to extend our favorite editor.
        `(tab-bar-tab-inactive ((,c
                                 :background ,bg-main
                                 :box (:line-width 2 :style flat-button)))))))
+
 #+END_SRC
 
 ** Tools - Auth
@@ -3245,6 +3246,7 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
              )))
 
     (dashboard-setup-startup-hook))
+
 #+END_SRC
 
 ** Tools - System PATH and System helpers
