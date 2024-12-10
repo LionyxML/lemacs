@@ -297,6 +297,7 @@ Utils provided ls lacks the **--dired** flag.
       (remote-file-name-inhibit-delete-by-moving-to-trash t)
       (remote-file-name-inhibit-auto-save t)
       (shr-use-colors nil)
+      (shr-use-fonts nil)
       (split-width-threshold 300)
       (switch-to-buffer-obey-display-actions t)
       (tab-always-indent 'complete) ;; TAB serves as M-TAB to completion
