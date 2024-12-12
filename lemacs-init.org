@@ -318,38 +318,38 @@ Utils provided ls lacks the **--dired** flag.
       (prog-mode . display-line-numbers-mode)
       :config
       ;; Settings per OS
-      (set-face-attribute 'default nil :family "Hurmit Nerd Font" :height 100)
+      (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 100)
       (when (eq system-type 'darwin)
         (setq insert-directory-program "gls")
         (setq mac-option-key-is-meta nil
               mac-option-modifier nil
               mac-command-key-is-meta t
               mac-command-modifier 'meta)
-        (set-face-attribute 'default nil :family "Hurmit Nerd Font" :height 130))
+        (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 130))
 
       ;; Modeline fonts ajustments per OS
       (unless (eq system-type 'darwin)
         (if (facep 'mode-line-active)
             (set-face-attribute 'mode-line-active nil
-                                :family "Hurmit Nerd Font"
+                                :family "JetBrainsMono Nerd Font"
                                 :height 100) ; For 29+
           (set-face-attribute 'mode-line nil
-                              :family "Hurmit Nerd Font"
+                              :family "JetBrainsMono Nerd Font"
                               :height 100))
         (set-face-attribute 'mode-line-inactive nil
-                            :family "Hurmit Nerd Font"
+                            :family "JetBrainsMono Nerd Font"
                             :height 100))
 
       (when (eq system-type 'darwin)
         (if (facep 'mode-line-active)
             (set-face-attribute 'mode-line-active nil
-                                :family "Hurmit Nerd Font"
+                                :family "JetBrainsMono Nerd Font"
                                 :height 130) ; For 29+
           (set-face-attribute 'mode-line nil
-                              :family "Hurmit Nerd Font"
+                              :family "JetBrainsMono Nerd Font"
                               :height 130))
         (set-face-attribute 'mode-line-inactive nil
-                            :family "Hurmit Nerd Font"
+                            :family "JetBrainsMono Nerd Font"
                             :height 130))
 
       ;; Do not allow the cursor in the minibuffer prompt
