@@ -2505,6 +2505,15 @@ These are the 3rd party packages we use to extend our favorite editor.
   (use-package magit
     :defer t
     :ensure t
+    :preface (defun lemacs/magit-kill-buffers ()
+               "Restore window configuration and kill all Magit buffers."
+               (interactive)
+               (let ((buffers (magit-mode-get-buffers)))
+                 (magit-restore-window-configuration)
+                 (mapc #'kill-buffer buffers)))
+    :bind (:map magit-status-mode-map
+                ("q" . #'lemacs/magit-kill-buffers)
+                ("C-x k" . #'lemacs/magit-kill-buffers))
     :config
     (setq ediff-custom-diff-options "-u")
     (setq ediff-diff-options "")
@@ -2513,7 +2522,15 @@ These are the 3rd party packages we use to extend our favorite editor.
     (setq magit-diff-refine-hunk 'all)
     (setq magit-diff-use-overlays nil)
     (setq magit-ediff-dwim-show-on-hunks t)
-    (setq magit-executable "/usr/local/bin/git"))
+    (setq magit-executable "/usr/local/bin/git")
+
+    (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-topleft-v1)
+    ;; (setq magit-display-buffer-function 'magit-display-buffer-fullcolumn-most-v1)
+    ;; (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+
+    (with-eval-after-load 'evil-collection
+      (evil-define-key 'normal magit-status-mode-map
+        "q" #'lemacs/magit-kill-buffers)))
 
 #+END_SRC
 
