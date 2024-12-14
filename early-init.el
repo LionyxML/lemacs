@@ -92,6 +92,7 @@
       frame-inhibit-implied-resize t
       frame-title-format '("Emacs"))
 
+;;; Don´t compact font caches during GC
 (setq inhibit-compacting-font-caches t)
 
 ;;; Disables unused UI Elements

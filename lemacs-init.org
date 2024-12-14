@@ -2965,11 +2965,11 @@ npm i -g eslint
   (use-package yeetube
     :ensure t
     :defer t
-    :init (define-prefix-command 'my/yeetube-map)
+    :init (define-prefix-command 'lemacs/yeetube-map)
     :config
     (setf yeetube-mpv-disable-video t) ;; Disable video output
-    :bind (("C-c y" . 'my/yeetube-map)
-            :map my/yeetube-map
+    :bind (("C-c y" . 'lemacs/yeetube-map)
+            :map lemacs/yeetube-map
             ("s" . 'yeetube-search)
             ("b" . 'yeetube-play-saved-video)
             ("d" . 'yeetube-download-videos)
@@ -2993,9 +2993,7 @@ npm i -g eslint
     (doom-modeline-buffer-name t)
     (doom-modeline-vcs-max-length 25)
     (doom-modeline-icon lemacs-nerd-icons)
-    :config
-    (setq inhibit-compacting-font-caches t) ;; Don´t compact font caches during GC
-  )
+    (doom-modeline-time nil))
 
 #+END_SRC
 
@@ -3050,6 +3048,7 @@ npm i -g eslint
   (use-package treemacs-icons-dired
     :defer t
     :ensure t)
+
 #+END_SRC
 
 *** Treemacs-Nerd-Icons
@@ -3059,6 +3058,7 @@ npm i -g eslint
     :ensure t
     :config
     (treemacs-load-theme "nerd-icons"))
+
 #+END_SRC
 
 ** Tools - Org-Mode enhancements
@@ -3069,6 +3069,7 @@ npm i -g eslint
     :ensure t
     :bind
     (("C-S-p" . org-ros)))
+
 #+END_SRC
 
 *** Org-Modern
@@ -3111,6 +3112,7 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
       (khalel-import-events))
 
     (khalel-add-capture-template))
+
 #+END_SRC
 
 ** Tools - Processes Management
@@ -3129,6 +3131,7 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
   (use-package verb
     :ensure t
     :defer t)
+
 #+END_SRC
 
 ** Tools - RSS News Feeds
