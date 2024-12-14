@@ -2125,6 +2125,10 @@ These are the 3rd party packages we use to extend our favorite editor.
     (evil-set-leader 'normal (kbd "SPC"))
     (evil-set-leader 'visual (kbd "SPC"))
 
+    ;; Makes it easy (not to jump) moving trhought wrapped text
+    (evil-define-key 'normal 'global (kbd "j") 'evil-next-visual-line)
+    (evil-define-key 'normal 'global (kbd "k") 'evil-previous-visual-line)
+
     ;; Keybindings for searching and finding files.
     (evil-define-key 'normal 'global (kbd "<leader> s f") 'consult-find)
     (evil-define-key 'normal 'global (kbd "<leader> s g") 'consult-grep)
@@ -2187,6 +2191,8 @@ These are the 3rd party packages we use to extend our favorite editor.
     (evil-define-key 'normal 'global (kbd "<leader> t t") 'lemacs/open-term-new-tab)
 
     (evil-define-key 'normal 'global (kbd "<leader> t x") 'lemacs/close-term)
+
+    (evil-define-key '(normal insert visual) eshell-mode-map (kbd "C-r") 'consult-history)
 
     ;; Managing tabs
     ;; ]t and [t are already set
