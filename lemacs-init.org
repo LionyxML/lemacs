@@ -2881,12 +2881,12 @@ npm i -g eslint
     :defer t
     :ensure t
     :custom
-    (persp-auto-save-opt 0)
+    (persp-auto-save-opt 0)     ;; I don't want perspectives saved
     (persp-auto-resume-time 0)
     :hook
     (after-init . persp-mode)
     :config
-    ;; Makes tab-bar-tabs also restorable via persp-mode
+    ;; Makes tab-bar tabs also restorable via persp-mode
     (add-hook 'persp-before-deactivate-functions
               (defun +workspaces-save-tab-bar-data-h (_)
                 (when (get-current-persp)
