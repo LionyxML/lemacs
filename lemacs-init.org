@@ -3532,7 +3532,7 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
     (defun lemacs/center-visual-fill-on ()
       (interactive)
       (visual-line-mode 1)
-      (setq olivetti-body-width 100)
+      (setq olivetti-body-width 126)
       (olivetti-mode 1))
 
     (defun lemacs/center-visual-fill-off ()
@@ -3542,7 +3542,11 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
       (olivetti-mode 0))
 
     (add-hook 'elfeed-show-mode-hook 'lemacs/center-visual-fill-on)
+    (add-hook 'elfeed-search-mode-hook 'lemacs/center-visual-fill-on)
+    (add-hook 'gnus-group-mode-hook 'lemacs/center-visual-fill-on)
+    (add-hook 'gnus-summary-mode-hook 'lemacs/center-visual-fill-on)
     (add-hook 'gnus-article-mode-hook 'lemacs/center-visual-fill-on))
+
 #+END_SRC
 
 ** Tools - TUI Enhancements
