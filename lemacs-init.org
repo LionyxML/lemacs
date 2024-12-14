@@ -2766,14 +2766,15 @@ npm i -g eslint
                python-ts
                web-mode
                prisma-mode
-               js-ts-mode) . lsp))
+               typescript-mode
+               js-ts-mode) . lsp-deferred))
       :ensure t
       :custom
       (lsp-keymap-prefix "C-c l")
-      (lsp-inlay-hint-enable t)
+      ;; (lsp-inlay-hint-enable t)
       (lsp-completion-provider :none)
       (lsp-session-file (locate-user-emacs-file ".lsp-session"))
-      (lsp-log-io nil) ;; for speed
+      (lsp-log-io nil)   ;; for speed
       (lsp-idle-delay 0) ;; debouncing, if needed 0.5
       (lsp-keep-workspace-alive nil)
       ;; core
