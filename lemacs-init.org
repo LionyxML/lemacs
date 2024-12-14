@@ -541,6 +541,13 @@ Utils provided ls lacks the **--dired** flag.
                     (when (file-exists-p private-file)
                       (load private-file)))))
 
+      ;; Add option "d" to whenever using C-x s or C-x C-c, allowing a quick preview
+      ;; of the diff of what you're asked to save.
+      (add-to-list 'save-some-buffers-action-alist
+             (list "d"
+                   (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
+                   "show diff between the buffer and its file"))
+
       :bind
       (("C-x C-b" . 'ibuffer))
       :init
