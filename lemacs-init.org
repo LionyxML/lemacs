@@ -110,121 +110,153 @@ Not a fan of nerd-fonts? Just switch it off.
 And many more...
 
 #+BEGIN_SRC emacs-lisp
-    (defcustom lemacs-input-mode 'evil
-      "The input mode to use."
-      :type '(choice
-               (const :tag "evil" evil)
-               (const :tag "emacs" emacs))
-      :group 'lemacs)
+  (defcustom lemacs-input-mode 'evil
+    "The input mode to use."
+    :type '(choice
+            (const :tag "evil" evil)
+            (const :tag "emacs" emacs))
+    :group 'lemacs)
 
-    (defcustom lemacs-lsp-client 'lsp-mode
-      "The LSP implementation to use."
-      :type '(choice
-               (const :tag "eglot" eglot)
-               (const :tag "lsp-mode" lsp-mode)
-               (const :tag "none" nil))
-      :group 'lemacs)
+  (defcustom lemacs-lsp-client 'lsp-mode
+    "The LSP implementation to use."
+    :type '(choice
+            (const :tag "eglot" eglot)
+            (const :tag "lsp-mode" lsp-mode)
+            (const :tag "none" nil))
+    :group 'lemacs)
 
-    (defcustom lemacs-in-buffer-completion 'corfu
-      "The in-buffer completion to use."
-      :type '(choice
-               (const :tag "corfu" corfu)
-               (const :tag "none" nil))
-      :group 'lemacs)
+  (defcustom lemacs-in-buffer-completion 'corfu
+    "The in-buffer completion to use."
+    :type '(choice
+            (const :tag "corfu" corfu)
+            (const :tag "none" nil))
+    :group 'lemacs)
 
-    (defcustom lemacs-polymode 'off
-      "Enables polymode, like to styled-components on style[s|d].[t|j]sx? files.
-    Notice this is a bit messy."
-      :type '(choice
-               (const :tag "on" 1)
-               (const :tag "off" nil))
-      :group 'lemacs)
+  (defcustom lemacs-polymode 'off
+    "Enables polymode, like to styled-components on style[s|d].[t|j]sx? files.
+      Notice this is a bit messy."
+    :type '(choice
+            (const :tag "on" 1)
+            (const :tag "off" nil))
+    :group 'lemacs)
 
-    (defcustom lemacs-ligatures 'on
-      "Enables fonts ligatures on GUI Emacs."
-      :type '(choice
-               (const :tag "on" 1)
-               (const :tag "off" nil))
-      :group 'lemacs)
+  (defcustom lemacs-ligatures 'on
+    "Enables fonts ligatures on GUI Emacs."
+    :type '(choice
+            (const :tag "on" 1)
+            (const :tag "off" nil))
+    :group 'lemacs)
 
-    (defcustom lemacs-docker-executable 'podman
-      "The executable to be used with docker-mode."
-      :type '(choice
-               (const :tag "docker" docker)
-               (const :tag "podman" podman))
-      :group 'lemacs)
+  (defcustom lemacs-docker-executable 'podman
+    "The executable to be used with docker-mode."
+    :type '(choice
+            (const :tag "docker" docker)
+            (const :tag "podman" podman))
+    :group 'lemacs)
 
-    (defcustom lemacs-nerd-icons 't
-      "Enables Nerd Icons provided by Nerd Fonts.
-  Requires an installed patched Nerd Font."
-      :type '(choice
-               (const :tag "t" t)
-               (const :tag "nil" nil))
-      :group 'lemacs)
+  (defcustom lemacs-nerd-icons 't
+    "Enables Nerd Icons provided by Nerd Fonts.
+    Requires an installed patched Nerd Font."
+    :type '(choice
+            (const :tag "t" t)
+            (const :tag "nil" nil))
+    :group 'lemacs)
 
-    (defcustom lemacs-ascii-art 'nil
-      "Enables ASCII art on GUI Emacs."
-      :type '(choice
-               (const :tag "t" t)
-               (const :tag "nil" nil))
-      :group 'lemacs)
+  (defcustom lemacs-ascii-art 'baron
+    "Enables ASCII art on GUI Emacs."
+    :type '(choice
+            (const :tag "lemacs" lemacs)
+            (const :tag "baron" baron)
+            (const :tag "nil" nil))
+    :group 'lemacs)
 
-    (defvar lemacs-art "
-              ████████  ▄▄▄▄▄███▄▄▄▄▄    ████████  ████████ █████████
-    █       ██    ███ ██▀▀▀███▀▀▀██  ██    ███ ██    ███ ███    ███
-    ███       ███    ██ ███   ███   ███  ███    ███ ███    ██ ███    ██
-    ███      ███▄▄▄     ███   ███   ███  ███    ███ ███        ███
-    ███       ███▀▀▀     ███   ███   ███ ██████████ ███       ██████████
-    ███       ███    ██ ███   ███   ███  ███    ███ ███    ██        ███
-    ███     ███    ███ ███   ███   ███  ███    ███ ███    ███ ██    ███
-    █████████ ██████████ ██   ███   ██  ███    ██ ██████████████████
-    
-    ")
+  (defvar lemacs-art "
+                ████████  ▄▄▄▄▄███▄▄▄▄▄    ████████  ████████ █████████
+      █       ██    ███ ██▀▀▀███▀▀▀██  ██    ███ ██    ███ ███    ███
+      ███       ███    ██ ███   ███   ███  ███    ███ ███    ██ ███    ██
+      ███      ███▄▄▄     ███   ███   ███  ███    ███ ███        ███
+      ███       ███▀▀▀     ███   ███   ███ ██████████ ███       ██████████
+      ███       ███    ██ ███   ███   ███  ███    ███ ███    ██        ███
+      ███     ███    ███ ███   ███   ███  ███    ███ ███    ███ ██    ███
+      █████████ ██████████ ██   ███   ██  ███    ██ ██████████████████
+      
+      ")
 
-    (defcustom lemacs-start-transparent 't
-      "Makes Emacs use Transparency when loaded."
-      :type '(choice
-               (const :tag "t" t)
-               (const :tag "nil" nil))
-      :group 'lemacs)
+  (defvar lemacs-baron-art "
+      ⣀
+     ⠈⢿⣦
+      ⠘⣿⣷⡀
+       ⠸⣿⣷⡄     ⣤⣤⡀             ⢀
+        ⠸⣿⣿⡄   ⢸⣿⣿⣷⣄          ⣠⣴⣿⡇
+         ⢻⣿⣷⡄  ⣾⣿⣿⣿⣿⣦       ⣠⣾⣿⣿⣿⠃
+          ⢿⣿⣧  ⣿⣿⣿⣿⣿⣿⣷⣤⣤⣤⣤⣴⣾⣿⣿⣿⣿⣿
+          ⢸⣿⣿⡆ ⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏
+          ⢸⣿⣿⣧ ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃
+          ⠘⣿⣿⣿⣦⣿⣿⣿⣿⣿⣿⠟⠛⢿⣿⣿⣿⣿⣿⠛⠻⣿⣆
+         ⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇   ⢻⣿⣿⣿⣿  ⣿⣿⠃
+       ⢀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣄⣀⣀⣾⣿⣿⣿⣿⣦⣤⣿⣿⡆
+      ⢠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠋
+     ⢀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠁
+     ⣸⣿⣿⣿⣿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡄
+     ⣿⣿⣿⡿⠋  ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷
+    ⣰⣿⣿⠏    ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⣿⣿⣿⣿⣿⣿⡆
+   ⣰⣿⣿⡏     ⢸⣿⣿⣿⣿⣿⡟⠛⠛⠛⠛⠁ ⠈⠙⣿⣿⣿⣿⣷⡄
+  ⣼⣿⣿⣿⠷⠄     ⣿⣿⣿⣿⣿⠃        ⠘⢿⣿⣿⣿⣷⡀
+  ⠉⠉⠉⠁       ⣿⣿⣿⣿⡇          ⠈⢿⣿⣿⣿⣧⡀
+             ⣿⣿⣿⣿⡇           ⠈⢻⣿⣿⣿⣷⡀
+            ⢠⣿⣿⣿⣿⡇             ⢻⣿⣿⣿⣿⣷⣤⡀
+            ⢸⣿⣿⣿⣿⠃             ⠸⣿⣿⣿⣿⣿⣿⡇
+            ⢸⣿⣿⣿⣿⡀              ⠙⠛⠛⠛⠛⠋⠁
+           ⢠⣿⣿⣿⣿⣿⣿⣦
+           ⣼⣿⣿⣿⣿⣿⣿⣿
+           ⠻⠿⣿⣿⠿⠿⠏
+      ")
 
-    (defcustom lemacs-default-terminal-emulator 'eshell
-      "Default terminal `emulator/shell' for lemacs.
-    Possible values are `eshell' or `eat'.  Yes, I known,
-    eshell is not a term emulator, but on broader terms,
-    it is a shell inside a window, hence I'm threading
-    both as options to ~when I need to run a term~."
-      :type 'symbol
-      :group 'lemacs)
+  (defcustom lemacs-start-transparent 't
+    "Makes Emacs use Transparency when loaded."
+    :type '(choice
+            (const :tag "t" t)
+            (const :tag "nil" nil))
+    :group 'lemacs)
 
-    (defcustom lemacs-default-projects-folder "~/Projects"
-      "Default place to search for projects with `lemacs/find-projects-and-switch'."
-      :type 'string
-      :group 'lemacs)
+  (defcustom lemacs-default-terminal-emulator 'eshell
+    "Default terminal `emulator/shell' for lemacs.
+      Possible values are `eshell' or `eat'.  Yes, I known,
+      eshell is not a term emulator, but on broader terms,
+      it is a shell inside a window, hence I'm threading
+      both as options to ~when I need to run a term~."
+    :type 'symbol
+    :group 'lemacs)
 
-    (defcustom lemacs-default-theme 'catppuccin
-      "Default LEmacs Theme.  Change it to nil to set your own."
-      :type '(choice
-               (const :tag "catppuccin" "catppuccin")
-               (const :tag "modus" "modus")
-               (const :tag "nil" nil))
-      :group 'lemacs)
+  (defcustom lemacs-default-projects-folder "~/Projects"
+    "Default place to search for projects with `lemacs/find-projects-and-switch'."
+    :type 'string
+    :group 'lemacs)
 
-    (defcustom lemacs-default-initial-buffer 'dashboard
-      "Default LEmacs initial buffer."
-      :type '(choice
-               (const :tag "scratch" "scratch")
-               (const :tag "dashboard" "dashboard")
-               (const :tag "terminal" "terminal"))
-      :group 'lemacs)
+  (defcustom lemacs-default-theme 'catppuccin
+    "Default LEmacs Theme.  Change it to nil to set your own."
+    :type '(choice
+            (const :tag "catppuccin" "catppuccin")
+            (const :tag "modus" "modus")
+            (const :tag "nil" nil))
+    :group 'lemacs)
 
-    (defcustom lemacs-codeium-scope 'nil
-      "Default Codeium (AI assist) scope."
-      :type '(choice
-               (const :tag "everywhere" "everywhere")
-               (const :tag "prog-mode" "prog-mode")
-               (const :tag "nil" nil))
-      :group 'lemacs)
+  (defcustom lemacs-default-initial-buffer 'dashboard
+    "Default LEmacs initial buffer."
+    :type '(choice
+            (const :tag "scratch" "scratch")
+            (const :tag "dashboard" "dashboard")
+            (const :tag "terminal" "terminal"))
+    :group 'lemacs)
+
+  (defcustom lemacs-codeium-scope 'nil
+    "Default Codeium (AI assist) scope."
+    :type '(choice
+            (const :tag "everywhere" "everywhere")
+            (const :tag "prog-mode" "prog-mode")
+            (const :tag "nil" nil))
+    :group 'lemacs)
+
 #+END_SRC
 
 * EMACS Internals
@@ -3263,14 +3295,18 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
     :config
     ;; (setq dashboard-startup-banner (".....logo.png" . ".....logo.txt"))
     ;; (setq dashboard-startup-banner 'logo)
-    (when lemacs-ascii-art
-      (setq dashboard-startup-banner
-            (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))
+    (pcase lemacs-ascii-art
+      ('lemacs
+       (setq dashboard-startup-banner
+             (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))
+      ('baron
+       (setq dashboard-startup-banner
+             (expand-file-name "assets/lemacs_baron_logo.txt" user-emacs-directory)))
+      ('nil
+       (setq dashboard-startup-banner
+             (cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
+                   (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory)))))
 
-    (unless lemacs-ascii-art
-      (setq dashboard-startup-banner
-            (cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
-                  (expand-file-name "assets/lemacs_logo.txt" user-emacs-directory))))
 
     (setq dashboard-center-content t)
     (setq dashboard-vertically-center-content nil)
