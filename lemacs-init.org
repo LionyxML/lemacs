@@ -1200,28 +1200,24 @@ created tab receives a number, not a 'title'.
     :init
     ;; This aims to substitute tmux (or gnu/screen) with Emacs
     ;; Tabs are our tmux windows (new one with C-x t 2)
-    ;; Windows are emacs windows (new one with C-x 5 2)
-    ;; Or even better Windows are Perspectives of `persp-mode' (persp-switch)
+    ;; Windows are perspectives form persp-mode (new one with C-c p s)
 
     (setq tab-bar-position t)
 
     (setq tab-bar-auto-width t)
     (setq tab-bar-auto-width-min '(10 4))
-    (setq tab-bar-auto-width-max '(40 5))
+    (setq tab-bar-auto-width-max '(50 5))
 
-
-    (defun lemacs/renumber-tabs (&optional include-file-name)
+    (defun lemacs/renumber-tabs (&rest _)
       "Renumber all tabs according to their position.
   If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
-      (interactive "P")
+      (interactive)
       (let ((tabs (tab-bar-tabs)))
         (dotimes (i (length tabs))
           (let* ((tab (nth i tabs))
-                  (old-name (alist-get 'name tab))
-                  (file-name (if include-file-name
-                               (replace-regexp-in-string "^\\([0-9]+) \\)" "" old-name)
-                               ""))
-                  (new-name (format " »%d« %s" (1+ i) file-name)))
+                 (old-name (alist-get 'name tab))
+                 (file-name "") ;; You can extend this logic if needed
+                 (new-name (format " »%d« %s" (1+ i) file-name)))
             (tab-bar-select-tab (1+ i)) ; Select the tab by its 1-based index
             (tab-bar-rename-tab new-name)))))
 
@@ -1231,16 +1227,25 @@ created tab receives a number, not a 'title'.
     (advice-add 'tab-close-other :after #'lemacs/renumber-tabs)
     (advice-add 'tab-new :after #'lemacs/renumber-tabs)
 
+    ;; Whenever we modify persp-mode, we want tabs renumbered
+    (add-hook 'persp-activated-functions #'lemacs/renumber-tabs)
+    (add-hook 'persp-renamed-functions #'lemacs/renumber-tabs)
+    (add-hook 'persp-created-functions #'lemacs/renumber-tabs)
+    (add-hook 'persp-before-switch-functions #'lemacs/renumber-tabs)
+
 
     (defun lemacs/switch-tab-or-tab-bar ()
       "Switch between 2 tabs or choose if > 2 tabs are present."
       (interactive)
       (if (= (length (tab-bar-tabs)) 2)
-        (tab-next)
+          (tab-next)
         (call-interactively 'tab-bar-switch-to-tab)
         ))
 
-    (global-set-key (kbd "M-r") 'lemacs/switch-tab-or-tab-bar))
+    (global-set-key (kbd "M-r") 'lemacs/switch-tab-or-tab-bar)
+
+    (tab-bar-mode 1))
+
 #+END_SRC
 
 *** ORG
@@ -2302,7 +2307,10 @@ These are the 3rd party packages we use to extend our favorite editor.
 
     ;; Managing tabs
     ;; ]t and [t are already set
-    (evil-define-key 'normal 'global (kbd "<leader> t n") 'tab-new)
+    (evil-define-key 'normal 'global (kbd "<leader> t n") '(lambda ()
+                                                            (interactive)
+                                                            (tab-new)
+                                                            (scratch-buffer)))
     (evil-define-key 'normal 'global (kbd "<leader> t c") 'tab-close)
     (evil-define-key 'normal 'global (kbd "<leader> t l") 'lemacs/switch-tab-or-tab-bar)
 
@@ -2999,6 +3007,19 @@ npm i -g eslint
     :custom
     (persp-auto-save-opt 0)     ;; I don't want perspectives saved
     (persp-auto-resume-time 0)
+    (persp-lighter              ;; How persp is shown in modeline
+     '(:eval
+       (format
+        (propertize " #%.12s" 'face
+                    (let ((persp (get-current-persp)))
+                      (if persp
+                          (if
+                              (persp-contain-buffer-p (current-buffer)
+                                                      persp)
+                              'font-lock-builtin-face
+                            'persp-face-lighter-buffer-not-in-persp)
+                        'persp-face-lighter-nil-persp)))
+        (safe-persp-name (get-current-persp)))))
     :hook
     (after-init . persp-mode)
     :config
@@ -3012,7 +3033,39 @@ npm i -g eslint
     (add-hook 'persp-activated-functions
               (defun +workspaces-load-tab-bar-data-h (_)
                 (tab-bar-tabs-set (persp-parameter 'tab-bar-tabs))
-                (tab-bar--update-tab-bar-lines t))))
+                (tab-bar--update-tab-bar-lines t)))
+
+    ;; Makes persp name appear on global-mode-string, hence it appears
+    ;; on tab-bar right position also
+    (add-to-list 'tab-bar-format 'tab-bar-format-align-right 'append)
+    (add-to-list 'tab-bar-format 'tab-bar-format-global 'append)
+
+    (defun lemacs/persp-tab-bar-format ()
+      "Return the current perspective name formatted for the tab-bar."
+      (when (bound-and-true-p lemacs/persp-global-string)
+        (concat " "
+                (propertize (concat " " lemacs/persp-global-string " ")
+                            'face '(:foreground "white" :background "#242837"
+                                                :weight bold
+                                                :box (:line-width 2 :color "#676E95" :style released-button)))
+                " ")))
+
+    (add-to-list 'tab-bar-format #'lemacs/persp-tab-bar-format 'append)
+
+    (defun lemacs/update-persp-in-global-mode-string (&rest _)
+      "Update `lemacs/persp-global-string` with the current perspective name."
+      (when (bound-and-true-p persp-mode)
+        (setq lemacs/persp-global-string persp-last-persp-name)
+        (tab-bar--update-tab-bar-lines)))
+
+    (defun lemacs/setup-persp-global-mode-string ()
+      "Set up integration of `lemacs/persp-global-string` with the tab-bar."
+      (add-hook 'persp-activated-functions #'lemacs/update-persp-in-global-mode-string)
+      (add-hook 'persp-renamed-functions #'lemacs/update-persp-in-global-mode-string)
+      (add-hook 'persp-created-functions #'lemacs/update-persp-in-global-mode-string)
+      (add-hook 'persp-before-switch-functions #'lemacs/update-persp-in-global-mode-string))
+
+    (lemacs/setup-persp-global-mode-string))
 
 #+END_SRC
 
@@ -3150,7 +3203,9 @@ npm i -g eslint
     (doom-modeline-buffer-name t)
     (doom-modeline-vcs-max-length 25)
     (doom-modeline-icon lemacs-nerd-icons)
-    (doom-modeline-time nil))
+    (doom-modeline-time nil)
+    (doom-modeline-persp-icon nil)
+    (doom-modeline-persp-name nil))
 
 #+END_SRC
 
