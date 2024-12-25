@@ -590,7 +590,8 @@ Utils provided ls lacks the **--dired** flag.
                    "show diff between the buffer and its file"))
 
       :bind
-      (("C-x C-b" . 'ibuffer))
+      (("C-x C-b" . 'ibuffer)
+       ("M-j" . 'duplicate-dwim))
       :init
       (when (eq lemacs-default-theme 'catppuccin)
         (ignore-errors
