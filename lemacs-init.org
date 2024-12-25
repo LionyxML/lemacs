@@ -233,7 +233,7 @@ And many more...
     :type 'string
     :group 'lemacs)
 
-  (defcustom lemacs-default-theme 'catppuccin
+  (defcustom lemacs-default-theme 'modus
     "Default LEmacs Theme.  Change it to nil to set your own."
     :type '(choice
             (const :tag "catppuccin" "catppuccin")
@@ -1520,88 +1520,110 @@ These are the 3rd party packages we use to extend our favorite editor.
 ** Themes
 *** Catppuccin
 #+BEGIN_SRC emacs-lisp
-  (use-package catppuccin-theme
-    :if (eq lemacs-default-theme 'catppuccin)
-    :defer t
-    :ensure t
-    :config
-    ;; NOTE reloading catppuccin "undoes" what early init does to screen NOT to flash on GUI boot
-    (defun lemacs/catppuccin-hack (_)
-      "A catppuccin hack to make sure everything is loaded"
-      (catppuccin-reload))
-    (add-hook 'after-init-hook (lambda ()
-                                 (run-with-timer 0.3 nil
-                                                 (lambda ()(lemacs/catppuccin-hack nil)))))
-    (add-hook 'after-make-frame-functions 'lemacs/catppuccin-hack)
+   (use-package catppuccin-theme
+     :if (eq lemacs-default-theme 'catppuccin)
+     :defer t
+     :ensure t
+     :config
+     ;; NOTE reloading catppuccin "undoes" what early init does to screen NOT to flash on GUI boot
+     (defun lemacs/catppuccin-hack (_)
+       "A catppuccin hack to make sure everything is loaded"
+       (catppuccin-reload))
+     (add-hook 'after-init-hook (lambda ()
+                                  (run-with-timer 0.3 nil
+                                                  (lambda ()(lemacs/catppuccin-hack nil)))))
+     (add-hook 'after-make-frame-functions 'lemacs/catppuccin-hack)
 
-    ;; Custom diff-hl colors
-    (custom-set-faces
-     `(diff-hl-change ((t (:background unspecified :foreground ,(catppuccin-get-color 'blue))))))
-    (custom-set-faces
-     `(diff-hl-delete ((t (:background unspecified :foreground ,(catppuccin-get-color 'red))))))
-    (custom-set-faces
-     `(diff-hl-insert ((t (:background unspecified :foreground ,(catppuccin-get-color 'green))))))
+     ;; Custom diff-hl colors
+     (custom-set-faces
+      `(diff-hl-change ((t (:background unspecified :foreground ,(catppuccin-get-color 'blue))))))
+     (custom-set-faces
+      `(diff-hl-delete ((t (:background unspecified :foreground ,(catppuccin-get-color 'red))))))
+     (custom-set-faces
+      `(diff-hl-insert ((t (:background unspecified :foreground ,(catppuccin-get-color 'green))))))
 
-    ;; Custom vhl/default-face
-    (custom-set-faces `(vhl/default-face ((t (:background ,(catppuccin-get-color 'surface2)))))))
+      (custom-set-faces
+       `(tab-bar-tab
+          ((t
+            (:background unspecified
+            :box (:line-width 2 :color "#676E95" :style released-button))))))
+
+     ;; Custom vhl/default-face
+     (custom-set-faces `(vhl/default-face ((t (:background ,(catppuccin-get-color 'surface2)))))))
 #+END_SRC
 
 *** Modus
 #+BEGIN_SRC emacs-lisp
   (use-package modus-themes
     :if (eq lemacs-default-theme 'modus)
-    :ensure t
     :defer t
-    :init
-    (load-theme 'modus-vivendi-tinted t)
+    :custom
+    (modus-themes-italic-constructs t)
+    (modus-themes-bold-constructs t)
+    (modus-themes-mixed-fonts nil)
+    (modus-themes-prompts '(bold intense))
+    (modus-themes-common-palette-overrides
+     `((bg-main "#292D3E")
+       (bg-active bg-main)
+       (fg-main "#EEFFFF")
+       (fg-active fg-main)
+       (fg-mode-line-active "#A6Accd")
+       (bg-mode-line-active "#232635")
+       (fg-mode-line-inactive "#676E95")
+       (bg-mode-line-inactive "#282c3d")
+       (border-mode-line-active "#676E95")
+       (border-mode-line-inactive bg-dim)
+       (bg-tab-bar      "#242837")
+       (bg-tab-current  bg-main)
+       (bg-tab-other    "#242837")
+       (fg-prompt "#c792ea")
+       (bg-prompt unspecified)
+       (bg-hover-secondary "#676E95")
+       (bg-completion "#2f447f")
+       (fg-completion white)
+       (bg-region "#3C435E")
+       (fg-region white)
+
+       (fg-line-number-active fg-main)
+       (fg-line-number-inactive "gray50")
+       (bg-line-number-active unspecified)
+       (bg-line-number-inactive "#292D3E")
+       (fringe "#292D3E")
+
+       (fg-heading-0 "#82aaff")
+       (fg-heading-1 "#82aaff")
+       (fg-heading-2 "#c792ea")
+       (fg-heading-3 "#bb80b3")
+       (fg-heading-4 "#a1bfff")
+
+       (fg-prose-verbatim "#c3e88d")
+       (bg-prose-block-contents "#232635")
+       (fg-prose-block-delimiter "#676E95")
+       (bg-prose-block-delimiter bg-prose-block-contents)
+
+       (accent-1 "#79a8ff")
+
+       (keyword "#89DDFF")
+       (builtin "#82aaff")
+       (comment "#676E95")
+       (string "#c3e88d")
+       (fnname "#82aaff")
+       (type "#c792ea")
+       (variable "#ffcb6b")
+       (docstring "#8d92af")
+       (constant "#f78c6c")))
     :config
-
-    ;; Regular modus options
-    (setq modus-themes-italic-constructs t
-          modus-themes-bold-constructs t
-          modus-themes-mixed-fonts t
-          modus-themes-prompts '(bold intense))
-
-    (customize-set-variable
-     'modus-themes-common-palette-overrides
-     `(
-       ;; Make the mode-line borderless and stand out less
-       (bg-mode-line-active bg-main)
-       (fg-mode-line-active fg-main)
-       (bg-mode-line-inactive bg-main)
-       (fg-mode-line-inactive fg-dim)
-       (border-mode-line-active bg-dim)
-       ;; (border-mode-line-active bg-transparent)
-       (border-mode-line-inactive bg-transparent)
-       ))
-
     (modus-themes-with-colors
       (custom-set-faces
-       ;; Custom diff-hl colors
        `(diff-hl-change ((,c :foreground ,blue :background unspecified)))
        `(diff-hl-delete ((,c :foreground ,red :background unspecified)))
        `(diff-hl-insert ((,c :foreground ,green :background unspecified)))
-
-       ;; Other faces
-       `(fringe ((,c
-                  :background ,bg-main
-                  :box nil)))
-       `(line-number ((,c
-                       :background ,bg-main
-                       :box nil)))
-       `(line-number-current-line ((,c
-                                    :background ,bg-main
-                                    :box nil)))
-       `(tab-bar ((,c
-                   :background ,bg-main
-                   :box nil)))
-       `(tab-bar-tab ((,c
-                       :background ,bg-main
-                       :underline (:color ,blue-intense :style line)
-                       :box (:line-width 2 :style flat-button))))
-       `(tab-bar-tab-inactive ((,c
-                                :background ,bg-main
-                                :box (:line-width 2 :style flat-button)))))))
+       `(tab-bar-tab
+         ((,c
+           :background ,bg-main
+           :box (:line-width 2 :color "#676E95" :style released-button))))))
+    :init
+    (load-theme 'modus-vivendi-tinted t))
 
 #+END_SRC
 
