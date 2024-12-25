@@ -3640,13 +3640,13 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
     :init
     (defun lemacs/center-visual-fill-on ()
       (interactive)
-      (visual-line-mode 1)
+      ;; (visual-line-mode 1)
       (setq olivetti-body-width 126)
       (olivetti-mode 1))
 
     (defun lemacs/center-visual-fill-off ()
       (interactive)
-      (visual-line-mode 0)
+      ;; (visual-line-mode 0)
       (kill-local-variable 'olivetti-body-width)
       (olivetti-mode 0))
 
