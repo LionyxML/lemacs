@@ -241,6 +241,15 @@ And many more...
             (const :tag "nil" nil))
     :group 'lemacs)
 
+
+  (defcustom lemacs-default-modeline 'doom
+    "Default LEmacs Modeline."
+    :type '(choice
+            (const :tag "doom" "doom")
+            (const :tag "emacs" "emacs")
+            (const :tag "nil" nil))
+    :group 'lemacs)
+
   (defcustom lemacs-default-initial-buffer 'dashboard
     "Default LEmacs initial buffer."
     :type '(choice
@@ -1341,7 +1350,48 @@ This uniquifies buffers names.
     :commands (man)
     :config
     (setq Man-notify-method 'pushy)) ; does not obey `display-buffer-alist'
+
 #+END_SRC
+
+*** Diminish
+Here we avoid having the trouble of installing `diminish` and adding
+`:diminish` to every use-package declaration.
+
+Notice this is only "on" if modeline is 'emacs, so it won't conflict
+with doom-modeline.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package lemacs-diminish
+    :if (eq lemacs-default-modeline 'emacs)
+    :ensure nil
+    :defer t
+    :init
+    (defvar lemacs-hidden-minor-modes
+      '(abbrev-mode
+        eldoc-mode
+        evil-collection-unimpaired-mode
+        flyspell-mode
+        lsp-lens-mode
+        indent-guide-mode
+        smooth-scroll-mode
+        outline-minor-mode
+        smartparens-mode
+        undo-tree-mode
+        olivetti-mode
+        visual-line-mode
+        which-key-mode))
+
+    (defun lemacs/purge-minor-modes ()
+      (interactive)
+      (dolist (x lemacs-hidden-minor-modes nil)
+        (let ((trg (cdr (assoc x minor-mode-alist))))
+          (when trg
+            (setcar trg "")))))
+
+    (add-hook 'after-change-major-mode-hook 'lemacs/purge-minor-modes))
+
+#+END_SRC
+
 * External Packages
 These are the 3rd party packages we use to extend our favorite editor.
 
@@ -1391,6 +1441,7 @@ These are the 3rd party packages we use to extend our favorite editor.
     :defer t)
 
 #+END_SRC
+
 *** Markdown-Mode
 #+BEGIN_SRC emacs-lisp
   (use-package markdown-mode
