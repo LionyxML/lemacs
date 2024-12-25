@@ -3689,6 +3689,21 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
     :ensure t)
 #+END_SRC
 
+*** Zone-Matrix
+#+BEGIN_SRC emacs-lisp
+  (use-package zone-matrix
+    :vc (:url "https://github.com/emacsmirror/zone-matrix"
+              :branch "main")
+    :ensure t
+    :defer t
+    :config
+    (setq zmx-unicode-mode nil) ;; t uses japanese chars
+    (require 'zone-matrix)
+    (setq zone-programs [zone-matrix]))
+
+#+END_SRC
+
+
 * Provide
 #+BEGIN_SRC emacs-lisp
   (provide 'lemacs-init)
