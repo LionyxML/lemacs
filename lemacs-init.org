@@ -2680,6 +2680,16 @@ These are the 3rd party packages we use to extend our favorite editor.
 
 #+END_SRC
 
+*** Magit-Forge
+#+BEGIN_SRC emacs-lisp
+  (use-package magit-forge
+    :if nil
+    :defert t
+    :after magit-status
+    :ensure t)
+
+#+END_SRC
+
 *** Magit-Stats
 #+BEGIN_SRC emacs-lisp
   (use-package magit-stats
