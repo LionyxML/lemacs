@@ -233,7 +233,7 @@ And many more...
     :type 'string
     :group 'lemacs)
 
-  (defcustom lemacs-default-theme 'modus
+  (defcustom lemacs-default-theme 'catppuccin
     "Default LEmacs Theme.  Change it to nil to set your own."
     :type '(choice
             (const :tag "catppuccin" "catppuccin")
