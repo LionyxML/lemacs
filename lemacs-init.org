@@ -3171,6 +3171,16 @@ npm i -g eslint
 
 #+END_SRC
 
+*** Ready Player
+#+BEGIN_SRC emacs-lisp
+  (use-package ready-player
+    :defer t
+    :ensure t
+    :config
+    (ready-player-mode +1))
+
+#+END_SRC
+
 *** Yeetube
 #+BEGIN_SRC emacs-lisp
   (use-package yeetube
