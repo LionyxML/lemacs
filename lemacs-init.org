@@ -3036,8 +3036,8 @@ npm i -g eslint
                 (tab-bar-tabs-set (persp-parameter 'tab-bar-tabs))
                 (tab-bar--update-tab-bar-lines t)))
 
-    ;; Makes persp name appear on global-mode-string, hence it appears
-    ;; on tab-bar right position also
+    ;; Makes persp name appear on global-mode-string, hence it
+    ;; is also printed on tab-bar, top-right position
     (add-to-list 'tab-bar-format 'tab-bar-format-align-right 'append)
     (add-to-list 'tab-bar-format 'tab-bar-format-global 'append)
 
@@ -3717,15 +3717,15 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
     :init
     (defun lemacs/center-visual-fill-on ()
       (interactive)
-      ;; (visual-line-mode 1)
       (setq olivetti-body-width 126)
-      (olivetti-mode 1))
+      (olivetti-mode 1)
+      (visual-line-mode -1))
 
     (defun lemacs/center-visual-fill-off ()
       (interactive)
-      ;; (visual-line-mode 0)
       (kill-local-variable 'olivetti-body-width)
-      (olivetti-mode 0))
+      (olivetti-mode 0)
+      (visual-line-mode 1))
 
     (add-hook 'elfeed-show-mode-hook 'lemacs/center-visual-fill-on)
     (add-hook 'elfeed-search-mode-hook 'lemacs/center-visual-fill-on)
