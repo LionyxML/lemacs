@@ -978,17 +978,15 @@ Our version control aware **prompt** is set here also.
 
     (add-hook 'eshell-mode-hook
               (lambda ()
-                (progn
-                 (define-key eshell-mode-map "\C-a" 'eshell-bol)
-                 (define-key eshell-mode-map "\C-r" 'consult-history)
-                 (define-key eshell-mode-map [up] 'previous-line)
-                 (define-key eshell-mode-map [down] 'next-line))
+                (define-key eshell-mode-map "\C-a" 'eshell-bol)
+                (define-key eshell-mode-map "\C-r" 'consult-history)
+                (define-key eshell-mode-map [up] 'previous-line)
+                (define-key eshell-mode-map [down] 'next-line)
                 (local-set-key (kbd "C-l")
                                (lambda ()
                                  (interactive)
                                  (eshell/clear 1)
-                                 (eshell-send-input)
-                                 ))))
+                                 (eshell-send-input)))))
 
     (require 'vc-git)
     (setq eshell-prompt-function
@@ -1003,7 +1001,11 @@ Our version control aware **prompt** is set here also.
              ")──("
              (nerd-icons-faicon "nf-fa-user")
              " "
-             (user-login-name)
+             (or (file-remote-p default-directory 'user) (user-login-name))
+             ")──("
+             (nerd-icons-faicon "nf-fa-network_wired")
+             " "
+             (or (file-remote-p default-directory 'host) (system-name))
              ")──("
              (nerd-icons-mdicon "nf-md-clock")
              " "
@@ -1011,9 +1013,10 @@ Our version control aware **prompt** is set here also.
              ")──("
              (nerd-icons-faicon "nf-fa-folder")
              " "
-             (concat (if (>= (length (eshell/pwd)) 40)
-                         (concat "..." (car (last (butlast (split-string (eshell/pwd) "/") 0))))
-                       (abbreviate-file-name (eshell/pwd))))
+             (let ((path (abbreviate-file-name (eshell/pwd))))
+               (if (file-remote-p path)
+                   (string-remove-prefix (file-remote-p path) path)
+                 path))
              ")\n"
              (when (and (fboundp 'vc-git-root) (vc-git-root default-directory))
                (concat
@@ -1054,7 +1057,7 @@ Our version control aware **prompt** is set here also.
     (setq eshell-visual-commands
           '("vi" "screen" "top"  "htop" "btm" "less" "more" "lynx" "ncftp" "pine" "tin" "trn"
             "elm" "irssi" "nmtui-connect" "nethack" "vim" "alsamixer" "nvim" "w3m"
-             "ncmpcpp" "newsbeuter" "nethack" "mutt" "mpv" "cava")))
+            "ncmpcpp" "newsbeuter" "nethack" "mutt" "mpv" "cava")))
 
 #+END_SRC
 
