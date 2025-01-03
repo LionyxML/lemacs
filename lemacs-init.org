@@ -2237,8 +2237,8 @@ These are the 3rd party packages we use to extend our favorite editor.
     (setq evil-want-fine-undo t)        ;; Evil uses finer grain undoing steps
 
     ;; Define the leader key as Space
-    (evil-set-leader 'normal (kbd "\\"))
-    (evil-set-leader 'visual (kbd "\\"))
+    (evil-set-leader 'normal (kbd "SPC"))
+    (evil-set-leader 'visual (kbd "SPC"))
 
     ;; Makes it easy (not to jump) moving trhought wrapped text
     (evil-define-key 'normal 'global (kbd "j") 'evil-next-visual-line)
