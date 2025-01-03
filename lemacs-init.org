@@ -3599,9 +3599,22 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
     (defface eshell-syntax-highlighting-invalid-face
       '((t :inherit error))
       "Face used for invalid Eshell commands."
-      :group 'eshell-syntax-highlighting)
-    )
+      :group 'eshell-syntax-highlighting))
+
 #+END_SRC
+
+*** Sudo Edit
+This package provides *sudo-edit* and *sudo-edit-find-file* so we can
+easily edit files as root, either from an open buffer or finding a
+file via *C-x f* or inside eshell.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package sudo-edit
+    :ensure t
+    :defer t)
+
+#+END_SRC
+
 ** Tools - Text Visualization Aid
 *** Eldoc
 #+BEGIN_SRC emacs-lisp
