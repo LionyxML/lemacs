@@ -1389,6 +1389,7 @@ with doom-modeline.
         undo-tree-mode
         olivetti-mode
         visual-line-mode
+        persp-mode
         which-key-mode))
 
     (defun lemacs/purge-minor-modes ()
@@ -3210,7 +3211,9 @@ npm i -g eslint
     :defer t
     :ensure t
     :hook
-    (after-init . doom-modeline-mode)
+    (after-init . (lambda ()
+                    (if (eq lemacs-default-modeline 'doom)
+                        (doom-modeline-mode))))
     :custom
     (doom-modeline-buffer-file-name-style 'buffer-name)
     (doom-modeline-project-detection 'project)
