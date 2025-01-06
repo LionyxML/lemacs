@@ -1475,16 +1475,6 @@ These are the 3rd party packages we use to extend our favorite editor.
     :after (:any python-ts-mode))
  #+END_SRC
 
-*** Rainbow-Delimiters
-#+BEGIN_SRC emacs-lisp
-
-  (use-package rainbow-delimiters
-    :defer t
-    :ensure t
-    :hook
-    (prog-mode . rainbow-delimiters-mode))
-#+END_SRC
-
 *** Polymode
 #+BEGIN_SRC emacs-lisp
   (use-package polymode
@@ -1580,7 +1570,7 @@ These are the 3rd party packages we use to extend our favorite editor.
     (font-lock-variable-name-face ((t (:foreground "#cba6f7")))))
 #+END_SRC
 
-** Themes
+** Themes & Colors
 *** Catppuccin
 #+BEGIN_SRC emacs-lisp
    (use-package catppuccin-theme
@@ -1687,6 +1677,28 @@ These are the 3rd party packages we use to extend our favorite editor.
            :box (:line-width 2 :color "#676E95" :style released-button))))))
     :init
     (load-theme 'modus-vivendi-tinted t))
+
+#+END_SRC
+
+*** Rainbow-Delimiters
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :defer t
+    :ensure t
+    :hook
+    (prog-mode . rainbow-delimiters-mode))
+
+#+END_SRC
+
+*** Colorful
+#+BEGIN_SRC emacs-lisp
+  (use-package colorful-mode
+    :defer t
+    :ensure t
+    :custom
+    (colorful-use-prefix t)
+    (colorful-prefix-alignment 'left)
+    (colorful-prefix-string "●"))
 
 #+END_SRC
 
