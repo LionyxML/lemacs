@@ -212,7 +212,7 @@ And many more...
            ⠻⠿⣿⣿⠿⠿⠏
       ")
 
-  (defcustom lemacs-start-transparent 't
+  (defcustom lemacs-start-transparent 'nil
     "Makes Emacs use Transparency when loaded."
     :type '(choice
             (const :tag "t" t)
@@ -258,7 +258,7 @@ And many more...
             (const :tag "terminal" "terminal"))
     :group 'lemacs)
 
-  (defcustom lemacs-codeium-scope 'nil
+  (defcustom lemacs-codeium-scope 'prog-mode
     "Default Codeium (AI assist) scope."
     :type '(choice
             (const :tag "everywhere" "everywhere")
@@ -360,13 +360,14 @@ Utils provided ls lacks the **--dired** flag.
       :config
       ;; Settings per OS
       (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 100)
+
       (when (eq system-type 'darwin)
         (setq insert-directory-program "gls")
         (setq mac-option-key-is-meta nil
               mac-option-modifier nil
               mac-command-key-is-meta t
               mac-command-modifier 'meta)
-        (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 130))
+        (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 140))
 
       ;; Modeline fonts ajustments per OS
       (unless (eq system-type 'darwin)
