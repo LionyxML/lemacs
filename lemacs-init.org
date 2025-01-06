@@ -1217,15 +1217,16 @@ created tab receives a number, not a 'title'.
       "Renumber all tabs according to their position.
   If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
       (interactive)
-      (let ((tabs (tab-bar-tabs)))
+      (let ((tabs (tab-bar-tabs))
+            (current-tab-index (tab-bar--current-tab-index))) ;; Store the current tab index
         (dotimes (i (length tabs))
           (let* ((tab (nth i tabs))
                  (old-name (alist-get 'name tab))
-                 (file-name "") ;; You can extend this logic if needed
+                 (file-name "")         ;; You can extend this logic if needed
                  (new-name (format " »%d« %s" (1+ i) file-name)))
-            (tab-bar-select-tab (1+ i)) ; Select the tab by its 1-based index
-            (tab-bar-rename-tab new-name)))))
-
+            (tab-bar-select-tab (1+ i)) ;; Select the tab by its 1-based index
+            (tab-bar-rename-tab new-name)))
+        (tab-bar-select-tab (1+ current-tab-index))))
 
     ;; Whenever we modify tabs, we want it renumbered
     (advice-add 'tab-close :after #'lemacs/renumber-tabs)
