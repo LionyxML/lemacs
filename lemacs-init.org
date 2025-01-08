@@ -162,11 +162,13 @@ And many more...
             (const :tag "nil" nil))
     :group 'lemacs)
 
-  (defcustom lemacs-ascii-art 'lemacs
+  (defcustom lemacs-ascii-art 'blur
     "Enables ASCII art on GUI Emacs."
     :type '(choice
             (const :tag "lemacs" lemacs)
             (const :tag "baron" baron)
+            (const :tag "blur" blur)
+            (const :tag "blood" blood)
             (const :tag "nil" nil))
     :group 'lemacs)
 
@@ -212,7 +214,7 @@ And many more...
            ⠻⠿⣿⣿⠿⠿⠏
       ")
 
-  (defcustom lemacs-start-transparent 'nil
+  (defcustom lemacs-start-transparent 't
     "Makes Emacs use Transparency when loaded."
     :type '(choice
             (const :tag "t" t)
@@ -233,7 +235,7 @@ And many more...
     :type 'string
     :group 'lemacs)
 
-  (defcustom lemacs-default-theme 'catppuccin
+  (defcustom lemacs-default-theme 'modus
     "Default LEmacs Theme.  Change it to nil to set your own."
     :type '(choice
             (const :tag "catppuccin" "catppuccin")
@@ -242,7 +244,7 @@ And many more...
     :group 'lemacs)
 
 
-  (defcustom lemacs-default-modeline 'doom
+  (defcustom lemacs-default-modeline 'emacs
     "Default LEmacs Modeline."
     :type '(choice
             (const :tag "doom" "doom")
@@ -3237,7 +3239,9 @@ npm i -g eslint
     (doom-modeline-icon lemacs-nerd-icons)
     (doom-modeline-time nil)
     (doom-modeline-persp-icon nil)
-    (doom-modeline-persp-name nil))
+    (doom-modeline-persp-name nil)
+    (doom-modeline-bar-width 0.1)
+    (mode-line-right-align-edge 'right-fringe))
 
 #+END_SRC
 
@@ -3473,6 +3477,12 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
       ('baron
        (setq dashboard-startup-banner
              (expand-file-name "assets/lemacs_baron_logo.txt" user-emacs-directory)))
+      ('blood
+       (setq dashboard-startup-banner
+             (expand-file-name "assets/lemacs_blood_logo.txt" user-emacs-directory)))
+      ('blur
+       (setq dashboard-startup-banner
+             (expand-file-name "assets/lemacs_blur_logo.txt" user-emacs-directory)))
       ('nil
        (setq dashboard-startup-banner
              (cons (expand-file-name "assets/lemacs_logo.png" user-emacs-directory)
