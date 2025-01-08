@@ -1386,6 +1386,7 @@ with doom-modeline.
         evil-collection-unimpaired-mode
         flyspell-mode
         lsp-lens-mode
+        lsp-mode
         indent-guide-mode
         smooth-scroll-mode
         outline-minor-mode
@@ -1403,7 +1404,27 @@ with doom-modeline.
           (when trg
             (setcar trg "")))))
 
-    (add-hook 'after-change-major-mode-hook 'lemacs/purge-minor-modes))
+    (add-hook 'after-change-major-mode-hook 'lemacs/purge-minor-modes)
+
+    ;; SHORTEN BRANCH NAMES
+    (defun lemacs/shorten-vc-mode (vc)
+      "Shorten VC string to at most 20 characters, replacing 'Git-' with a branch symbol."
+      (let* ((vc (replace-regexp-in-string "^ Git[:-]" " ⎇ " vc)))
+        (if (> (length vc) 20)
+            (concat (substring vc 0 20) "...")
+          vc)))
+
+    (defun lemacs/update-vc-mode ()
+      "Update `vc-mode` to truncate its string representation."
+      (interactive)
+      (when vc-mode
+        (setq vc-mode (lemacs/shorten-vc-mode vc-mode))))
+
+    (add-hook 'find-file-hook
+              (lambda ()
+                (run-at-time 0.1 nil #'lemacs/update-vc-mode)))
+    (add-hook 'after-save-hook #'lemacs/update-vc-mode))
+
 
 #+END_SRC
 
