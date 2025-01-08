@@ -1215,25 +1215,26 @@ created tab receives a number, not a 'title'.
     (setq tab-bar-auto-width-min '(10 4))
     (setq tab-bar-auto-width-max '(50 5))
 
-    (defun lemacs/renumber-tabs (&rest _)
+    (defun lemacs/renumber-tabs (&rest args)
       "Renumber all tabs according to their position.
-  If INCLUDE-FILE-NAME is non-nil, include the file name in the tab name."
-      (interactive)
-      (let ((tabs (tab-bar-tabs))
+  If MOVETOLAST is non-nil, do not return to the original tab after renumbering."
+      (let ((movetolast (car args)) ;; Extract MOVETOLAST from ARGS
+            (tabs (tab-bar-tabs))
             (current-tab-index (tab-bar--current-tab-index))) ;; Store the current tab index
         (dotimes (i (length tabs))
           (let* ((tab (nth i tabs))
                  (old-name (alist-get 'name tab))
-                 (file-name "")         ;; You can extend this logic if needed
+                 (file-name "")         ;; Extend this logic if needed
                  (new-name (format " »%d« %s" (1+ i) file-name)))
             (tab-bar-select-tab (1+ i)) ;; Select the tab by its 1-based index
             (tab-bar-rename-tab new-name)))
-        (tab-bar-select-tab (1+ current-tab-index))))
+        (unless movetolast
+          (tab-bar-select-tab (1+ current-tab-index)))))
 
     ;; Whenever we modify tabs, we want it renumbered
     (advice-add 'tab-close :after #'lemacs/renumber-tabs)
     (advice-add 'tab-close-other :after #'lemacs/renumber-tabs)
-    (advice-add 'tab-new :after #'lemacs/renumber-tabs)
+    (advice-add 'tab-new :after (lambda (&rest _) (lemacs/renumber-tabs t)))
 
     ;; Whenever we modify persp-mode, we want tabs renumbered
     (add-hook 'persp-activated-functions #'lemacs/renumber-tabs)
