@@ -1218,7 +1218,7 @@ created tab receives a number, not a 'title'.
     (defun lemacs/renumber-tabs (&rest args)
       "Renumber all tabs according to their position.
   If MOVETOLAST is non-nil, do not return to the original tab after renumbering."
-      (let ((movetolast (car args)) ;; Extract MOVETOLAST from ARGS
+      (let ((keep-position (car args))
             (tabs (tab-bar-tabs))
             (current-tab-index (tab-bar--current-tab-index))) ;; Store the current tab index
         (dotimes (i (length tabs))
@@ -1228,13 +1228,14 @@ created tab receives a number, not a 'title'.
                  (new-name (format " »%d« %s" (1+ i) file-name)))
             (tab-bar-select-tab (1+ i)) ;; Select the tab by its 1-based index
             (tab-bar-rename-tab new-name)))
-        (unless movetolast
+        (when keep-position
           (tab-bar-select-tab (1+ current-tab-index)))))
 
     ;; Whenever we modify tabs, we want it renumbered
     (advice-add 'tab-close :after #'lemacs/renumber-tabs)
     (advice-add 'tab-close-other :after #'lemacs/renumber-tabs)
-    (advice-add 'tab-new :after (lambda (&rest _) (lemacs/renumber-tabs t)))
+    (advice-add 'tab-new :after #'lemacs/renumber-tabs)
+    ;; (advice-add 'tab-new :after (lambda (&rest _) (lemacs/renumber-tabs t)))
 
     ;; Whenever we modify persp-mode, we want tabs renumbered
     (add-hook 'persp-activated-functions #'lemacs/renumber-tabs)
@@ -1412,7 +1413,7 @@ with doom-modeline.
       "Shorten VC string to at most 20 characters, replacing 'Git-' with a branch symbol."
       (let* ((vc (replace-regexp-in-string "^ Git[:-]" " ⎇ " vc)))
         (if (> (length vc) 20)
-            (concat (substring vc 0 20) "...")
+            (concat (substring vc 0 20) "…")
           vc)))
 
     (defun lemacs/update-vc-mode ()
