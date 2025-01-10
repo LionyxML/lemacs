@@ -622,6 +622,7 @@ Utils provided ls lacks the **--dired** flag.
       (savehist-mode 1)
       (winner-mode 1)
       (xterm-mouse-mode 1))
+
 #+END_SRC
 
 ** Built-In Packages
@@ -1412,7 +1413,7 @@ with doom-modeline.
     ;; SHORTEN BRANCH NAMES
     (defun lemacs/shorten-vc-mode (vc)
       "Shorten VC string to at most 20 characters, replacing 'Git-' with a branch symbol."
-      (let* ((vc (replace-regexp-in-string "^ Git[:-]" " ⎇ " vc)))
+      (let* ((vc (replace-regexp-in-string "^ Git[:-]" "  " vc)))
         (if (> (length vc) 20)
             (concat (substring vc 0 20) "…")
           vc)))
@@ -1426,8 +1427,35 @@ with doom-modeline.
     (add-hook 'find-file-hook
               (lambda ()
                 (run-at-time 0.1 nil #'lemacs/update-vc-mode)))
-    (add-hook 'after-save-hook #'lemacs/update-vc-mode))
+    (add-hook 'after-save-hook #'lemacs/update-vc-mode)
 
+
+    ;; MODELINE FORMAT
+    (setq-default mode-line-format
+                  '("%e" "  "
+                    (:propertize " " display (raise +0.2)) ;; Top padding
+                    (:propertize " " display (raise -0.2)) ;; Bottom padding
+                    (:propertize "λ  " face font-lock-keyword-face)
+
+                    (:propertize
+                     ("" mode-line-mule-info mode-line-client mode-line-modified mode-line-remote))
+
+                    mode-line-frame-identification
+                    mode-line-buffer-identification
+                    "   "
+                    mode-line-position
+                    mode-line-format-right-align
+                    "  "
+                    (project-mode-line project-mode-line-format)
+                    "  "
+                    (vc-mode vc-mode)
+                    "  "
+                    mode-line-modes
+                    mode-line-misc-info
+                    "  ")
+                  project-mode-line t
+                  mode-line-buffer-identification '(" %b")
+                  mode-line-position-column-line-format '(" %l:%c")))
 
 #+END_SRC
 
@@ -1647,7 +1675,8 @@ These are the 3rd party packages we use to extend our favorite editor.
        (bg-active bg-main)
        (fg-main "#EEFFFF")
        (fg-active fg-main)
-       (fg-mode-line-active "#A6Accd")
+       ;; (fg-mode-line-active "#A6Accd")
+       (fg-mode-line-active "#ffffff")
        (bg-mode-line-active "#232635")
        (fg-mode-line-inactive "#676E95")
        (bg-mode-line-inactive "#282c3d")
@@ -1698,10 +1727,21 @@ These are the 3rd party packages we use to extend our favorite editor.
        `(diff-hl-change ((,c :foreground ,blue :background unspecified)))
        `(diff-hl-delete ((,c :foreground ,red :background unspecified)))
        `(diff-hl-insert ((,c :foreground ,green :background unspecified)))
+       `(tab-bar
+         ((,c
+           :background "#232635"
+           :foreground "#ffffff"
+           :box (:line-width 1 :color "#676E95"))))
        `(tab-bar-tab
          ((,c
-           :background ,bg-main
-           :box (:line-width 2 :color "#676E95" :style released-button))))))
+           :background "#232635"
+           :underline t
+           :box (:line-width 1 :color "#676E95")
+         )))
+       `(tab-bar-tab-inactive
+         ((,c
+           :background "#232635"
+           :box (:line-width 1 :color "#676E95"))))))
     :init
     (load-theme 'modus-vivendi-tinted t))
 
@@ -3090,10 +3130,12 @@ npm i -g eslint
       "Return the current perspective name formatted for the tab-bar."
       (when (bound-and-true-p lemacs/persp-global-string)
         (concat " "
+                (propertize " " 'display '(raise +0.2))
                 (propertize (concat " " lemacs/persp-global-string " ")
                             'face '(:foreground "white" :background "#242837"
                                                 :weight bold
-                                                :box (:line-width 2 :color "#676E95" :style released-button)))
+                                                :box (:line-width 1 :color "#676E95")))
+                (propertize " " 'display '(raise -0.2))
                 " ")))
 
     (add-to-list 'tab-bar-format #'lemacs/persp-tab-bar-format 'append)
