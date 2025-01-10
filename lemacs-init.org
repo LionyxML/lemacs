@@ -611,6 +611,7 @@ Utils provided ls lacks the **--dired** flag.
       (toggle-frame-maximized)
 
       (delete-selection-mode 1)
+      (global-so-long-mode 1)
       (blink-cursor-mode -1)
       (desktop-save-mode -1)
       (file-name-shadow-mode 1)
