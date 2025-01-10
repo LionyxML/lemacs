@@ -260,7 +260,7 @@ And many more...
             (const :tag "terminal" "terminal"))
     :group 'lemacs)
 
-  (defcustom lemacs-codeium-scope 'prog-mode
+  (defcustom lemacs-codeium-scope 'nil
     "Default Codeium (AI assist) scope."
     :type '(choice
             (const :tag "everywhere" "everywhere")
