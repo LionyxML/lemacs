@@ -1371,19 +1371,18 @@ This uniquifies buffers names.
 
 #+END_SRC
 
-*** Diminish
-Here we avoid having the trouble of installing `diminish` and adding
-`:diminish` to every use-package declaration.
-
-Notice this is only "on" if modeline is 'emacs, so it won't conflict
-with doom-modeline.
-
+*** LEMACS-MODE-LINE
 #+BEGIN_SRC emacs-lisp
-  (use-package lemacs-diminish
+  (use-package lemacs-mode-line
     :if (eq lemacs-default-modeline 'emacs)
     :ensure nil
     :defer t
     :init
+    ;; Here we avoid having the trouble of installing `diminish` and adding
+    ;; `:diminish` to every use-package declaration.
+
+    ;; Notice this is only "on" if modeline is 'emacs, so it won't conflict
+    ;; with doom-modeline.
     (defvar lemacs-hidden-minor-modes
       '(abbrev-mode
         eldoc-mode
@@ -1418,18 +1417,6 @@ with doom-modeline.
             (concat (substring vc 0 20) "…")
           vc)))
 
-    (defun lemacs/update-vc-mode ()
-      "Update `vc-mode` to truncate its string representation."
-      (interactive)
-      (when vc-mode
-        (setq vc-mode (lemacs/shorten-vc-mode vc-mode))))
-
-    (add-hook 'find-file-hook
-              (lambda ()
-                (run-at-time 0.1 nil #'lemacs/update-vc-mode)))
-    (add-hook 'after-save-hook #'lemacs/update-vc-mode)
-
-
     ;; MODELINE FORMAT
     (setq-default mode-line-format
                   '("%e" "  "
@@ -1448,7 +1435,7 @@ with doom-modeline.
                     "  "
                     (project-mode-line project-mode-line-format)
                     "  "
-                    (vc-mode vc-mode)
+                    (vc-mode (:eval (lemacs/shorten-vc-mode vc-mode)))
                     "  "
                     mode-line-modes
                     mode-line-misc-info
