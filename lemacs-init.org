@@ -3837,7 +3837,14 @@ file via *C-x f* or inside eshell.
     (add-hook 'elfeed-search-mode-hook 'lemacs/center-visual-fill-on)
     (add-hook 'gnus-group-mode-hook 'lemacs/center-visual-fill-on)
     (add-hook 'gnus-summary-mode-hook 'lemacs/center-visual-fill-on)
-    (add-hook 'gnus-article-mode-hook 'lemacs/center-visual-fill-on))
+    (add-hook 'gnus-article-mode-hook 'lemacs/center-visual-fill-on)
+
+    (defun lemacs/center-ready-player-on ()
+      (setq olivetti-body-width 0)
+      (olivetti-mode 1)
+      (visual-line-mode 1))
+
+    (add-hook 'ready-player-major-mode-hook #'lemacs/center-ready-player-on))
 
 #+END_SRC
 
