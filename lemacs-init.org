@@ -2962,6 +2962,8 @@ npm i -g eslint
                rust-ts-mode
                python-ts
                web-mode
+               ruby-mode
+               ruby-ts-mode
                prisma-mode
                typescript-mode
                js-ts-mode) . lsp-deferred))
@@ -3009,10 +3011,17 @@ npm i -g eslint
       ;; semantic
       (lsp-semantic-tokens-enable nil)
 
+      ;; Ruby - solargraph
+      (lsp-solargraph-use-bundler t)  ;; Use Bundler if the project uses it
+      (lsp-solargraph-multi-root nil) ;; Only work in the current project
+      (lsp-solargraph-diagnostics t) ;; Enable diagnostics
+      (lsp-solargraph-log-level "warn")
+
       :init
       (setq lsp-use-plists t)
       ;; (lsp-inlay-hints-mode)
       ))
+
 #+END_SRC
 
 **** LSP-Prisma
