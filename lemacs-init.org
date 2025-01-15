@@ -1450,6 +1450,30 @@ This uniquifies buffers names.
 These are the 3rd party packages we use to extend our favorite editor.
 
 ** Major Modes - Programming
+*** Apheleia
+#+BEGIN_SRC emacs-lisp
+  (use-package apheleia
+    :ensure t
+    :defer t
+    :init
+    (add-hook 'prog-mode-hook #'apheleia-mode)
+    :config
+    (setq apheleia-formatters
+          (append
+           '((prettier . ("prettier" "--stdin-filepath" filepath))
+             (black . ("black" "-"))
+             (shfmt . ("shfmt" "-i" "2" "-ci" "-")))
+           apheleia-formatters))
+
+    ;; Customize mode-to-formatter mapping.
+    (setq apheleia-mode-alist
+          '((python-mode . black)
+            (javascript-mode . prettier)
+            (typescript-mode . prettier)
+            (ruby-mode . rubocop)
+            (sh-mode . shfmt))))
+
+#+END_SRC
 *** Dockerfile
 #+BEGIN_SRC emacs-lisp
   (use-package dockerfile-mode
