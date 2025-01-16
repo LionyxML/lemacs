@@ -1398,6 +1398,7 @@ This uniquifies buffers names.
         olivetti-mode
         visual-line-mode
         persp-mode
+        apheleia-mode
         which-key-mode))
 
     (defun lemacs/purge-minor-modes ()
@@ -2519,7 +2520,7 @@ These are the 3rd party packages we use to extend our favorite editor.
         (when (get-buffer help-buffer)
           (switch-to-buffer-other-window help-buffer))))
     ;; Open hover documentation
-    (evil-define-key 'normal 'global (kbd "K") 'lemacs/lsp-describe-and-jump)
+    ;; (evil-define-key 'normal 'global (kbd "K") 'lemacs/lsp-describe-and-jump)
     ;; Yeah, on terminals, Emacs doesn't support (YET), the use of floating windows,
     ;; thus, this will open a small buffer bellow your window.
     ;; This floating frames are called "child frames" and some recent effort is being put
@@ -2887,6 +2888,9 @@ npm i -g eslint
     :config
     (when (eq lemacs-lsp-client 'eglot)
 
+      (with-eval-after-load 'eglot
+        (add-to-list 'eglot-server-programs '((ruby-mode ruby-ts-mode) "ruby-lsp")))
+
       (fset #'jsonrpc--log-event #'ignore)
 
       (progn
@@ -2986,8 +2990,7 @@ npm i -g eslint
                rust-ts-mode
                python-ts
                web-mode
-               ruby-mode
-               ruby-ts-mode
+               ruby-base-mode
                prisma-mode
                typescript-mode
                js-ts-mode) . lsp-deferred))
@@ -3034,20 +3037,21 @@ npm i -g eslint
       (lsp-headerline-breadcrumb-icons-enable nil)
       ;; semantic
       (lsp-semantic-tokens-enable nil)
+      (lsp-disabled-clients '(ruby-ls rubocop-ls))
 
       ;; Ruby - ruby-lsp instead of solargraph
       :config
       ;; Try 0 - ruby-lsp just increasing priority
-      ;; (lsp-register-client
-      ;;  (make-lsp-client
-      ;;   :new-connection (lsp-stdio-connection '("ruby-lsp"))
-      ;;   :activation-fn (lsp-activate-on "ruby")
-      ;;   :library-folders-fn (lambda (_workspace) lsp-ruby-lsp-library-directories)
-      ;;   :priority 1   ;; Same as default, just priority increased
-      ;;   :server-id 'ruby-lsp-ls))
-      ;; (setq lsp-disabled-clients '(solargraph))
+      ;; (with-eval-after-load 'lsp-mode
+      ;;   (lsp-register-client
+      ;;    (make-lsp-client
+      ;;     :new-connection (lsp-stdio-connection '("ruby-lsp"))
+      ;;     :activation-fn (lsp-activate-on "ruby")
+      ;;     :library-folders-fn (lambda (_workspace) lsp-ruby-lsp-library-directories)
+      ;;     :priority 10   ;; Same as default, just priority increased
+      ;;     :server-id 'ruby-lsp-ls)))
 
-      ;;; Try 1 - ruby-lsp
+      ;; ;; Try 1 - ruby-lsp
       ;; (add-hook 'ruby-mode-hook
       ;;           (lambda ()
       ;;             (require 'lsp-mode)
