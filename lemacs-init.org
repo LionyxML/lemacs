@@ -3035,11 +3035,113 @@ npm i -g eslint
       ;; semantic
       (lsp-semantic-tokens-enable nil)
 
-      ;; Ruby - solargraph
-      (lsp-solargraph-use-bundler t)  ;; Use Bundler if the project uses it
-      (lsp-solargraph-multi-root nil) ;; Only work in the current project
-      (lsp-solargraph-diagnostics t) ;; Enable diagnostics
-      (lsp-solargraph-log-level "warn")
+      ;; Ruby - ruby-lsp instead of solargraph
+      :config
+      ;; Try 0 - ruby-lsp just increasing priority
+      ;; (lsp-register-client
+      ;;  (make-lsp-client
+      ;;   :new-connection (lsp-stdio-connection '("ruby-lsp"))
+      ;;   :activation-fn (lsp-activate-on "ruby")
+      ;;   :library-folders-fn (lambda (_workspace) lsp-ruby-lsp-library-directories)
+      ;;   :priority 1   ;; Same as default, just priority increased
+      ;;   :server-id 'ruby-lsp-ls))
+      ;; (setq lsp-disabled-clients '(solargraph))
+
+      ;;; Try 1 - ruby-lsp
+      ;; (add-hook 'ruby-mode-hook
+      ;;           (lambda ()
+      ;;             (require 'lsp-mode)
+      ;;             (add-to-list 'lsp-language-id-configuration '(ruby-mode . "ruby-lsp"))
+      ;;             (lsp-register-client
+      ;;              (make-lsp-client
+      ;;               :new-connection (lsp-stdio-connection '("ruby-lsp"))
+      ;;               :activation-fn (lambda (&rest _) t) ;; Activation function can be simplified.
+      ;;               :library-folders-fn (lambda (_workspace) '("~/.rbenv/" "/usr/lib/ruby/" "~/.rvm/" "~/.gem/" "~/.asdf"))
+      ;;               :server-id 'ruby-lsp
+      ;;               :notification-handlers (ht ("textDocument/hover" #'ignore))
+      ;;               ))
+      ;;             (lsp))) ;; Ensure the LSP is started.
+
+      ;;; Try 2 - ruby-lsp with json by shopify
+      ;; (with-eval-after-load 'lsp-mode
+      ;;   (lsp-register-client
+      ;;    (make-lsp-client
+      ;;     :new-connection (lsp-stdio-connection "ruby-lsp")
+      ;;     :major-modes '(ruby-mode enh-ruby-mode ruby-ts-mode)
+      ;;     :server-id 'ruby-lsp
+      ;;     :initialized-fn (lambda (workspace)
+      ;;                       (with-lsp-workspace workspace
+      ;;                         (lsp--set-configuration
+      ;;                          `(:ruby-lsp ,(json-encode
+      ;;                                        '(:enabledFeatures
+      ;;                                          (:codeActions t
+      ;;                                                        :codeLens t
+      ;;                                                        :completion t
+      ;;                                                        :definition t
+      ;;                                                        :diagnostics t
+      ;;                                                        :documentHighlights t
+      ;;                                                        :documentLink t
+      ;;                                                        :documentSymbols t
+      ;;                                                        :foldingRanges t
+      ;;                                                        :formatting t
+      ;;                                                        :hover t
+      ;;                                                        :inlayHint t
+      ;;                                                        :onTypeFormatting t
+      ;;                                                        :selectionRanges t
+      ;;                                                        :semanticHighlighting t
+      ;;                                                        :signatureHelp t
+      ;;                                                        :typeHierarchy t
+      ;;                                                        :workspaceSymbol t)
+      ;;                                          :featuresConfiguration
+      ;;                                          (:inlayHint
+      ;;                                           (:implicitHashValue t
+      ;;                                                               :implicitRescue t))
+      ;;                                          :indexing
+      ;;                                          (:excludedPatterns ["path/to/excluded/file.rb"]
+      ;;                                                             :includedPatterns ["path/to/included/file.rb"]
+      ;;                                                             :excludedGems ["gem1" "gem2" "etc."]
+      ;;                                                             :excludedMagicComments ["compiled:true"])
+      ;;                                          :formatter "auto"
+      ;;                                          :linters []
+      ;;                                          :experimentalFeaturesEnabled :json-false))))))
+      ;;     :initialization-options (lambda () `(:enabledFeatures
+      ;;                                          (:codeActions t
+      ;;                                                        :codeLens t
+      ;;                                                        :completion t
+      ;;                                                        :definition t
+      ;;                                                        :diagnostics t
+      ;;                                                        :documentHighlights t
+      ;;                                                        :documentLink t
+      ;;                                                        :documentSymbols t
+      ;;                                                        :foldingRanges t
+      ;;                                                        :formatting t
+      ;;                                                        :hover t
+      ;;                                                        :inlayHint t
+      ;;                                                        :onTypeFormatting t
+      ;;                                                        :selectionRanges t
+      ;;                                                        :semanticHighlighting t
+      ;;                                                        :signatureHelp t
+      ;;                                                        :typeHierarchy t
+      ;;                                                        :workspaceSymbol t)
+      ;;                                          :featuresConfiguration
+      ;;                                          (:inlayHint
+      ;;                                           (:implicitHashValue t
+      ;;                                                               :implicitRescue t))
+      ;;                                          :indexing
+      ;;                                          (:excludedPatterns ["path/to/excluded/file.rb"]
+      ;;                                                             :includedPatterns ["path/to/included/file.rb"]
+      ;;                                                             :excludedGems ["gem1" "gem2" "etc."]
+      ;;                                                             :excludedMagicComments ["compiled:true"])
+      ;;                                          :formatter "auto"
+      ;;                                          :linters []
+      ;;                                          :experimentalFeaturesEnabled :json-false)))))
+
+
+      ;; ;; Ruby - solargraph
+      (setq lsp-solargraph-use-bundler nil)    ;; Use Bundler if the project uses it
+      (setq lsp-solargraph-multi-root nil)     ;; Only work in the current project
+      (setq lsp-solargraph-diagnostics t)      ;; Enable diagnostics
+      (setq lsp-solargraph-log-level "warn")
 
       :init
       (setq lsp-use-plists t)
