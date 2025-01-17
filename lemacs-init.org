@@ -2848,9 +2848,14 @@ for testing (after Lemacs install), run eshell and look at **asdf --version** ou
 
 You need to Install globally (and for every every asdf plugin shim if you're using asdf):
 #+BEGIN_SRC bash
-npm i -g vscode-langservers-extracted prettier
-npm i -g typescript-language-server typescript
-npm i -g eslint
+  npm i -g vscode-langservers-extracted prettier
+  npm i -g typescript-language-server typescript
+  npm i -g eslint
+
+  gem install ruby-lsp
+  or
+  gem install solargraph
+
 #+END_SRC
 
 *** EGLOT Family
@@ -3037,10 +3042,21 @@ npm i -g eslint
       (lsp-headerline-breadcrumb-icons-enable nil)
       ;; semantic
       (lsp-semantic-tokens-enable nil)
-      (lsp-disabled-clients '(ruby-ls rubocop-ls))
 
-      ;; Ruby - ruby-lsp instead of solargraph
+      ;; RUBY - ruby-lsp
+      ;; (lsp-disabled-clients '(ruby-ls rubocop-ls))   ;; we disable these so ruby-lsp is next in priority
+      ;; (lsp-ruby-lsp-library-directories '("~/.asdf/shims/" "~/.rbenv/" "/usr/lib/ruby/" "~/.rvm/" "~/.gem/"))
+
+      ;; RUBY - solargraph
+       (lsp-solargraph-use-bundler nil)    ;; Use Bundler if the project uses it
+       (lsp-solargraph-multi-root nil)     ;; Only work in the current project
+       (lsp-solargraph-diagnostics t)      ;; Enable diagnostics
+       (lsp-solargraph-log-level "warn")
+       (lsp-solargraph-library-directories '("~/.asdf/install/ruby/" "~/.rbenv/" "/usr/lib/ruby/" "~/.rvm/" "~/.gem/"))
+
       :config
+      ;; FIXME: Trying to make hover work with ruby-lsp
+      ;;
       ;; Try 0 - ruby-lsp just increasing priority
       ;; (with-eval-after-load 'lsp-mode
       ;;   (lsp-register-client
@@ -3140,12 +3156,6 @@ npm i -g eslint
       ;;                                          :linters []
       ;;                                          :experimentalFeaturesEnabled :json-false)))))
 
-
-      ;; ;; Ruby - solargraph
-      (setq lsp-solargraph-use-bundler nil)    ;; Use Bundler if the project uses it
-      (setq lsp-solargraph-multi-root nil)     ;; Only work in the current project
-      (setq lsp-solargraph-diagnostics t)      ;; Enable diagnostics
-      (setq lsp-solargraph-log-level "warn")
 
       :init
       (setq lsp-use-plists t)
