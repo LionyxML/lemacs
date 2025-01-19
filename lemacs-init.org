@@ -1626,6 +1626,23 @@ These are the 3rd party packages we use to extend our favorite editor.
     :ensure t)
 #+END_SRC
 
+*** Web-Mode
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+    :defer t
+    :ensure t
+    :mode
+    (("\\.phtml\\'" . web-mode)
+     ("\\.php\\'" . web-mode)
+     ("\\.tpl\\'" . web-mode)
+     ("\\.[agj]sp\\'" . web-mode)
+     ("\\.as[cp]x\\'" . web-mode)
+     ("\\.erb\\'" . web-mode)
+     ("\\.mustache\\'" . web-mode)
+     ("\\.djhtml\\'" . web-mode)))
+
+#+END_SRC
+
 *** Yaml
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode
