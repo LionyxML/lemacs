@@ -1931,7 +1931,7 @@ These are the 3rd party packages we use to extend our favorite editor.
     ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
     (corfu-auto t)                    ;; Enable auto completion
     (corfu-auto-delay 0)
-    (corfu-auto-prefix 3)
+    (corfu-auto-prefix 1)
     ;; (corfu-separator ?\s)          ;; Orderless field separator
     ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
     ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
@@ -1988,6 +1988,7 @@ These are the 3rd party packages we use to extend our favorite editor.
       (add-to-list 'load-path "~/.emacs.d/site-lisp/corfu-terminal/")
       (require 'corfu-terminal)
       (corfu-terminal-mode)))
+
 #+END_SRC
 
 *** Tempel
@@ -2570,10 +2571,13 @@ These are the 3rd party packages we use to extend our favorite editor.
             (quit-window nil (get-buffer-window eldoc-buf))  ;; Close if visible
           (display-buffer eldoc-buf))))                      ;; Open if not visible
 
-    (if (display-graphic-p)
-        (evil-define-key 'normal 'global (kbd "K") #'eldoc-box-help-at-point)
-      (evil-define-key 'normal 'global (kbd "K") #'lemacs-open-eldoc)
-      (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point))
+      (when (display-graphic-p)
+        (evil-define-key 'normal 'global (kbd "K") #'eldoc-box-help-at-point))
+
+      (when (not (display-graphic-p))
+        (evil-define-key 'normal 'global (kbd "K") #'lemacs-open-eldoc))
+
+      (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point)
 
 
     ;; On minibuffer, makes C-p C-n work with selections on vertico
@@ -2805,9 +2809,9 @@ These are the 3rd party packages we use to extend our favorite editor.
 
 *** Magit-Forge
 #+BEGIN_SRC emacs-lisp
-  (use-package magit-forge
+  (use-package forge
     :if nil
-    :defert t
+    :defer t
     :after magit-status
     :ensure t)
 
@@ -2902,6 +2906,7 @@ You need to Install globally (and for every every asdf plugin shim if you're usi
     (sass-mode . eglot-ensure)
     (web-mode . eglot-ensure)
     (prisma-mode . eglot-ensure)
+    (ruby-base-mode . eglot-ensure)
     :custom
     (eglot-autoshutdown t)
     (eglot-events-buffer-size 0)
@@ -2996,6 +3001,20 @@ You need to Install globally (and for every every asdf plugin shim if you're usi
     )
 #+END_SRC
 
+**** Eglot-Booster
+
+First, install the Rust booster with: cargo install emacs-lsp-booster.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package eglot-booster
+      :ensure t
+      :defer t
+  	:after eglot
+      :config
+      (eglot-booster-mode))
+    
+#+END_SRC
+
 *** LSP-MODE Family
 **** LSP
 #+BEGIN_SRC emacs-lisp
@@ -3022,7 +3041,7 @@ You need to Install globally (and for every every asdf plugin shim if you're usi
       ;; (lsp-inlay-hint-enable t)
       (lsp-completion-provider :none)
       (lsp-session-file (locate-user-emacs-file ".lsp-session"))
-      (lsp-log-io nil)   ;; for speed
+      (lsp-log-io nil)   ;; nil for speed
       (lsp-idle-delay 0) ;; debouncing, if needed 0.5
       (lsp-keep-workspace-alive nil)
       ;; core
@@ -3030,6 +3049,7 @@ You need to Install globally (and for every every asdf plugin shim if you're usi
       (lsp-auto-configure t)
       (lsp-enable-links nil)
       (lsp-eldoc-enable-hover t)
+      (lsp-eldoc-render-all t)
       (lsp-enable-dap-auto-configure t)
       (lsp-enable-file-watchers nil)
       (lsp-enable-folding nil)
@@ -3038,7 +3058,7 @@ You need to Install globally (and for every every asdf plugin shim if you're usi
       (lsp-enable-on-type-formatting nil)
       (lsp-enable-suggest-server-download t)
       (lsp-enable-symbol-highlighting t)
-      (lsp-enable-text-document-color nil)
+      (lsp-enable-text-document-color t)
       ;; modeline
       (lsp-modeline-code-actions-enable nil)     ; Modeline should be relatively clean
       (lsp-modeline-diagnostics-enable nil)      ; Already supported through `flycheck'/ `flymake'
@@ -3061,17 +3081,17 @@ You need to Install globally (and for every every asdf plugin shim if you're usi
       (lsp-semantic-tokens-enable nil)
 
       ;; RUBY - ruby-lsp
-      ;; (lsp-disabled-clients '(ruby-ls rubocop-ls))   ;; we disable these so ruby-lsp is next in priority
+      (lsp-disabled-clients '(ruby-ls rubocop-ls))   ;; we disable these so ruby-lsp is next in priority
       ;; (lsp-ruby-lsp-library-directories '("~/.asdf/shims/" "~/.rbenv/" "/usr/lib/ruby/" "~/.rvm/" "~/.gem/"))
 
       ;; RUBY - solargraph
-       (lsp-solargraph-use-bundler nil)    ;; Use Bundler if the project uses it
-       (lsp-solargraph-multi-root nil)     ;; Only work in the current project
-       (lsp-solargraph-diagnostics t)      ;; Enable diagnostics
-       (lsp-solargraph-log-level "warn")
-       (lsp-solargraph-library-directories '("~/.asdf/install/ruby/" "~/.rbenv/" "/usr/lib/ruby/" "~/.rvm/" "~/.gem/"))
+      ;;  (lsp-solargraph-use-bundler nil)    ;; Use Bundler if the project uses it
+      ;;  (lsp-solargraph-multi-root nil)     ;; Only work in the current project
+      ;;  (lsp-solargraph-diagnostics t)      ;; Enable diagnostics
+      ;;  (lsp-solargraph-log-level "warn")
+      ;;  (lsp-solargraph-library-directories '("~/.asdf/" "~/.rbenv/" "/usr/lib/ruby/" "~/.rvm/" "~/.gem/"))
 
-      :config
+      ;; :config
       ;; FIXME: Trying to make hover work with ruby-lsp
       ;;
       ;; Try 0 - ruby-lsp just increasing priority
@@ -3200,6 +3220,46 @@ You need to Install globally (and for every every asdf plugin shim if you're usi
     :init
     (setq lsp-tailwindcss-add-on-mode t))
 
+#+END_SRC
+
+**** LSP-Booster
+This is not a package, but an override.
+
+First, install the Rust booster with: cargo install emacs-lsp-booster.
+
+Now, the overrides below:
+
+#+BEGIN_SRC emacs-lisp
+(defun lsp-booster--advice-json-parse (old-fn &rest args)
+  "Try to parse bytecode instead of json."
+  (or
+   (when (equal (following-char) ?#)
+     (let ((bytecode (read (current-buffer))))
+       (when (byte-code-function-p bytecode)
+         (funcall bytecode))))
+   (apply old-fn args)))
+(advice-add (if (progn (require 'json)
+                       (fboundp 'json-parse-buffer))
+                'json-parse-buffer
+              'json-read)
+            :around
+            #'lsp-booster--advice-json-parse)
+
+(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+  "Prepend emacs-lsp-booster command to lsp CMD."
+  (let ((orig-result (funcall old-fn cmd test?)))
+    (if (and (not test?)                             ;; for check lsp-server-present?
+             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+             lsp-use-plists
+             (not (functionp 'json-rpc-connection))  ;; native json-rpc
+             (executable-find "emacs-lsp-booster"))
+        (progn
+          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+            (setcar orig-result command-from-exec-path))
+          (message "Using emacs-lsp-booster for %s!" orig-result)
+          (cons "emacs-lsp-booster" orig-result))
+      orig-result)))
+(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 #+END_SRC
 
 ** Tools - Session and Window Management
@@ -3866,12 +3926,10 @@ file via *C-x f* or inside eshell.
     :defer t
     :ensure t
     :config
+    (setq eldoc-idle-delay 0)
     (setq eldoc-echo-area-use-multiline-p nil)
-    (setq eldoc-echo-area-display-truncation-message nil)
+    (setq eldoc-echo-area-display-truncation-message nil))
 
-    (if (display-graphic-p)
-        (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point)
-      (global-set-key (kbd "C-h C-.") #'eldoc-doc-buffer)))
 #+END_SRC
 *** Eldoc-Box
 #+BEGIN_SRC emacs-lisp
@@ -3883,6 +3941,8 @@ file via *C-x f* or inside eshell.
     :custom-face
     ;; (eldoc-box-border ((t (:background "#333"))))
     :config
+    (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point)
+
     (setq eldoc-box-frame-parameters
         '((left . -1)
           (top . -1)
@@ -3995,6 +4055,7 @@ file via *C-x f* or inside eshell.
     (add-hook 'gnus-group-mode-hook 'lemacs/center-visual-fill-on)
     (add-hook 'gnus-summary-mode-hook 'lemacs/center-visual-fill-on)
     (add-hook 'gnus-article-mode-hook 'lemacs/center-visual-fill-on)
+    (add-hook 'gnus-article-mode-hook 'lemacs/center-visual-fill-on)
 
     (defun lemacs/center-ready-player-on ()
       (setq olivetti-body-width 0)
@@ -4025,6 +4086,18 @@ file via *C-x f* or inside eshell.
     :ensure t)
 #+END_SRC
 
+** Tools - Weather Forecast
+#+BEGIN_SRC emacs-lisp
+  (use-package wittering
+    :ensure t
+    :defer t 
+    :commands (wttrin)
+    :config
+    (setq wttrin-unit-system "m")
+    (setq wttrin-font-height 140)
+    (setq wttrin-font-name "JetBrainsMono Nerd Font"))
+
+#+END_SRC
 * Provide
 #+BEGIN_SRC emacs-lisp
   (provide 'lemacs-init)
