@@ -1175,7 +1175,7 @@ Customizes the window package in order to make windows popup on the right spots.
        ;;  (window-height . 0.25)
        ;;  (side . bottom)
        ;;  (slot . -1))
-       ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|Messages\\|Bookmark List\\|Ibuffer\\|Occur\\|eldoc\\|sh\\|env\\|python3\\|sudo\\)\\*"
+       ("\\*\\(Backtrace\\|Warnings?\\|Compile-Log\\|Messages\\|Bookmark List\\|Occur\\|eldoc\\|sh\\|env\\|python3\\|sudo\\)\\*"
         (display-buffer-in-side-window)
         (window-height . 0.25)
         (side . bottom)
@@ -1190,6 +1190,11 @@ Customizes the window package in order to make windows popup on the right spots.
         (window-width . 75)
         (side . right)
         (slot . 0))
+       ("\\*\\(Ibuffer\\)\\*"
+        (display-buffer-in-side-window)
+        (window-width . 100)
+        (side . right)
+        (slot . 1))
        ("\\*\\(undo-tree\\)\\*"
         (display-buffer-in-side-window)
         (window-width . 50)
