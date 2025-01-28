@@ -370,7 +370,7 @@ Utils provided ls lacks the **--dired** flag.
       (prog-mode . display-line-numbers-mode)
       :config
       ;; Settings per OS
-      (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 100)
+      (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 105)
 
       (when (eq system-type 'darwin)
         (setq insert-directory-program "gls")
@@ -385,13 +385,13 @@ Utils provided ls lacks the **--dired** flag.
         (if (facep 'mode-line-active)
             (set-face-attribute 'mode-line-active nil
                                 :family "JetBrainsMono Nerd Font"
-                                :height 100) ; For 29+
+                                :height 105) ; For 29+
           (set-face-attribute 'mode-line nil
                               :family "JetBrainsMono Nerd Font"
-                              :height 100))
+                              :height 105))
         (set-face-attribute 'mode-line-inactive nil
                             :family "JetBrainsMono Nerd Font"
-                            :height 100))
+                            :height 105))
 
       (when (eq system-type 'darwin)
         (if (facep 'mode-line-active)
@@ -423,12 +423,14 @@ Utils provided ls lacks the **--dired** flag.
       (defun lemacs/transparency-set ()
         "Set frame transparency (Graphical Mode)."
         (interactive)
-        (set-frame-parameter (selected-frame) 'alpha '(90 90)))
+        (dolist (frame (frame-list))
+          (set-frame-parameter frame 'alpha-background 85)))
 
       (defun lemacs/transparency-unset ()
         "Unset frame transparency (Graphical Mode)."
         (interactive)
-        (set-frame-parameter (selected-frame) 'alpha '(100 100)))
+        (dolist (frame (frame-list))
+          (set-frame-parameter frame 'alpha-background 100)))
 
       ;; Apply transparency
       (when lemacs-start-transparent
@@ -806,6 +808,7 @@ A package to watch for system processes, like **top** on Unix like systems.
     (proced-auto-update-interval 5)
     (proced-descent t)
     (proced-filter 'user)) ;; We can change interactively with `s'
+
 #+END_SRC
 
 *** ERC
@@ -1306,6 +1309,7 @@ Customizes org-mode looks and feel.
     ;; Ellipsis styling
     (setq org-ellipsis " ▼ ")
     (set-face-attribute 'org-ellipsis nil :inherit 'default :box nil))
+
 #+END_SRC
 
 *** Recentf
@@ -1327,6 +1331,7 @@ new files/directories.
     (recentf-initialize-file-name-history nil)
     (recentf-filename-handlers nil)
     (recentf-show-file-shortcuts-flag nil))
+
 #+END_SRC
 
 *** Column-Number
@@ -1338,6 +1343,7 @@ Makes current column number appear on the modeline.
     :defer t
     :hook
     (after-init . column-number-mode))
+
 #+END_SRC
 
 *** Which-Key
@@ -1356,6 +1362,7 @@ Makes current column number appear on the modeline.
     (setq which-key-idle-secondary-delay 0.25)
     (setq which-key-add-column-padding 1)
     (setq which-key-max-description-length 40))
+
 #+END_SRC
 
 *** Uniquify
@@ -1503,6 +1510,7 @@ These are the 3rd party packages we use to extend our favorite editor.
   (use-package dotenv-mode
     :defer t
     :ensure t)
+
 #+END_SRC
 
 *** Geiser-Guile
@@ -1510,6 +1518,7 @@ These are the 3rd party packages we use to extend our favorite editor.
   (use-package geiser-guile
     :defer t
     :ensure t)
+
 #+END_SRC
 
 *** Handlebars
@@ -1541,6 +1550,7 @@ These are the 3rd party packages we use to extend our favorite editor.
     :mode ("README\\.md\\'" . gfm-mode)
     :custom
     (setq markdown-command "multimarkdown"))
+
 #+END_SRC
 
 *** PyEnv
