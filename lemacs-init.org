@@ -301,6 +301,15 @@ or
     # or... pinentry, pinentry-gnome3, pinentry-x11, etc.
 #+END_SRC
 
+Yah, although the name of the package often is pinentry-gtk2, the
+program is pinentry-gkt-2... thanks Debian...
+
+If you just changed this, restart the agents:
+
+#+BEGIN_SRC bash :tangle no
+  gpgconf --kill all
+#+END_SRC
+
 
 **Note about LS**
 
