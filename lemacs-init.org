@@ -1460,8 +1460,8 @@ This uniquifies buffers names.
     ;; MODELINE FORMAT
     (setq-default mode-line-format
                   '("%e" "  "
-                    (:propertize " " display (raise +0.2)) ;; Top padding
-                    (:propertize " " display (raise -0.2)) ;; Bottom padding
+                    (:propertize " " display (raise +0.05)) ;; Top padding
+                    (:propertize " " display (raise -0.05)) ;; Bottom padding
                     (:propertize "λ  " face font-lock-keyword-face)
 
                     (:propertize
@@ -3385,12 +3385,12 @@ Now, the overrides below:
       "Return the current perspective name formatted for the tab-bar."
       (when (bound-and-true-p lemacs/persp-global-string)
         (concat " "
-                (propertize " " 'display '(raise +0.2))
+                (propertize " " 'display '(raise +0.05))
                 (propertize (concat " " lemacs/persp-global-string " ")
                             'face '(:foreground "white" :background "#242837"
                                                 :weight bold
                                                 :box (:line-width 1 :color "#676E95")))
-                (propertize " " 'display '(raise -0.2))
+                (propertize " " 'display '(raise -0.05))
                 " ")))
 
     (add-to-list 'tab-bar-format #'lemacs/persp-tab-bar-format 'append)
