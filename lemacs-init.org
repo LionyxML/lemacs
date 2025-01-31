@@ -370,7 +370,7 @@ Utils provided ls lacks the **--dired** flag.
       (prog-mode . display-line-numbers-mode)
       :config
       ;; Settings per OS
-      (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 105)
+      (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 100)
 
       (when (eq system-type 'darwin)
         (setq insert-directory-program "gls")
@@ -385,13 +385,13 @@ Utils provided ls lacks the **--dired** flag.
         (if (facep 'mode-line-active)
             (set-face-attribute 'mode-line-active nil
                                 :family "JetBrainsMono Nerd Font"
-                                :height 105) ; For 29+
+                                :height 100) ; For 29+
           (set-face-attribute 'mode-line nil
                               :family "JetBrainsMono Nerd Font"
-                              :height 105))
+                              :height 100))
         (set-face-attribute 'mode-line-inactive nil
                             :family "JetBrainsMono Nerd Font"
-                            :height 105))
+                            :height 100))
 
       (when (eq system-type 'darwin)
         (if (facep 'mode-line-active)
