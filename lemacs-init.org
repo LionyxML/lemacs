@@ -3519,8 +3519,9 @@ Now, the overrides below:
   (use-package ready-player
     :defer t
     :ensure t
-    :config
-    (ready-player-mode +1))
+    :after dired
+    :hook
+    (dired-mode . ready-player-mode))
 
 #+END_SRC
 
