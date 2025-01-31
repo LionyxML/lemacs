@@ -2372,6 +2372,7 @@ These are the 3rd party packages we use to extend our favorite editor.
 *** Evil
 #+BEGIN_SRC emacs-lisp
   (use-package evil
+    :if (eq lemacs-input-mode 'evil)
     :ensure t
     :defer t
     :hook
