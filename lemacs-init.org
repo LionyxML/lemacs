@@ -38,9 +38,9 @@ header-args :tangle yes
 #+END_SRC
 
 * Package Management
-We use the built-in **package.el** in order to install packages, 3rd or 1st party.
+We use the built-in =package.el= in order to install packages, 3rd or 1st party.
 
-Every package is declared using the **use-package** macro, with deffered execution,
+Every package is declared using the =use-package= macro, with deffered execution,
 meaning faster loading time for Emacs.
 
 On the first install we also byte compile and native compile every package,
@@ -59,7 +59,7 @@ avoiding to spend time and resources while actually using Emacs.
 #+END_SRC
 
 * LEMACS Installer
-This is the **LEmacs** installer function. It should be called after init is loaded
+This is the =LEmacs= installer function. It should be called after init is loaded
 (hence, all packages are installed and compiled), to perform some post-package install
 actions, such as install fonts and treesitter grammars.
 
@@ -270,13 +270,13 @@ And many more...
 
 #+END_SRC
 
-* EMACS Internals
+* INTERNAL Packages and Emacs config
 In this section we configure Emacs built-in options and packages.
 
 ** Emacs General Configurations
-**Note About GNUPG**:
+=Note About GNUPG=:
 
-Each system uses **gnupg** with a diferent agent.
+Each system uses =gnupg= with a diferent agent.
 
 From TUI, maybe it is enough to set something like:
 
@@ -285,7 +285,7 @@ From TUI, maybe it is enough to set something like:
 #+END_SRC
 
 On the other hand, for GUI, you need to have something on the
-**~/.gnupg/gpg-agent.conf** file, such as:
+=~/.gnupg/gpg-agent.conf= file, such as:
 
 #+BEGIN_SRC bash :tangle no
   # For macos
@@ -311,10 +311,10 @@ If you just changed this, restart the agents:
 #+END_SRC
 
 
-**Note about LS**
+=Note about LS=
 
-Make sure if you're under **macos** that you have **gls** installed, since the BSD
-Utils provided ls lacks the **--dired** flag.
+Make sure, if you're under =macos= that you have =gls= installed, since the BSD
+Utils provided ls lacks the =--dired= flag.
 
 
   #+BEGIN_SRC emacs-lisp
@@ -739,7 +739,7 @@ The magical in-buffer searcher.
 *** GNUS
 The GNUS mail / newsreader.
 
-Notice your **<emacs-dir>/gnus** should contain all the gnus files, such as:
+Notice your =<emacs-dir>/gnus= should contain all the gnus files, such as:
 - gnus.el
 - newsrc
 - newsrc.eld
@@ -795,7 +795,7 @@ The right time wherever you are.
 #+END_SRC
 
 *** Proced
-A package to watch for system processes, like **top** on Unix like systems.
+A package to watch for system processes, like =top= on Unix like systems.
 
 #+BEGIN_SRC emacs-lisp
   (use-package proced
@@ -854,10 +854,10 @@ The great IRC client.
 *** EShell
 The Elisp Shell. Here we have some customized functions to make life on eshell easier.
 
-Also, there are a lot of **tmux-like** functions in order to be able to open/close eshell
+Also, there are a lot of =tmux-like= functions in order to be able to open/close eshell
 in a horizontal/vertical split, or new tab.
 
-Our version control aware **prompt** is set here also.
+Our version control aware =prompt= is set here also.
 
 #+BEGIN_SRC emacs-lisp
   (use-package eshell
@@ -1080,7 +1080,7 @@ Our version control aware **prompt** is set here also.
 
 *** VC
 Emacs built-in version control system.
-Not that great for **git**, but still, very useful.
+Not that great for =git=, but still, very useful.
 
 #+BEGIN_SRC emacs-lisp
   (use-package vc
@@ -1213,7 +1213,7 @@ Deletes all trailing white-spaces when saving files.
 #+END_SRC
 
 *** Tab-Bar
-The Emacs tab-bar system. Here we configure it to work as **tmux** tabs. Meaning every
+The Emacs tab-bar system. Here we configure it to work as =tmux= tabs. Meaning every
 created tab receives a number, not a 'title'.
 
 #+BEGIN_SRC emacs-lisp
@@ -1486,8 +1486,11 @@ This uniquifies buffers names.
 
 #+END_SRC
 
-* External Packages
+* EXTERNAL Packages
 These are the 3rd party packages we use to extend our favorite editor.
+
+Some are also internal packages that makes sense organizing here, since
+they have a 'package version', like =eglot= and =eldoc=.
 
 ** Major Modes - Programming
 *** Apheleia
@@ -2901,16 +2904,17 @@ These are the 3rd party packages we use to extend our favorite editor.
 #+END_SRC
 
 ** Tools - LSP Clients
-**NOTE**:
+=NOTE:=
 
 To use LSP (and also node/typescript/eslint, prettier), you can install Node JS globally or use a version
-management tool, in the case you have several projects with several node versions it is common to use **nvm**
-or **asdf**. I recommend to install Node JS via **asdf** (https://asdf-vm.com/).
+management tool, in the case you have several projects with several node versions it is common to use =nvm=
+or =asdf=. I recommend to install Node JS via =asdf= (https://asdf-vm.com/).
 
-Note: asdf must be loaded on *.bash_profile* for macos, and *.bashrc* for Linux,
-for testing (after Lemacs install), run eshell and look at **asdf --version** output.
+Note: asdf must be loaded on =bash_profile= for macos, and ==.bashrc= for Linux,
+for testing (after Lemacs install), run eshell and look at =asdf --version= output.
 
 You need to Install globally (and for every every asdf plugin shim if you're using asdf):
+
 #+BEGIN_SRC bash
   npm i -g vscode-langservers-extracted prettier
   npm i -g typescript-language-server typescript
@@ -3654,7 +3658,7 @@ Now, the overrides below:
 #+END_SRC
 
 ** Tools - Personal Info Management (PIM)
-Here we have stuff to handle your **Agenda** and **Contacts List**.
+Here we have stuff to handle your =Agenda= and =Contacts List=.
 
 *** Vdirel
 #+BEGIN_SRC emacs-lisp
@@ -3897,7 +3901,6 @@ Here we have stuff to handle your **Agenda** and **Contacts List**.
 #+END_SRC
 
 ** Tools - Terminals / Shells
-
 *** EAT
 #+BEGIN_SRC emacs-lisp
   (use-package eat
