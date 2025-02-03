@@ -1801,6 +1801,7 @@ they have a 'package version', like =eglot= and =eldoc=.
        `(diff-hl-change ((,c :foreground ,blue :background unspecified)))
        `(diff-hl-delete ((,c :foreground ,red :background unspecified)))
        `(diff-hl-insert ((,c :foreground ,green :background unspecified)))
+       `(popup-tip-face ((,c :background "#232635")))
        `(tab-bar
          ((,c
            :background "#232635"
