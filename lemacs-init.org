@@ -432,9 +432,11 @@ Utils provided ls lacks the =--dired= flag.
         (dolist (frame (frame-list))
           (set-frame-parameter frame 'alpha-background 100)))
 
-      ;; Apply transparency
-      (when lemacs-start-transparent
-        (lemacs/transparency-set))
+      (defun lemacs/transparency-apply-customdef ()
+        (when lemacs-start-transparent
+          (if (not (display-graphic-p))
+              (set-face-background 'default "unspecified")
+            (lemacs/transparency-set))))
 
       (defun lemacs/rename-buffer-and-move-to-new-window ()
         "Promotes a side buffer to a new window."
@@ -1754,8 +1756,10 @@ they have a 'package version', like =eglot= and =eldoc=.
        (bg-mode-line-active "#232635")
        (fg-mode-line-inactive "#676E95")
        (bg-mode-line-inactive "#282c3d")
-       (border-mode-line-active "#676E95")
-       (border-mode-line-inactive bg-dim)
+       (border-mode-line-active unspecified)
+       (border-mode-line-inactive unspecified)
+       ;; (border-mode-line-active "#676E95")
+       ;; (border-mode-line-inactive bg-dim)
        (bg-tab-bar      "#242837")
        (bg-tab-current  bg-main)
        (bg-tab-other    "#242837")
@@ -1798,6 +1802,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     :config
     (modus-themes-with-colors
       (custom-set-faces
+       `(flymake-end-of-line-diagnostics-face ((,c :inherit modus-themes-slant :height 0.85 :box unspecified)))
        `(diff-hl-change ((,c :foreground ,blue :background unspecified)))
        `(diff-hl-delete ((,c :foreground ,red :background unspecified)))
        `(diff-hl-insert ((,c :foreground ,green :background unspecified)))
@@ -1806,19 +1811,24 @@ they have a 'package version', like =eglot= and =eldoc=.
          ((,c
            :background "#232635"
            :foreground "#ffffff"
-           :box (:line-width 1 :color "#676E95"))))
+           ;; :box (:line-width 1 :color "#676E95")
+           )))
        `(tab-bar-tab
          ((,c
            :background "#232635"
            :underline t
-           :box (:line-width 1 :color "#676E95")
+           ;; :box (:line-width 1 :color "#676E95")
+           :box (:line-width 1 :color "#232635")
          )))
        `(tab-bar-tab-inactive
          ((,c
            :background "#232635"
-           :box (:line-width 1 :color "#676E95"))))))
+           ;; :box (:line-width 1 :color "#676E95")
+           :box (:line-width 1 :color "#232635")
+        )))))
     :init
-    (load-theme 'modus-vivendi-tinted t))
+    (load-theme 'modus-vivendi-tinted t)
+    (lemacs/transparency-apply-customdef))
 
 #+END_SRC
 
