@@ -268,6 +268,13 @@ And many more...
             (const :tag "nil" nil))
     :group 'lemacs)
 
+  (defcustom lemacs-start-tab-bar-mode 'nil
+    "Makes Emacs start with tab-bar-mode turned on."
+    :type '(choice
+            (const :tag "t" t)
+            (const :tag "nil" nil))
+    :group 'lemacs)
+
 #+END_SRC
 
 * INTERNAL Packages and Emacs config
@@ -570,9 +577,9 @@ Utils provided ls lacks the =--dired= flag.
                   (with-current-buffer (get-buffer-create "*scratch*")
                     (insert (format "%s
 
-        Loading time : %s
-        Packages     : %s
-    "
+            Loading time : %s
+            Packages     : %s
+        "
                                     lemacs-art
                                     (emacs-init-time)
                                     (number-to-string (length package-activated-list)))))))
@@ -601,9 +608,9 @@ Utils provided ls lacks the =--dired= flag.
       ;; Add option "d" to whenever using C-x s or C-x C-c, allowing a quick preview
       ;; of the diff of what you're asked to save.
       (add-to-list 'save-some-buffers-action-alist
-             (list "d"
-                   (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
-                   "show diff between the buffer and its file"))
+                   (list "d"
+                         (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
+                         "show diff between the buffer and its file"))
 
       :bind
       (("C-x C-b" . 'ibuffer)
@@ -1275,7 +1282,9 @@ created tab receives a number, not a 'title'.
 
     (global-set-key (kbd "M-r") 'lemacs/switch-tab-or-tab-bar)
 
-    (tab-bar-mode 1))
+    (if lemacs-start-tab-bar-mode
+        (tab-bar-mode 1)
+      (tab-bar-mode -1)))
 
 #+END_SRC
 
@@ -3405,7 +3414,8 @@ Now, the overrides below:
                 (propertize (concat " " lemacs/persp-global-string " ")
                             'face '(:foreground "white" :background "#242837"
                                                 :weight bold
-                                                :box (:line-width 1 :color "#676E95")))
+                                                ;; :box (:line-width 1 :color "#676E95")
+                                                 ))
                 (propertize " " 'display '(raise -0.05))
                 " ")))
 
