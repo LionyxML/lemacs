@@ -1324,7 +1324,10 @@ Customizes org-mode looks and feel.
 
     ;; Ellipsis styling
     (setq org-ellipsis " ▼ ")
-    (set-face-attribute 'org-ellipsis nil :inherit 'default :box nil))
+    (set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
+
+    ;; Integration with Verb.el
+    (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
 #+END_SRC
 
@@ -3723,6 +3726,12 @@ Here we have stuff to handle your =Agenda= and =Contacts List=.
 
 ** Tools - REST Api Client
 *** Verb
+
+Verb is the sucessor of the now defunct =restclient.el=.
+
+From an org-block, issue =C-c C-r ...= to perform various actions. Take a
+look at =doc/verb_example.org= for examples of how to use it.
+
 #+BEGIN_SRC emacs-lisp
   (use-package verb
     :ensure t
