@@ -2857,6 +2857,9 @@ they have a 'package version', like =eglot= and =eldoc=.
                 ("q" . #'lemacs/magit-kill-buffers)
                 ("C-x k" . #'lemacs/magit-kill-buffers))
     :config
+    (when lemacs-nerd-icons
+      (setopt magit-format-file-function #'magit-format-file-nerd-icons))
+
     (setq ediff-custom-diff-options "-u")
     (setq ediff-diff-options "")
     (setq ediff-split-window-function 'split-window-horizontally)
