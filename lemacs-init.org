@@ -117,7 +117,7 @@ And many more...
             (const :tag "emacs" emacs))
     :group 'lemacs)
 
-  (defcustom lemacs-lsp-client 'eglot
+  (defcustom lemacs-lsp-client 'lsp-mode
     "The LSP implementation to use."
     :type '(choice
             (const :tag "eglot" eglot)
