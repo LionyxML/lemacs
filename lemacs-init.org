@@ -377,7 +377,7 @@ Utils provided ls lacks the =--dired= flag.
       (prog-mode . display-line-numbers-mode)
       :config
       ;; Settings per OS
-      (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 100)
+      (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 105)
 
       (when (eq system-type 'darwin)
         (setq insert-directory-program "gls")
@@ -392,13 +392,13 @@ Utils provided ls lacks the =--dired= flag.
         (if (facep 'mode-line-active)
             (set-face-attribute 'mode-line-active nil
                                 :family "JetBrainsMono Nerd Font"
-                                :height 100) ; For 29+
+                                :height 105) ; For 29+
           (set-face-attribute 'mode-line nil
                               :family "JetBrainsMono Nerd Font"
-                              :height 100))
+                              :height 105))
         (set-face-attribute 'mode-line-inactive nil
                             :family "JetBrainsMono Nerd Font"
-                            :height 100))
+                            :height 105))
 
       (when (eq system-type 'darwin)
         (if (facep 'mode-line-active)
@@ -426,6 +426,7 @@ Utils provided ls lacks the =--dired= flag.
                (selected-project (completing-read "Select project: " project-list)))
           (when (and selected-project (file-directory-p selected-project))
             (project-switch-project selected-project))))
+      (global-set-key (kbd "C-x p P") 'lemacs/find-projects-and-switch)
 
       (defun lemacs/transparency-set ()
         "Set frame transparency (Graphical Mode)."
@@ -1327,7 +1328,7 @@ Customizes org-mode looks and feel.
     (set-face-attribute 'org-ellipsis nil :inherit 'default :box nil)
 
     ;; Integration with Verb.el
-    (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
+    (define-key org-mode-map (kbd "C-c C-r") #'verb-command-map))
 
 #+END_SRC
 
@@ -2024,6 +2025,10 @@ they have a 'package version', like =eglot= and =eldoc=.
     (when lemacs-nerd-icons
       (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
+    (add-hook 'eshell-mode-hook (lambda ()
+                                  (setq-local corfu-auto nil)
+                                  (corfu-mode)))
+
     (setq corfu--frame-parameters
           '((no-accept-focus . t)
             (no-focus-on-map . t)
@@ -2667,6 +2672,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     :ensure t
     :custom
     (evil-collection-want-find-usages-bindings t)
+    (evil-collection-setup-minibuffer t)
     :hook
     (evil-mode . evil-collection-init))
 
