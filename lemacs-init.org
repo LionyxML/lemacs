@@ -54,6 +54,7 @@ avoiding to spend time and resources while actually using Emacs.
   (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
   (add-to-list 'load-path "~/.emacs.d/site-lisp")
   (eval-and-compile
+    (setq use-package-compute-statistics nil) ;; This toggles statistics: use `use-package-report' to see the results
     (setq use-package-always-ensure t
           use-package-expand-minimally t))
 #+END_SRC
@@ -95,6 +96,24 @@ actions, such as install fonts and treesitter grammars.
         (byte-recompile-directory dir 0 t)
         (native-compile-async dir 'recursively)))
     (switch-to-buffer "*Async-native-compile-log*"))
+
+  (defun lemacs/cleanup-emacs-dir ()
+    "Delete specific files and directories in `user-emacs-directory`."
+    (interactive)
+    (let* ((files '(".lsp-sessions" "projects" "places" "recentf" "tramp"))
+           (dirs '("url" ".cache" "image-dired" "transient" "auto-save-list"))
+           (emacs-dir (file-name-as-directory user-emacs-directory)))
+      (dolist (file files)
+        (let ((filepath (expand-file-name file emacs-dir)))
+          (when (file-exists-p filepath)
+            (delete-file filepath)
+            (message "Deleted file: %s" filepath))))
+      (dolist (dir dirs)
+        (let ((dirpath (expand-file-name dir emacs-dir)))
+          (when (file-directory-p dirpath)
+            (delete-directory dirpath t)
+            (message "Deleted directory: %s" dirpath)))))
+    (message "Cleanup completed!"))
 
 #+END_SRC
 
@@ -162,7 +181,7 @@ And many more...
             (const :tag "nil" nil))
     :group 'lemacs)
 
-  (defcustom lemacs-ascii-art 'blood
+  (defcustom lemacs-ascii-art 'baron
     "Enables ASCII art on GUI Emacs."
     :type '(choice
             (const :tag "lemacs" lemacs)
@@ -171,48 +190,6 @@ And many more...
             (const :tag "blood" blood)
             (const :tag "nil" nil))
     :group 'lemacs)
-
-  (defvar lemacs-art "
-                ████████  ▄▄▄▄▄███▄▄▄▄▄    ████████  ████████ █████████
-      █       ██    ███ ██▀▀▀███▀▀▀██  ██    ███ ██    ███ ███    ███
-      ███       ███    ██ ███   ███   ███  ███    ███ ███    ██ ███    ██
-      ███      ███▄▄▄     ███   ███   ███  ███    ███ ███        ███
-      ███       ███▀▀▀     ███   ███   ███ ██████████ ███       ██████████
-      ███       ███    ██ ███   ███   ███  ███    ███ ███    ██        ███
-      ███     ███    ███ ███   ███   ███  ███    ███ ███    ███ ██    ███
-      █████████ ██████████ ██   ███   ██  ███    ██ ██████████████████
-      
-      ")
-
-  (defvar lemacs-baron-art "
-      ⣀
-     ⠈⢿⣦
-      ⠘⣿⣷⡀
-       ⠸⣿⣷⡄     ⣤⣤⡀             ⢀
-        ⠸⣿⣿⡄   ⢸⣿⣿⣷⣄          ⣠⣴⣿⡇
-         ⢻⣿⣷⡄  ⣾⣿⣿⣿⣿⣦       ⣠⣾⣿⣿⣿⠃
-          ⢿⣿⣧  ⣿⣿⣿⣿⣿⣿⣷⣤⣤⣤⣤⣴⣾⣿⣿⣿⣿⣿
-          ⢸⣿⣿⡆ ⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏
-          ⢸⣿⣿⣧ ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃
-          ⠘⣿⣿⣿⣦⣿⣿⣿⣿⣿⣿⠟⠛⢿⣿⣿⣿⣿⣿⠛⠻⣿⣆
-         ⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇   ⢻⣿⣿⣿⣿  ⣿⣿⠃
-       ⢀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣄⣀⣀⣾⣿⣿⣿⣿⣦⣤⣿⣿⡆
-      ⢠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠋
-     ⢀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠁
-     ⣸⣿⣿⣿⣿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡄
-     ⣿⣿⣿⡿⠋  ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷
-    ⣰⣿⣿⠏    ⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⣿⣿⣿⣿⣿⣿⡆
-   ⣰⣿⣿⡏     ⢸⣿⣿⣿⣿⣿⡟⠛⠛⠛⠛⠁ ⠈⠙⣿⣿⣿⣿⣷⡄
-  ⣼⣿⣿⣿⠷⠄     ⣿⣿⣿⣿⣿⠃        ⠘⢿⣿⣿⣿⣷⡀
-  ⠉⠉⠉⠁       ⣿⣿⣿⣿⡇          ⠈⢿⣿⣿⣿⣧⡀
-             ⣿⣿⣿⣿⡇           ⠈⢻⣿⣿⣿⣷⡀
-            ⢠⣿⣿⣿⣿⡇             ⢻⣿⣿⣿⣿⣷⣤⡀
-            ⢸⣿⣿⣿⣿⠃             ⠸⣿⣿⣿⣿⣿⣿⡇
-            ⢸⣿⣿⣿⣿⡀              ⠙⠛⠛⠛⠛⠋⠁
-           ⢠⣿⣿⣿⣿⣿⣿⣦
-           ⣼⣿⣿⣿⣿⣿⣿⣿
-           ⠻⠿⣿⣿⠿⠿⠏
-      ")
 
   (defcustom lemacs-start-transparent 't
     "Makes Emacs use Transparency when loaded."
@@ -501,25 +478,26 @@ Utils provided ls lacks the =--dired= flag.
       (global-unset-key (kbd "C-z"))
       (global-unset-key (kbd "C-x C-z"))
 
-      ;; Page down and center
-      (global-set-key (kbd "C-v") (lambda ()
-                                    (interactive)
-                                    (scroll-up-command)
-                                    (recenter)
-                                    ))
+      (defun lemacs/page-down-and-recenter ()
+        "Page down and center."
+        (interactive)
+        (scroll-up-command)
+        (recenter))
 
-
-      ;; Page up and center if not on beginning of buffer
-      (global-set-key (kbd "M-v") (lambda ()
-                                    (interactive)
-                                    (scroll-down-command)
-                                    (unless (= (window-start) (point-min))
-                                      (recenter))
-                                    (when (= (window-start) (point-min))
-                                      (let ((midpoint (/ (window-height) 2)))
-                                        (goto-char (window-start))
-                                        (forward-line midpoint)
-                                        (recenter midpoint)))))
+      (defun lemacs/page-up-and-recenter ()
+        "Page up and center. Unless on the beginning of buffer."
+        (interactive)
+        (scroll-down-command)
+        (unless (= (window-start) (point-min))
+          (recenter))
+        (when (= (window-start) (point-min))
+          (let ((midpoint (/ (window-height) 2)))
+            (goto-char (window-start))
+            (forward-line midpoint)
+            (recenter midpoint))))
+      
+      (global-set-key (kbd "C-v") #'lemacs/page-down-and-recenter)
+      (global-set-key (kbd "M-v") #'lemacs/page-up-and-recenter)
 
 
       (defun lemacs/outline-set-buffer-local-ellipsis (ellipsis)
@@ -571,19 +549,11 @@ Utils provided ls lacks the =--dired= flag.
       (add-hook 'emacs-startup-hook
                 (lambda ()
                   (message "Emacs has fully loaded. This code runs after startup.")
-
                   ;; (profiler-report)
                   ;; (profiler-stop)
-
-                  (with-current-buffer (get-buffer-create "*scratch*")
-                    (insert (format "%s
-
-            Loading time : %s
-            Packages     : %s
-        "
-                                    lemacs-art
+                    (message (format "Loading time: %s - Packages: %s"
                                     (emacs-init-time)
-                                    (number-to-string (length package-activated-list)))))))
+                                    (number-to-string (length package-activated-list))))))
 
       ;; LEmacs default starting buffer if no arguments or file
       (add-hook 'emacs-startup-hook
@@ -872,7 +842,8 @@ Our version control aware =prompt= is set here also.
 #+BEGIN_SRC emacs-lisp
   (use-package eshell
     :ensure nil
-    :defer nil
+    :defer t
+    :commands (eshell dired)
     :custom
     (eshell-buffer-maximum-lines 10000)
     (eshell-hist-ignoredups t)
@@ -1428,6 +1399,7 @@ This uniquifies buffers names.
 *** LEMACS-MODE-LINE
 #+BEGIN_SRC emacs-lisp
   (use-package lemacs-mode-line
+    :no-require t
     :if (eq lemacs-default-modeline 'emacs)
     :ensure nil
     :defer t
@@ -1600,6 +1572,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     :defer t
     :ensure t
     :after (:any python-ts-mode))
+
  #+END_SRC
 
 *** Polymode
@@ -1626,6 +1599,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     ;; I do not want this to proliferate to all  .[j|t]sx? files, so
     ;; I am limiting it to the styled? filenames
     (add-to-list 'auto-mode-alist '("\\(styled\\|style[sd]\\).[tj]sx?\\'" . poly-typescript-mode)))
+
 #+END_SRC
 
 *** Prisma
@@ -1650,6 +1624,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     ;;        --eval '(ql:add-to-init-file)' \
     ;;        --quit
     (setq inferior-lisp-program "sbcl"))
+
 #+END_SRC
 
 *** SASS
@@ -1657,6 +1632,7 @@ they have a 'package version', like =eglot= and =eldoc=.
   (use-package sass-mode
     :defer t
     :ensure t)
+
 #+END_SRC
 
 *** SCSS
@@ -1677,6 +1653,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     (after-init . global-treesit-auto-mode)
     :config
     (treesit-auto-add-to-auto-mode-alist 'all))
+
 #+END_SRC
 
 *** Typescript
@@ -1684,6 +1661,7 @@ they have a 'package version', like =eglot= and =eldoc=.
   (use-package typescript-mode
     :defer t
     :ensure t)
+
 #+END_SRC
 
 *** Web-Mode
@@ -1712,41 +1690,43 @@ they have a 'package version', like =eglot= and =eldoc=.
     ("\\.yaml\\'" "\\.yml\\'")
     :custom-face
     (font-lock-variable-name-face ((t (:foreground "#cba6f7")))))
+
 #+END_SRC
 
 ** Themes & Colors
 *** Catppuccin
 #+BEGIN_SRC emacs-lisp
-   (use-package catppuccin-theme
-     :if (eq lemacs-default-theme 'catppuccin)
-     :defer t
-     :ensure t
-     :config
-     ;; NOTE reloading catppuccin "undoes" what early init does to screen NOT to flash on GUI boot
-     (defun lemacs/catppuccin-hack (_)
-       "A catppuccin hack to make sure everything is loaded"
-       (catppuccin-reload))
-     (add-hook 'after-init-hook (lambda ()
-                                  (run-with-timer 0.3 nil
-                                                  (lambda ()(lemacs/catppuccin-hack nil)))))
-     (add-hook 'after-make-frame-functions 'lemacs/catppuccin-hack)
+  (use-package catppuccin-theme
+    :if (eq lemacs-default-theme 'catppuccin)
+    :defer t
+    :ensure t
+    :config
+    ;; NOTE reloading catppuccin "undoes" what early init does to screen NOT to flash on GUI boot
+    (defun lemacs/catppuccin-hack (_)
+      "A catppuccin hack to make sure everything is loaded"
+      (catppuccin-reload))
+    (add-hook 'after-init-hook (lambda ()
+                                 (run-with-timer 0.3 nil
+                                                 (lambda ()(lemacs/catppuccin-hack nil)))))
+    (add-hook 'after-make-frame-functions 'lemacs/catppuccin-hack)
 
-     ;; Custom diff-hl colors
-     (custom-set-faces
-      `(diff-hl-change ((t (:background unspecified :foreground ,(catppuccin-get-color 'blue))))))
-     (custom-set-faces
-      `(diff-hl-delete ((t (:background unspecified :foreground ,(catppuccin-get-color 'red))))))
-     (custom-set-faces
-      `(diff-hl-insert ((t (:background unspecified :foreground ,(catppuccin-get-color 'green))))))
+    ;; Custom diff-hl colors
+    (custom-set-faces
+     `(diff-hl-change ((t (:background unspecified :foreground ,(catppuccin-get-color 'blue))))))
+    (custom-set-faces
+     `(diff-hl-delete ((t (:background unspecified :foreground ,(catppuccin-get-color 'red))))))
+    (custom-set-faces
+     `(diff-hl-insert ((t (:background unspecified :foreground ,(catppuccin-get-color 'green))))))
 
-      (custom-set-faces
-       `(tab-bar-tab
-          ((t
-            (:background unspecified
-            :box (:line-width 2 :color "#676E95" :style released-button))))))
+     (custom-set-faces
+      `(tab-bar-tab
+         ((t
+           (:background unspecified
+           :box (:line-width 2 :color "#676E95" :style released-button))))))
 
-     ;; Custom vhl/default-face
-     (custom-set-faces `(vhl/default-face ((t (:background ,(catppuccin-get-color 'surface2)))))))
+    ;; Custom vhl/default-face
+    (custom-set-faces `(vhl/default-face ((t (:background ,(catppuccin-get-color 'surface2)))))))
+
 #+END_SRC
 
 *** Modus
@@ -1902,15 +1882,15 @@ they have a 'package version', like =eglot= and =eldoc=.
 
 *** Ellama
 #+BEGIN_SRC emacs-lisp
-  (use-package ellama
-    :defer t
-    :ensure t
-    :init
-    (setopt ellama-language "English")
-    (require 'llm-ollama)
-    (setopt ellama-provider
-            (make-llm-ollama
-             :chat-model "codellama" :embedding-model "codellama")))
+  ;; (use-package ellama
+  ;;   :defer t
+  ;;   :ensure t
+  ;;   :init
+  ;;   (setopt ellama-language "English")
+  ;;   (require 'llm-ollama)
+  ;;   (setopt ellama-provider
+  ;;           (make-llm-ollama
+  ;;            :chat-model "codellama" :embedding-model "codellama")))
 
 #+END_SRC
 
@@ -1971,6 +1951,7 @@ they have a 'package version', like =eglot= and =eldoc=.
   (use-package package-lint
     :ensure t
     :defer t)
+
 #+END_SRC
 
 ** Tools - Completions - In Buffer
@@ -1986,6 +1967,7 @@ they have a 'package version', like =eglot= and =eldoc=.
                          #'tempel-expand
                          #'cape-file))))
     (add-hook 'eglot-managed-mode-hook #'lemacs/eglot-capf))
+
 #+END_SRC
 
 *** Corfu
@@ -2097,6 +2079,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
     ;; (global-tempel-abbrev-mode)
     )
+
 #+END_SRC
 
 *** Tempel-Collection
@@ -2105,6 +2088,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     :defer t
     :ensure t
     :after tempel)
+
 #+END_SRC
 
 ** Tools - Completions - Minibuffer
@@ -2230,6 +2214,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     ;;;; 5. No project support
     ;; (setq consult-project-function nil)
     )
+
 #+END_SRC
 
 *** Embark
@@ -2297,6 +2282,7 @@ they have a 'package version', like =eglot= and =eldoc=.
 
     (advice-add #'embark-completing-read-prompter
                 :around #'embark-hide-which-key-indicator))
+
 #+END_SRC
 
 *** Embark-Consult
@@ -2306,6 +2292,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     :ensure t ; only need to install it, embark loads it after consult if found
     :hook
     (embark-collect-mode . consult-preview-at-point-mode))
+
 #+END_SRC
 
 *** Marginalia
@@ -2319,6 +2306,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     (marginalia-align 'left)
     :init
     (marginalia-mode))
+
 #+END_SRC
 
 *** Orderless
@@ -2331,6 +2319,7 @@ they have a 'package version', like =eglot= and =eldoc=.
      (setq completion-styles '(orderless basic)
           completion-category-defaults nil
           completion-category-overrides '((file (styles partial-completion)))))
+
 #+END_SRC
 
 *** Vertico
@@ -2354,6 +2343,7 @@ they have a 'package version', like =eglot= and =eldoc=.
             (propertize "» " 'face '(:foreground "#80adf0" :weight bold))
             "  ")
           cand))))
+
 #+END_SRC
 
 ** Tools - Container Management
@@ -2373,6 +2363,7 @@ they have a 'package version', like =eglot= and =eldoc=.
        (setf docker-command "podman"
              docker-compose-command "podman-compose"
              docker-container-tramp-method "podman"))))
+
 #+END_SRC
 
 ** Tools - Enhanced Editing
@@ -2429,6 +2420,10 @@ they have a 'package version', like =eglot= and =eldoc=.
     ;; Makes it easy (not to jump) moving trhought wrapped text
     (evil-define-key 'normal 'global (kbd "j") 'evil-next-visual-line)
     (evil-define-key 'normal 'global (kbd "k") 'evil-previous-visual-line)
+
+    ;; Makes scroll also recenter
+    (evil-define-key 'normal 'global (kbd "C-d") #'lemacs/page-down-and-recenter)
+    (evil-define-key 'normal 'global (kbd "C-u") #'lemacs/page-up-and-recenter)
 
     ;; Keybindings for searching and finding files.
     (evil-define-key 'normal 'global (kbd "<leader> s f") 'consult-find)
@@ -2728,6 +2723,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     :ensure t
     :hook
     (prog-mode . smartparens-mode))
+  
 #+END_SRC
 
 *** Undo-Tree
@@ -2739,17 +2735,19 @@ they have a 'package version', like =eglot= and =eldoc=.
     (after-init . global-undo-tree-mode)
     :config
     (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/.cache/undo"))))
+
 #+END_SRC
 
 *** WGrep
 #+BEGIN_SRC emacs-lisp
   (use-package wgrep
-    ;; :defer t
+    :defer 2
     :ensure t
     :custom
     ;; (wgrep-enable-key "e")
     (wgrep-auto-save-buffer t)
     (wgrep-change-readonly-file t))
+
 #+END_SRC
 
 ** Tools - File Management
@@ -2761,6 +2759,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     :hook
     ((dired-mode . dired-async-mode)
      (after-init . async-bytecomp-package-mode)))
+
 #+END_SRC
 
 *** DiredFl
@@ -2770,6 +2769,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     :ensure t
     :hook
     (dired-mode . diredfl-global-mode))
+
 #+END_SRC
 
 *** DiredSubtree
@@ -2785,6 +2785,7 @@ they have a 'package version', like =eglot= and =eldoc=.
       ("S-TAB" . dired-subtree-remove))
     :config
     (setq dired-subtree-use-backgrounds nil))
+
 #+END_SRC
 
 *** Treemacs
@@ -2815,6 +2816,7 @@ they have a 'package version', like =eglot= and =eldoc=.
   (use-package treemacs-evil
     :after (treemacs evil)
     :ensure t)
+
 #+END_SRC
 
 ** Tools - GIT Version Control
@@ -2837,6 +2839,7 @@ they have a 'package version', like =eglot= and =eldoc=.
                                      (ignored . "i")))
     :config
     (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
+
 #+END_SRC
 
 *** Git-Timemachine
@@ -2900,6 +2903,7 @@ they have a 'package version', like =eglot= and =eldoc=.
   (use-package magit-stats
     :defer t
     :ensure t)
+
 #+END_SRC
 
 *** Treemacs-Magit
@@ -2908,6 +2912,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     :defer t
     :ensure t
     :after (:all treemacs))
+
 #+END_SRC
 
 *** VC-Msg
@@ -2966,6 +2971,7 @@ You need to Install globally (and for every every asdf plugin shim if you're usi
     :ensure t
     :hook
     (eglot-connect . breadcrumb-mode))
+
 #+END_SRC
 
 **** Eglot
@@ -3078,20 +3084,7 @@ You need to Install globally (and for every every asdf plugin shim if you're usi
     ;; or add a hook like:
     ;; (add-hook 'js-ts-mode-hook #'lemacs/use-local-eslint)
     )
-#+END_SRC
 
-**** Eglot-Booster
-
-First, install the Rust booster with: cargo install emacs-lsp-booster.
-
-#+BEGIN_SRC emacs-lisp
-  (use-package eglot-booster
-      :ensure t
-      :defer t
-  	:after eglot
-      :config
-      (eglot-booster-mode))
-    
 #+END_SRC
 
 *** LSP-MODE Family
@@ -3309,36 +3302,37 @@ First, install the Rust booster with: cargo install emacs-lsp-booster.
 Now, the overrides below:
 
 #+BEGIN_SRC emacs-lisp
-(defun lsp-booster--advice-json-parse (old-fn &rest args)
-  "Try to parse bytecode instead of json."
-  (or
-   (when (equal (following-char) ?#)
-     (let ((bytecode (read (current-buffer))))
-       (when (byte-code-function-p bytecode)
-         (funcall bytecode))))
-   (apply old-fn args)))
-(advice-add (if (progn (require 'json)
-                       (fboundp 'json-parse-buffer))
-                'json-parse-buffer
-              'json-read)
-            :around
-            #'lsp-booster--advice-json-parse)
+  (defun lsp-booster--advice-json-parse (old-fn &rest args)
+    "Try to parse bytecode instead of json."
+    (or
+     (when (equal (following-char) ?#)
+       (let ((bytecode (read (current-buffer))))
+         (when (byte-code-function-p bytecode)
+           (funcall bytecode))))
+     (apply old-fn args)))
+  (advice-add (if (progn (require 'json)
+                         (fboundp 'json-parse-buffer))
+                  'json-parse-buffer
+                'json-read)
+              :around
+              #'lsp-booster--advice-json-parse)
 
-(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  "Prepend emacs-lsp-booster command to lsp CMD."
-  (let ((orig-result (funcall old-fn cmd test?)))
-    (if (and (not test?)                             ;; for check lsp-server-present?
-             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-             lsp-use-plists
-             (not (functionp 'json-rpc-connection))  ;; native json-rpc
-             (executable-find "emacs-lsp-booster"))
-        (progn
-          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-            (setcar orig-result command-from-exec-path))
-          (message "Using emacs-lsp-booster for %s!" orig-result)
-          (cons "emacs-lsp-booster" orig-result))
-      orig-result)))
-(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+  (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+    "Prepend emacs-lsp-booster command to lsp CMD."
+    (let ((orig-result (funcall old-fn cmd test?)))
+      (if (and (not test?)                             ;; for check lsp-server-present?
+               (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+               lsp-use-plists
+               (not (functionp 'json-rpc-connection))  ;; native json-rpc
+               (executable-find "emacs-lsp-booster"))
+          (progn
+            (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+              (setcar orig-result command-from-exec-path))
+            (message "Using emacs-lsp-booster for %s!" orig-result)
+            (cons "emacs-lsp-booster" orig-result))
+        orig-result)))
+  (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+
 #+END_SRC
 
 ** Tools - Session and Window Management
@@ -3365,6 +3359,7 @@ Now, the overrides below:
        (setq ibuffer-filter-groups (ibuffer-project-generate-filter-groups))
        (unless (eq ibuffer-sorting-mode 'project-file-relative)
          (ibuffer-do-sort-by-project-file-relative)))))
+
 #+END_SRC
 
 *** Transpose
@@ -3375,6 +3370,7 @@ Now, the overrides below:
     :bind
     (("C-x 4 t" . transpose-frame)
      ("C-x 4 r" . rotate-frame-clockwise)))
+
 #+END_SRC
 
 *** Persp
@@ -3461,6 +3457,7 @@ Now, the overrides below:
                                             (persp-mode-project-bridge-find-perspectives-for-all-buffers)
                                           (persp-mode-project-bridge-kill-perspectives))))
     (persp-mode . persp-mode-project-bridge-mode))
+
 #+END_SRC
 
 ** Tools - Media Players
@@ -3579,6 +3576,7 @@ Now, the overrides below:
             ("v" . 'yeetube-mpv-toggle-video)
             ("V" . 'yeetube-mpv-toggle-no-video-flag)
             ("k" . 'yeetube-remove-saved-video)))
+
 #+END_SRC
 
 ** Tools - Modeline
@@ -3606,6 +3604,21 @@ Now, the overrides below:
 #+END_SRC
 
 ** Tools - Nerd Icons Support
+*** Nerd-Icons
+#+BEGIN_SRC emacs-lisp
+  (use-package nerd-icons
+    :ensure t
+    :defer nil
+    :if lemacs-nerd-icons
+    ;; :custom
+    ;; The Nerd Font you want to use in GUI
+    ;; "Symbols Nerd Font Mono" is the default and is recommended
+    ;; but you can use any other Nerd Font if you want
+    ;; (nerd-icons-font-family "Symbols Nerd Font Mono")
+    )
+
+#+END_SRC
+
 *** Nerd-Icons-Completion
 #+BEGIN_SRC emacs-lisp
   (use-package nerd-icons-completion
@@ -3664,6 +3677,7 @@ Now, the overrides below:
   (use-package treemacs-nerd-icons
     :if lemacs-nerd-icons
     :ensure t
+    :defer 1
     :config
     (treemacs-load-theme "nerd-icons"))
 
@@ -3702,24 +3716,24 @@ Here we have stuff to handle your =Agenda= and =Contacts List=.
 
 *** Khalel
 #+BEGIN_SRC emacs-lisp
-  (use-package khalel
-    :ensure t
-    :after org
-    :config
-    ;; (setq khalel-khal-command "~/.local/bin/khal")
-    (setq org-agenda-files  (list (concat org-directory "/" "calendar.org")))
-    (setq khalel-import-org-file (concat org-directory "/" "calendar.org"))
-    (setq khalel-vdirsyncer-command "vdirsyncer")
-    (setq khalel-capture-key "e")
-    (setq khalel-import-org-file-confirm-overwrite nil)
-    (setq khalel-import-end-date "+30d")
+  ;; (use-package khalel
+  ;;   :ensure t
+  ;;   :after org
+  ;;   :config
+  ;;   ;; (setq khalel-khal-command "~/.local/bin/khal")
+  ;;   (setq org-agenda-files  (list (concat org-directory "/" "calendar.org")))
+  ;;   (setq khalel-import-org-file (concat org-directory "/" "calendar.org"))
+  ;;   (setq khalel-vdirsyncer-command "vdirsyncer")
+  ;;   (setq khalel-capture-key "e")
+  ;;   (setq khalel-import-org-file-confirm-overwrite nil)
+  ;;   (setq khalel-import-end-date "+30d")
 
-    (defun lemacs/calendar-sync ()
-      (interactive)
-      (khalel-run-vdirsyncer)
-      (khalel-import-events))
+  ;;   (defun lemacs/calendar-sync ()
+  ;;     (interactive)
+  ;;     (khalel-run-vdirsyncer)
+  ;;     (khalel-import-events))
 
-    (khalel-add-capture-template))
+  ;;   (khalel-add-capture-template))
 
 #+END_SRC
 
@@ -3974,15 +3988,19 @@ look at =doc/verb_example.org= for examples of how to use it.
 #+BEGIN_SRC emacs-lisp
   (use-package eshell-z
     :ensure t
-    ;; :defer t
+    :defer t
+    :after eshell
     :hook
     (eshell-load . (lambda ()
                      (require 'eshell-z))))
+
 #+END_SRC
 *** Eshell-Syntax-Highlighting
 #+BEGIN_SRC emacs-lisp
   (use-package eshell-syntax-highlighting
     :ensure t
+    :defer t
+    :after eshell
     :config
     (eshell-syntax-highlighting-global-mode +1)
     :init
@@ -4172,18 +4190,6 @@ file via *C-x f* or inside eshell.
     :ensure t)
 #+END_SRC
 
-** Tools - Weather Forecast
-#+BEGIN_SRC emacs-lisp
-  (use-package wittering
-    :ensure t
-    :defer t 
-    :commands (wttrin)
-    :config
-    (setq wttrin-unit-system "m")
-    (setq wttrin-font-height 140)
-    (setq wttrin-font-name "JetBrainsMono Nerd Font"))
-
-#+END_SRC
 * Provide
 #+BEGIN_SRC emacs-lisp
   (provide 'lemacs-init)
