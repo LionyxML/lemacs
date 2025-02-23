@@ -107,13 +107,13 @@ actions, such as install fonts and treesitter grammars.
         (let ((filepath (expand-file-name file emacs-dir)))
           (when (file-exists-p filepath)
             (delete-file filepath)
-            (message "Deleted file: %s" filepath))))
+            (message ">>> Deleted file: %s" filepath))))
       (dolist (dir dirs)
         (let ((dirpath (expand-file-name dir emacs-dir)))
           (when (file-directory-p dirpath)
             (delete-directory dirpath t)
-            (message "Deleted directory: %s" dirpath)))))
-    (message "Cleanup completed!"))
+            (message ">>> Deleted directory: %s" dirpath)))))
+    (message ">>> Cleanup completed!"))
 
 #+END_SRC
 
