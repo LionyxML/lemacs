@@ -525,8 +525,8 @@ Utils provided ls lacks the =--dired= flag.
       ;; Duplicate line
       (defun lemacs/duplicate-line-or-region (&optional n)
         "Duplicate current line, or region if active.
-    With argument N, make N copies.
-    negative N, comment out original line and use the absolute value."
+        With argument N, make N copies.
+        negative N, comment out original line and use the absolute value."
         (interactive "*p")
         (let ((use-region (use-region-p)))
           (save-excursion
@@ -551,9 +551,9 @@ Utils provided ls lacks the =--dired= flag.
                   (message "Emacs has fully loaded. This code runs after startup.")
                   ;; (profiler-report)
                   ;; (profiler-stop)
-                    (message (format "Loading time: %s - Packages: %s"
-                                    (emacs-init-time)
-                                    (number-to-string (length package-activated-list))))))
+                  (message (format "Loading time: %s - Packages: %s"
+                                   (emacs-init-time)
+                                   (number-to-string (length package-activated-list))))))
 
       ;; LEmacs default starting buffer if no arguments or file
       (add-hook 'emacs-startup-hook
