@@ -346,6 +346,7 @@ Utils provided ls lacks the =--dired= flag.
       (use-dialog-box nil)
       (use-file-dialog nil)
       (use-short-answers t)
+      (xref-search-program 'ripgrep)
       (warning-minimum-level :emergency)
       (window-combination-resize t)
       (grep-find-ignored-directories
@@ -602,7 +603,7 @@ Utils provided ls lacks the =--dired= flag.
       (toggle-frame-maximized)
 
       (delete-selection-mode 1)
-      (global-so-long-mode 1)
+      (global-so-long-mode -1)
       (blink-cursor-mode -1)
       (desktop-save-mode -1)
       (file-name-shadow-mode 1)
@@ -2130,7 +2131,7 @@ they have a 'package version', like =eglot= and =eldoc=.
            ("M-g i" . consult-imenu)
            ("M-g I" . consult-imenu-multi)
            ;; M-s bindings in `search-map'
-           ("M-s d" . consult-find)                  ;; Alternative: consult-fd
+           ("M-s d" . consult-fd)                  ;; consult-find or consult-fd
            ("M-s c" . consult-locate)
            ("M-s g" . consult-grep)
            ("M-s G" . consult-git-grep)
@@ -2190,7 +2191,7 @@ they have a 'package version', like =eglot= and =eldoc=.
      consult--source-bookmark consult--source-file-register
      consult--source-recent-file consult--source-project-recent-file
      ;; :preview-key "M-."
-     :preview-key '(:debounce 0.4 any))
+     :preview-key '(:debounce 0 any)) ;; original 0.4
 
     ;; Optionally configure the narrowing key.
     ;; Both < and C-+ work reasonably well.
@@ -2373,7 +2374,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     :defer t
     :ensure t
     :bind
-    (("M-1" . my/expand-region-wrapper))
+    (("C-SPC" . my/expand-region-wrapper))
     :config
     ;; This extends expand-region to also expand from treesit nodes
     (add-to-list 'load-path "~/.emacs.d/site-lisp/treesit-er-expansions")
@@ -2426,10 +2427,10 @@ they have a 'package version', like =eglot= and =eldoc=.
     (evil-define-key 'normal 'global (kbd "C-u") #'lemacs/page-up-and-recenter)
 
     ;; Keybindings for searching and finding files.
-    (evil-define-key 'normal 'global (kbd "<leader> s f") 'consult-find)
-    (evil-define-key 'normal 'global (kbd "<leader> s g") 'consult-grep)
+    (evil-define-key 'normal 'global (kbd "<leader> s f") 'consult-fd)
+    (evil-define-key 'normal 'global (kbd "<leader> s g") 'consult-ripgrep)
     (evil-define-key 'normal 'global (kbd "<leader> s G") 'consult-git-grep)
-    (evil-define-key 'normal 'global (kbd "<leader> s r") 'consult-ripgrep)
+    ;; (evil-define-key 'normal 'global (kbd "<leader> s r") 'consult-ripgrep)
     (evil-define-key 'normal 'global (kbd "<leader> s h") 'consult-info)
     (evil-define-key 'normal 'global (kbd "<leader> /") 'consult-line)
 
@@ -2823,21 +2824,20 @@ they have a 'package version', like =eglot= and =eldoc=.
 *** Diff-HL
 #+BEGIN_SRC emacs-lisp
   (use-package diff-hl
-    :defer t
+    :defer 2
     :ensure t
-    :hook
-    (find-file . (lambda ()
-                   (global-diff-hl-mode)           ;; Enable Diff-HL mode for all files.
-                   (diff-hl-flydiff-mode)          ;; Automatically refresh diffs.
-                   (diff-hl-margin-mode)))         ;; Show diff indicators in the margin.
     :custom
     (diff-hl-side 'left)                           ;; Set the side for diff indicators.
     (diff-hl-margin-symbols-alist '((insert . "│") ;; Customize symbols for each change type.
-                                     (delete . "-")
-                                     (change . "│")
-                                     (unknown . "?")
-                                     (ignored . "i")))
+                                    (delete . "-")
+                                    (change . "│")
+                                    (unknown . "?")
+                                    (ignored . "i")))
     :config
+    (global-diff-hl-mode)
+    (diff-hl-flydiff-mode)
+    (diff-hl-margin-mode)
+
     (add-hook 'dired-mode-hook 'diff-hl-dired-mode))
 
 #+END_SRC
@@ -3114,7 +3114,7 @@ You need to Install globally (and for every every asdf plugin shim if you're usi
       (lsp-completion-provider :none)
       (lsp-session-file (locate-user-emacs-file ".lsp-session"))
       (lsp-log-io nil)   ;; nil for speed
-      (lsp-idle-delay 0) ;; debouncing, if needed 0.5
+      (lsp-idle-delay 0.5) ;; debouncing, if needed 0.5
       (lsp-keep-workspace-alive nil)
       ;; core
       (lsp-enable-xref t)
@@ -3989,10 +3989,10 @@ look at =doc/verb_example.org= for examples of how to use it.
   (use-package eshell-z
     :ensure t
     :defer t
-    :after eshell
     :hook
-    (eshell-load . (lambda ()
-                     (require 'eshell-z))))
+    (eshell-mode . (lambda ()
+                     (run-with-idle-timer 0.3 nil (lambda ()
+                                                    (require 'eshell-z))))))
 
 #+END_SRC
 *** Eshell-Syntax-Highlighting
