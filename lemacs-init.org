@@ -35,6 +35,7 @@ header-args :tangle yes
   ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
   ;;; Code:
+  ;; (profiler-start 'cpu)
 #+END_SRC
 
 * Package Management
@@ -54,7 +55,7 @@ avoiding to spend time and resources while actually using Emacs.
   (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/"))
   (add-to-list 'load-path "~/.emacs.d/site-lisp")
   (eval-and-compile
-    (setq use-package-compute-statistics nil) ;; This toggles statistics: use `use-package-report' to see the results
+    (setq use-package-compute-statistics nil) ;; This toggles statistics (profile): use `use-package-report' to see the results
     (setq use-package-always-ensure t
           use-package-expand-minimally t))
 #+END_SRC
@@ -346,9 +347,10 @@ Utils provided ls lacks the =--dired= flag.
       (use-dialog-box nil)
       (use-file-dialog nil)
       (use-short-answers t)
-      (xref-search-program 'ripgrep)
       (warning-minimum-level :emergency)
       (window-combination-resize t)
+      (xref-search-program 'ripgrep)
+      (grep-command "rg -nS --noheading ")
       (grep-find-ignored-directories
        '("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "node_modules" "build" "dist"))
       :hook
@@ -550,8 +552,9 @@ Utils provided ls lacks the =--dired= flag.
       (add-hook 'emacs-startup-hook
                 (lambda ()
                   (message "Emacs has fully loaded. This code runs after startup.")
-                  ;; (profiler-report)
                   ;; (profiler-stop)
+                  ;; (profiler-report)
+                  ;; (use-package-report)
                   (message (format "Loading time: %s - Packages: %s"
                                    (emacs-init-time)
                                    (number-to-string (length package-activated-list))))))
@@ -1994,7 +1997,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     (corfu-scroll-margin 5)           ;; Use scroll margin
     (corfu-max-width 50)
     (corfu-min-width 50)
-    (corfu-popupinfo-delay 0)
+    (corfu-popupinfo-delay 0.5)
     ;; Enable Corfu only for certain modes.
     ;; :hook ((prog-mode . corfu-mode)
     ;;        (shell-mode . corfu-mode)
@@ -2039,6 +2042,9 @@ they have a 'package version', like =eglot= and =eldoc=.
     :init
     (global-corfu-mode)
     (corfu-popupinfo-mode t)
+
+    ;; HACK: this avoids corfu to hang while waiting for completions from lsp
+    (advice-add #'lsp-completion-at-point :around #'cape-wrap-noninterruptible)
 
     (when (not window-system)
       (add-to-list 'load-path "~/.emacs.d/site-lisp/corfu-terminal/")
@@ -3464,7 +3470,7 @@ Now, the overrides below:
 *** EMMS
 #+BEGIN_SRC emacs-lisp
   (use-package emms
-    :defer t
+    :defer 3
     :ensure t
     :config
     (require 'emms-setup)
@@ -3846,7 +3852,7 @@ look at =doc/verb_example.org= for examples of how to use it.
 #+BEGIN_SRC emacs-lisp
   (use-package dashboard
     :ensure t
-    :defer t
+    :defer 2
     :config
     ;; (setq dashboard-startup-banner (".....logo.png" . ".....logo.txt"))
     ;; (setq dashboard-startup-banner 'logo)
