@@ -1,0 +1,1993 @@
+2023-12-15  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't let automatic scrolling mess up the display
+
+	* eat.el (eat-mode, eat--eshell-local-mode): Set both
+	'scroll-margin' and 'hscroll-margin' to zero.
+
+2023-10-26  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't queue input
+
+	* eat.el (eat--pending-input-chunks)
+	(eat--defer-input-processing, eat--process-input-queue-timer):
+	Remove.
+	All references updated.
+	* eat.el (eat--send-input): Send the input immediately.
+	* eat.el (eat--process-input-queue): Remove.
+	* eat.el (eat--eshell-process-output-queue)
+	(eat--process-output-queue): Loop while output queue isn't
+	empty, set 'eat--output-queue-first-chunk-time' to 't' in the
+	loop.
+	* eat.el (eat--filter, eat--eshell-filter): Don't start a timer
+	if 'eat--output-queue-first-chunk-time' is 't'.
+
+2023-10-19  Akib Azmain Turja  <akib@disroot.org>
+
+	* eat.ti (eat-mono): Remove unused capability 'Ed'
+
+2023-10-17  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix input processing & auto line mode
+
+	* eat.el (eat--process-input-queue): Set
+	'eat--process-input-queue-timer' to 'nil'.
+	* eat.el (eat--auto-line-mode-pending-toggles): New variable.
+	* eat.el (eat--line-mode-enter-auto-1): Don't take any
+	argument.
+	* eat.el (eat--line-mode-exit-auto-1): Don't take any argument.
+	Don't call 'eat-line-mode'.
+	* eat.el (eat--line-mode-enter-auto, eat--line-mode-exit-auto):
+	Queue the toggle in 'eat--auto-line-mode-pending-toggles'
+	instead of starting a timer.
+	* eat.el (eat--line-mode-do-toggles): New function.
+	* eat.el (eat--process-output-queue): Let-bind
+	'eat--auto-line-mode-pending-toggles' to nil.  Call
+	'eat--line-mode-do-toggles'.
+
+2023-10-17  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix compiler warnings
+
+	* eat.el: Wrap all 'emacs-major-version' checks with
+	'eval-when-compile'.
+	* eat.el (eat--process-input-queue): Don't use obsolete
+	generalized variable 'buffer-local-value'.
+
+2023-10-17  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't let 'eat--process-input-queue' to recurse
+
+	* eat.el (eat--defer-input-processing): New variable.
+	* eat.el (eat-mode, eat--eshell-local-mode): Make
+	'eat--defer-input-processing' buffer-local.
+	* eat.el (eat--process-input-queue): If
+	'eat--defer-input-processing' is non-nil, do nothing, otherwise
+	bind it to non-nil while sending input.
+
+2023-10-17  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't mess up terminal when switching to line mode
+
+	* eat.el (eat--line-mode-enter-auto-1)
+	(eat--line-mode-exit-auto-1): New function.
+	* eat.el (eat--line-mode-enter-auto, eat--line-mode-exit-auto):
+	Do everything after the output is processed.
+
+2023-10-10  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't flicker due to screen line breaking
+
+	* eat.el (eat--eshell-synchronize-scroll)
+	(eat--synchronize-scroll): Use 'recenter' instead of
+	'set-window-start' to synchronize scrolling.
+
+2023-10-10  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix side-effect in 'eat--set-term-sixel-params'
+
+	* eat.el (eat--set-term-sixel-params): Fix unintended
+	side-effect.
+
+2023-10-10  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix 'eat--set-term-sixel-params' on text display
+
+	* eat.el (eat--set-term-sixel-params): Don't error on text
+	display.
+
+2023-10-09  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix 'eat--eshell-set-input-process' advice
+
+	* eat.el (eat--eshell-set-input-process): Take any number of
+	arguments and ignore them.
+
+2023-10-09  Akib Azmain Turja  <akib@disroot.org>
+
+	Make motion commands work properly
+
+	* eat.el (eat--line-mode): Set 'front-sticky' and
+	'rear-nonsticky' text properties to 't' when enabling mode, and
+	revert them when disabling.
+	* eat.el (eat--process-output-queue): Don't add 'front-sticky'
+	and 'rear-nonsticky' text properties if not in line mode.
+	* eat.el (eat--sentinel): Don't remove 'front-sticky' and
+	'rear-nonsticky' text properties, they shouldn't be in the
+	buffer.
+
+2023-10-09  Akib Azmain Turja  <akib@disroot.org>
+
+	Remove internal text properties when killing text
+
+	* eat.el (eat-term-filter-string): Remove 'read-only',
+	'rear-nonsticky', 'front-sticky' and 'field' text properties.
+	* eat.el (eat--filter-buffer-substring): Remove
+	'eat--t-char-width', 'eat--t-sixel-bitmap-size' and
+	'eat--t-sixel-bitmap' text properties.
+
+2023-10-08  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix Makefile
+
+	* Makefile (eat.elc, check): Pass $(EMACSFLAGS) to $(EMACS).
+
+2023-10-07  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix garbage image after the end of Sixel image
+
+	* eat.el (eat--t-sixel-init): Increase Sixel buffer size.
+
+2023-10-07  Akib Azmain Turja  <akib@disroot.org>
+
+	Support Emacs 26.1
+
+	* eat.el: Depend on Emacs 26.1.
+	* eat.el (eat--t-handle-output, eat--handle-uic)
+	(eat--eshell-handle-uic): Don't use '(not CHAR)' form in 'rx'
+	forms.
+	* eat.el (eat--eshell-process-output-queue): Use
+	'combine-change-calls' if available.
+	* README.org: Update to reflect support for Emacs 26.
+
+2023-10-07  Akib Azmain Turja  <akib@disroot.org>
+
+	Update tests to make them pass
+
+	* eat-tests.el: Use 'eat-term-parameter'.
+	* eat-tests.el (eat-test-set-cwd): Test OSC 7 only.
+
+2023-10-07  Akib Azmain Turja  <akib@disroot.org>
+
+	Modify eshell-variable-aliases-list buffer-locally
+
+	* eat.el (eat-eshell-mode): Don't modify
+	'eshell-variable-aliases-list'.
+	* eat.el (eat--eshell-local-mode): Modify
+	'eshell-variable-aliases-list'.
+
+2023-10-07  Akib Azmain Turja  <akib@disroot.org>
+
+	Support Emacs 27.1
+
+	* eat.el: Depend on Emacs 27.1.  Require 'compat' and 'term'.
+	* eat.el (eat-term-color-*): Inherit 'term-color-*' in Emacs
+	27.
+	* eat.el (eat--t-sixel-render-bitmap): Call 'mapconcat' with
+	three arguments.
+	* eat.el (eat-yank-from-kill-ring): Signal error in Emacs 27.
+	* eat.el (eat--eshell-setup-proc-and-term): Don't error if
+	process mark is invalid.
+	* eat.el (eat-eshell-mode): Properly revert
+	'eshell-variable-aliases-list' when disabling the mode.
+	* eat.el (eat--trace-exec)
+	(eat--trace-eshell-adjust-make-process-args): Make sure
+	'lisp-data-mode' is defined before calling.
+
+2023-10-06  Akib Azmain Turja  <akib@disroot.org>
+
+	Enable shell command completion by default
+
+	* eat.el (eat-mode): Use shell mode's completion facilities.
+
+2023-10-04  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't put overlay on prompt while history Isearch
+
+	* eat.el (eat--line-history-isearch-message-overlay)
+	(eat--line-history-isearch-message): Remove.
+	* eat.el (eat--line-history-isearch-setup)
+	(eat--line-history-isearch-end): Don't modify
+	'isearch-message-function'.
+	* eat.el (eat-mode): Don't make 'isearch-message-function' and
+	'eat--line-history-isearch-message-overlay' buffer-local.
+
+2023-10-04  Akib Azmain Turja  <akib@disroot.org>
+
+	Put the cursor below Sixel image after showing it
+
+	* eat.el (eat--t-sixel-cleanup): Make sure the cursor is below
+	the image.
+
+2023-10-03  Akib Azmain Turja  <akib@disroot.org>
+
+	Apply scaling and ascept ratio on Sixel properly
+
+	* eat.el (eat--set-term-sixel-params): Make sure both numbers
+	of char-dimension is non-zero.
+
+2023-10-03  Akib Azmain Turja  <akib@disroot.org>
+
+	Use terminal parameters to set callback functions
+
+	Also make sure the terminal passed as arguments to API
+	functions is live.
+
+	* eat.el (eat--t-term): Update default value of slot 'params'.
+	* eat.el (eat-term-p, eat-term-live-p): New function.
+	* eat.el (eat--t-ensure-live-term): New macro.
+	* eat.el (eat--t-with-env, eat-term-parameter, eat-term-size)
+	(eat-term-set-parameter, eat-term-cursor-type, eat-term-end)
+	(eat-term-beginning, eat-term-display-cursor, eat-term-title)
+	(eat-term-in-alternative-display-p, eat-term-input-event)
+	(eat-term-send-string, eat-term-send-string-as-yank): Ensure
+	the terminal passed as argument is live.
+	* eat.el (eat-term-delete): Ensure the terminal passed as
+	argument is live.  Mark terminal as deleted.
+	* eat.el (eat-term-parameters): New function.
+	* eat.el (eat-term-set-parameter): Handle more special
+	parameters: 'input-function', 'ring-bell-function',
+	'grab-mouse-function', 'grab-focus-events-function',
+	'manipulate-selection-function', 'set-title-function' and
+	'set-cwd-function'.
+	* eat.el (eat-term-input-function, eat-term-ring-bell-function)
+	(eat-term-set-cursor-function, eat-term-grab-mouse-function)
+	(eat-term-grab-focus-events-function)
+	(eat-term-manipulate-selection-function)
+	(eat-term-set-title-function, eat-term-set-cwd-function):
+	Remove function.
+	* eat.el (eat-exec, eat--eshell-setup-proc-and-term)
+	(eat--trace-replay-eval): Update to use parameters.
+
+2023-10-03  Akib Azmain Turja  <akib@disroot.org>
+
+	Support rendering Sixel with XPM images
+
+	* eat.el (eat--t-sixel-render-bitmap): Support conversion to
+	XPM format.
+	* eat.el (eat-sixel-render-formats): Add XPM to the default.
+	* eat.el (eat-term-set-parameter, eat--sixel-render-format):
+	Support XPM as an allowed format.
+	* eat.texi (Sixel): Update.
+
+2023-10-03  Akib Azmain Turja  <akib@disroot.org>
+
+	Refactor 'eat--t-sixel-flush-line'
+
+	* eat.el (eat--t-sixel-render-bitmap): New function.
+	* eat.el (eat--t-sixel-flush-line): Move bitmap rendering code
+	to 'eat--t-sixel-render-bitmap'.
+
+2023-10-02  Akib Azmain Turja  <akib@disroot.org>
+
+	* eat.el (eat-enable-alternative-display): Obsolete
+
+2023-10-02  Akib Azmain Turja  <akib@disroot.org>
+
+	Allow customizing Sixel scaling and aspect ratio
+
+	* eat.el (eat-sixel-scale, eat-sixel-aspect-ratio): New user
+	option.
+	* eat.el (eat--t-term): Remove slot 'sixel-image-height'.  New
+	slot 'sixel-image-extra-props'.
+	* eat.el (eat--t-sixel-flush-line): Give more control to the UI
+	on the image properties.
+	* eat.el (eat-term-set-parameter): Don't treat parameter
+	'sixel-image-height' specially.  Treat parameter
+	'sixel-image-extra-properties' specially.
+	* eat.el (eat--set-term-sixel-params): New function.
+	* eat.el (eat-exec, eat--eshell-setup-proc-and-term): Set Sixel
+	related terminal parameters with 'eat--set-term-sixel-params'.
+	* eat.texi (Sixel): Document 'eat-sixel-scale' and
+	'eat-sixel-aspect-ratio'.
+
+2023-09-28  Akib Azmain Turja  <akib@disroot.org>
+
+	Support <backtab>
+
+	* eat.el (eat-term-input-event): Handle '<tab>' and '<backtab>'
+	events.
+	* eat.el (eat-term-make-keymap): Bind '<tab>' and '<backtab>'.
+	* eat.ti (eat-mono): Add 'kcbt' capability.
+
+2023-09-27  Akib Azmain Turja  <akib@disroot.org>
+
+	Handle output correctly in emacs mode in Eshell
+
+	* eat.el (eat--eshell-output-filter): Inhibit read only.
+
+2023-09-24  Akib Azmain Turja  <akib@disroot.org>
+
+	Add command 'eat-send-password'
+
+	* eat.el (eat-send-password): New command.
+	* eat.texi (Password Input): New chapter.
+
+2023-09-24  Akib Azmain Turja  <akib@disroot.org>
+
+	Add the underlying terminal object to public API
+
+	* eat.el (eat--terminal): Rename to 'eat-terminal'.
+	All references changed.
+
+2023-09-23  Akib Azmain Turja  <akib@disroot.org>
+
+	New command eat-line-load-input-history-from-file
+
+	* eat.el (eat-line-load-input-history-from-file): New command.
+
+2023-09-23  Akib Azmain Turja  <akib@disroot.org>
+
+	Integrate Isearch with line mode input history
+
+	* eat.el (eat-line-input-history-isearch): New user option.
+	* eat.el (eat-line-mode-map): Bind 'M-r' to
+	'eat-line-history-isearch-backward-regexp'.
+	* eat.el (eat-line-mode): Error if process isn't running.
+	* eat.el (eat--line-history-isearch-message-overlay)
+	(eat--saved-line-input-history-isearch): New variable.
+	* eat.el (eat--line-delete-input): Remove.
+	All callers changed.
+	* eat.el (eat-line-history-isearch-backward-regexp)
+	(eat-line-history-isearch-backward): New command.
+	* eat.el (eat--line-history-isearch-setup)
+	(eat--line-history-isearch-end, eat--line-history-isearch-wrap)
+	(eat--line-history-isearch-search, eat--line-goto-input)
+	(eat--line-history-isearch-message)
+	(eat--line-history-isearch-push-state)
+	(eat--line-history-isearch-pop-state): New function.
+	* eat.el (eat-mode): Make
+	'eat--line-history-isearch-message-overlay',
+	'isearch-search-fun-function', 'isearch-message-function',
+	'isearch-wrap-function' and 'isearch-push-state-function'
+	buffer-local.  Add 'eat--line-history-isearch-setup' to
+	'isearch-mode-hook' locally.
+	* eat.texi (Line Mode): Document this new feature.
+
+2023-09-23  Akib Azmain Turja  <akib@disroot.org>
+
+	Move to the input line automatically in line mode
+
+	* eat.el (eat-line-auto-move-to-input): New user option.
+	* eat.el (eat--line-move-to-input): New function.
+	* eat.el (eat--line-mode): Add/remove 'eat--line-move-to-input'
+	to 'pre-command-hook' locally.
+	* eat.texi (Line Mode): Document 'eat-line-auto-move-to-input'.
+
+2023-09-23  Akib Azmain Turja  <akib@disroot.org>
+
+	Rename prompt mode to line mode and generalize it
+
+	* eat.el: Rename prompt mode to line mode, also rename related
+	symbols to have 'eat-line-' or 'eat--line-' prefix.
+	* eat.el (eat-enable-native-shell-prompt-editing): Rename to
+	'eat-enable-auto-line-mode'.
+	* eat.el (eat--line-mode-enter-auto)
+	(eat--line-mode-exit-auto): New function.
+	* eat.el (eat--post-prompt, eat--post-cont-prompt): Call
+	'eat--line-mode-enter-auto' to enter line mode.
+	* eat.el (eat--pre-cmd): Call 'eat--line-mode-exit-auto'.
+	* eat.el (eat--get-shell-history): Populate input ring
+	unconditionally.
+	* eat.el (eat-emacs-mode, eat-semi-char-mode, eat-char-mode):
+	Call 'eat--line-mode-exit' to exit line mode.
+	* eat.el (eat--line-mode): Move all logic to 'eat-line-mode',
+	'eat--line-mode-exit' and 'eat--line-mode-exit-auto'.
+	* eat.el (eat-line-send): Make non-interactive.  Reset input
+	history cycling variables.
+	* eat.el (eat-line-send-input): New argument NO-NEWLINE.
+	* eat.el (eat-mode): Don't disable undo information recording.
+	* eat.el (eat--process-output-queue): Disable undo information
+	recording while process output.
+	* eat.texi (Line Mode): New section in chapter 'Input Modes'.
+	* eat.texi (Line Mode Integration): New section in chapter
+	'Shell Integration'.
+	* eat.texi (Native Shell Prompt Editing): Remove section.
+	* README.org (Usage): Avoid the term "keybinding mode", use
+	"input mode" instead as the manual uses it.  Document line
+	mode.
+	* README.org (NonGNU ELPA): Emacs 28 has NonGNU ELPA enabled by
+	default, so remove unnecessary instructions.
+
+2023-09-22  Akib Azmain Turja  <akib@disroot.org>
+
+	Skip comments in Bash history file
+
+	* eat.el (eat--prompt-populate-input-ring): Skip Bash history
+	comments.
+	* eat.el: Add Compat as dependency; some functions from Emacs
+	29 are used.
+
+2023-09-18  Akib Azmain Turja  <akib@disroot.org>
+
+	Allow customizing Sixel rendering format
+
+	* eat.el (eat-sixel-render-formats): New user option.
+	* eat.el (eat-eshell-fallback-if-stty-not-available): Fix
+	customization type.
+	* eat.el (eat--t-term): Rename slot 'sixel-display-method' to
+	'sixel-render-format'.
+	All callers changed.
+	* eat.el (eat--t-sixel-flush-line): New support render format,
+	'none'.
+	* eat.el (eat-term-set-parameter): Rename parameter
+	'sixel-display-method' to 'sixel-render-format'.
+	All callers changed.
+	* eat.el (eat--sixel-render-format): New function.
+	* eat.el (eat-exec, eat--eshell-setup-proc-and-term): Set
+	'sixel-render-format' according to user customization.
+
+2023-09-17  Akib Azmain Turja  <akib@disroot.org>
+
+	Add message passing support
+
+	* eat.el (eat-message-handler-alist): New user option.
+	* eat.el (eat--handle-message): New function.
+	* eat.el (eat--handle-uic, eat--eshell-handle-uic): Handle
+	message passing sequence.
+	* eat.texi (Message Passing): New section in chapter "Shell
+	Integration".
+	* integration/bash (__eat_enable_integration): Remove the
+	unnecessary complex code to update PROMPT_COMMAND.
+	* integration/bash (_eat_msg):
+	* integration/zsh (_eat_msg):
+	New function.
+
+2023-09-16  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't enter prompt mode after exit till new prompt
+
+	* eat.el (eat--inhibit-prompt-mode): New variable.
+	* eat.el (eat--post-prompt, eat--post-cont-prompt): Check
+	'eat--inhibit-prompt-mode' before switching to prompt mode.
+	* eat.el (eat--before-new-prompt): New function.
+	* eat.el (eat--handle-uic): Support "before new prompt"
+	sequence.
+	* eat.el (eat-emacs-mode, eat-semi-char-mode, eat-char-mode):
+	Set 'eat--inhibit-prompt-mode' to t if prompt mode is enabled.
+	* eat.el (eat-mode): Make 'eat--inhibit-prompt-mode'
+	buffer-local.
+	* integration/bash (__eat_prompt_command):
+	* integration/zsh (__eat_precmd):
+	Send the "before new prompt" sequence.
+
+2023-09-16  Akib Azmain Turja  <akib@disroot.org>
+
+	Add history reporting in Zsh integration script
+
+	* eat.el (eat--get-shell-history): New argument FORMAT, pass it
+	to 'eat--prompt-populate-input-ring'.
+	* eat.el (eat--handle-uic): Accept FORMAT argument in input
+	history reporting sequence and pass it to
+	'eat--get-shell-history'.
+	* eat.el (eat--prompt-populate-input-ring): New argument
+	FORMAT.  Support Zsh extended history file format.
+	* integration/bash (__eat_enable_integration): Send "bash" as
+	the history file format.
+	* integration/zsh (__eat_enable_integration): Send shell
+	history.
+
+2023-09-16  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix input handling in Eshell
+
+	* eat.el (eat--eshell-local-mode): Make input processing
+	variables buffer-local.
+
+2023-09-14  Akib Azmain Turja  <akib@disroot.org>
+
+	* eat.el (eat-prompt-newline): Make ring if needed
+
+2023-09-14  Illia Ostapyshyn  <ilya.ostapyshyn@gmail.com>
+
+	* eat.el (eat-mode): Escape '%' character in title
+
+2023-09-14  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix recursive output processing
+
+	* eat.el (eat--pending-input-chunks)
+	(eat--process-input-queue-timer): New variable.
+	* eat.el (eat-mode): Make 'eat--pending-input-chunks' and
+	'eat--process-input-queue-timer' buffer-local.
+	* eat.el (eat--send-input): Queue input instead of sending
+	immediately.
+	* eat.el (eat--process-input-queue): New function.
+
+2023-09-14  Akib Azmain Turja  <akib@disroot.org>
+
+	Document prompt mode
+
+	* eat.texi (Shell Integration): Divide into sections.  Add new
+	section 'Native Shell Prompt Editing'.
+	* README.org (Usage): Document "prompt" mode.
+	* README.org (Comparison With Other Terminal Emulators): Update
+	comparison.
+
+2023-09-14  Akib Azmain Turja  <akib@disroot.org>
+
+	Allow terminal text modification after it's killed
+
+	* eat.el (eat--sentinel): Remove 'read-only' and other text
+	properties from the terminal region.
+
+2023-09-13  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix Bash long startup when run from Eshell
+
+	* eat.el (eat--eshell-handle-uic): Acknowledge when input
+	history file is sent by the shell.
+
+2023-09-13  Akib Azmain Turja  <akib@disroot.org>
+
+	Disable native shell prompt editing by default
+
+	* eat.el (eat-enable-native-shell-prompt-editing): Set to nil.
+
+2023-09-13  Akib Azmain Turja  <akib@disroot.org>
+
+	Add prompt mode and process OSC 51 as UI Command
+
+	* eat.el (eat-enable-native-shell-prompt-editing)
+	(eat-prompt-input-ring-size)
+	(eat-prompt-move-point-for-matching-input): New user option.
+	* eat.el (eat--t-term): Remove slots 'cwd', 'prompt-start-fn',
+	'prompt-end-fn', 'cont-prompt-start-fn', 'cont-prompt-end-fn',
+	'cmd-start-fn' and 'cmd-finish-fn'.  Add new slot 'ui-cmd-fn'.
+	* eat.el (eat--t-set-cwd): Support only the format used by OSC
+	7.
+	* eat.el (eat--t-prompt-start,  eat--t-prompt-end)
+	(eat--t-cont-prompt-start,  eat--t-cont-prompt-end)
+	(eat--t-set-cmd, eat--t-cmd-start, eat--t-cmd-finish): Remove
+	function.
+	* eat.el (eat--t-ui-cmd): New function.
+	* eat.el (eat--t-handle-output): Remove all specialized OSC 51
+	handlers and call 'eat--t-ui-cmd' to handle any OSC 51
+	sequence.
+	* eat.el (eat-term-set-parameter): Set 'ui-cmd-fn' slot of
+	terminal when 'ui-command-function' is set.
+	* eat.el (eat-term-cwd): Remove function.
+	* eat.el (eat-term-prompt-start-function)
+	(eat-term-prompt-end-function, eat-term-cmd-start-function)
+	(eat-term-cont-prompt-start-function)
+	(eat-term-cont-prompt-end-function, eat-term-set-cmd-function)
+	(eat-term-cmd-finish-function): Remove generalized variables.
+	* eat.el (eat-term-send-string): New function.
+	* eat.el (eat-send-string-as-yank): Rename to
+	'eat-term-send-string-as-yank'.
+	All callers changed.
+	* eat.el (eat--set-cwd-uic, eat--post-cont-prompt): New
+	function.
+	* eat.el (eat--pre-prompt, eat--post-prompt, eat--set-cmd)
+	(eat--pre-cmd, eat--set-cmd-status): Remove unused first
+	argument.
+	All callers changed.
+	* eat.el (eat--get-shell-history, eat--handle-uic): New
+	function.
+	* eat.el (eat-prompt-mode-map): New variable.
+	* eat.el (eat-emacs-mode, eat-semi-char-mode, eat-char-mode):
+	Handle the case when prompt mode is active.
+	* eat.el (eat--prompt-mode-previous-mode): New variable.
+	* eat.el (eat--prompt-mode): New non-interactive minor mode.
+	* eat.el (eat-prompt-send-default, eat-prompt-send)
+	(eat-prompt-newline, eat-prompt-delchar-or-eof)
+	(eat-prompt-send-interrupt): New command.
+	* eat.el (eat--prompt-input-ring, eat--prompt-input-ring-index)
+	(eat--prompt-stored-incomplete-input)
+	(eat--prompt-matching-input-from-input-string): New variable.
+	* eat.el (eat--prompt-populate-input-ring)
+	(eat--prompt-reset-input-ring-vars, eat--prompt-ask-for-regexp-arg)
+	(eat--prompt-search-arg, eat--prompt-search-start)
+	(eat--prompt-prev-input-string, eat--prompt-prev-matching-input-str)
+	(eat--prompt-delete-input, eat--prompt-prev-matching-input-str-pos):
+	New function.
+	* eat.el (eat-prompt-previous-input, eat-prompt-next-input)
+	(eat-prompt-restore-input, eat-prompt-previous-matching-input)
+	(eat-prompt-next-matching-input, eat-prompt-find-input)
+	(eat-prompt-previous-matching-input-from-input)
+	(eat-prompt-next-matching-input-from-input): New command.
+	* eat.el (eat-mode): Make 'eat--prompt-mode-previous-mode',
+	'eat--prompt-input-ring', 'eat--prompt-input-ring-index',
+	'eat--prompt-stored-incomplete-input' and
+	'eat--prompt-matching-input-from-input-string' buffer-local.
+	Record undo information if
+	'eat-enable-native-shell-prompt-editing' is enabled.  Set
+	'mode-line-process' properly so that prompt mode is shown when
+	enabled.
+	* eat.el (eat--process-output-queue): Remove any narrowing
+	temporarily when called.  Don't
+	* eat.el (eat--sentinel): Disable prompt mode.  Also fix the
+	bug where the point centers when the program exits, instead of
+	going to the end of buffer.
+	* eat.el (eat-exec): Don't set removed generalized variables
+	'eat-term-prompt-start-function', 'eat-term-set-cmd-function',
+	'eat-term-prompt-end-function', 'eat-term-cmd-start-function'
+	and 'eat-term-cmd-finish-function'.  Set terminal parameter
+	'ui-command-function' to 'eat--handle-uic'.
+	* eat.el (eat--eshell-handle-uic): New function.
+	* eat.el (eat--eshell-output-filter): Let-bind
+	'inhibit-read-only' only for required parts.
+	* eat.el (eat--eshell-setup-proc-and-term): Set terminal
+	parameter 'ui-command-function' to 'eat--eshell-handle-uic'.
+	* eat.el (eat--eshell-sentinel): Fix the bug where the point
+	centers when the program exits, instead of going to the end of
+	buffer.
+	* integration/bash (__eat_enable_integration): Send shell
+	history.
+
+2023-09-03  Akib Azmain Turja  <akib@disroot.org>
+
+	* eat.el (eat-project-other-window): New command
+
+2023-08-31  Akib Azmain Turja  <akib@disroot.org>
+
+	Add command 'eat-other-window'
+
+	* eat.el (eat--1, eat-other-window): New function.
+	* eat.el (eat): Move all logic to 'eat--1' and call it.
+
+2023-08-27  Akib Azmain Turja  <akib@disroot.org>
+
+	Support Sixel properly in Eshell
+
+	* eat.el (eat--eshell-setup-proc-and-term): Set Sixel
+	attributes of the terminal object.
+
+2023-08-25  Akib Azmain Turja  <akib@disroot.org>
+
+	Add experimental Sixel support
+
+	* eat.el (eat--t-cur): New slots 'sixel-x', 'sixel-y' and
+	'sixel-beg'.
+	* eat.el (eat--t-term): New slots 'sixel-buffer',
+	'sixel-buffer-size', 'sixel-palette', 'sixel-color',
+	'sixel-display-method', 'sixel-image-height',
+	'sixel-scroll-mode', 'sixel-initial-cursor-pos', 'char-width'
+	and 'char-height'.
+	* eat.el (eat--t-reset): Reset 'sixel-scroll-mode' to 't'.
+	* eat.el (eat--t-fix-partial-multi-col-char): Preserve original
+	face if PRESERVE-FACE is non-nil.
+	* eat.el (eat--t-send-device-attrs): Send correct attributes.
+	* eat.el (eat--t-report-foreground-color)
+	(eat--t-report-background-color): Use correct format.
+	* eat.el (eat--t-sixel-init, eat--t-send-graphics-attrs)
+	(eat--t-sixel-write, eat--t-sixel-flush-line)
+	(eat--t-sixel-newline, eat--t-sixel-set-color-reg)
+	(eat--t-sixel-cleanup, eat--t-sixel-enable-scrolling)
+	(eat--t-sixel-disable-scrolling): New function.
+	* eat.el (eat--t-set-modes, eat--t-reset-modes): Handle Sixel
+	scroll mode.
+	* eat.el (eat--t-handle-output): Update
+	'eat--t-send-device-attrs' call.  Handle 'send graphics
+	attributes' CSI function.  Parse and dispatch DCS sequence
+	properly.  Handle Sixel sequence.
+	* eat.el (eat-term-set-parameter): Handle 'char-dimensions',
+	'sixel-display-method', and 'sixel-image-height' parameters.
+	* eat.el (eat-exec): Set 'char-dimensions',
+	'sixel-display-method', and 'sixel-image-height' parameters.
+
+2023-07-20  Akib Azmain Turja  <akib@disroot.org>
+
+	Implement device status report function properly
+
+	* eat.el (eat--t-device-status-report): Implement properly.
+	Take an argument.
+	* eat.el (eat--t-handle-output): Update call to
+	'eat--t-device-status-report'.
+
+2023-07-12  Akib Azmain Turja  <akib@disroot.org>
+
+	Bind 'S-<insert>' to 'eat-yank'
+
+	* eat.el (eat--eshell-prepare-semi-char-mode-map)
+	(eat--prepare-semi-char-mode-map): Bind 'S-<insert>' to
+	'eat-yank'.
+
+2023-07-06  Akib Azmain Turja  <akib@disroot.org>
+
+	Bind keys 'DEL' and 'M-DEL' keys
+
+	* eat.el (eat-term-input-event): Handle 'DEL' and 'M-DEL' keys.
+	* eat.el (eat-term-make-keymap): Bind 'DEL' and 'M-DEL' keys.
+
+2023-07-03  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix recursive load error
+
+	* eat.el (eat-semi-char-non-bound-keys)
+	(eat-eshell-semi-char-non-bound-keys): Let-bind
+	'after-load-alist' and 'after-load-functions' before reloading
+	Eat.
+
+2023-05-15  Akib Azmain Turja  <akib@disroot.org>
+
+	Yank active region with middle-click yank
+
+	* eat.el (eat-mouse-yank-primary): Select active region if
+	'select-active-regions' is non-nil.
+
+2023-05-06  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix middle-click yanking commands
+
+	* eat.el (eat-mouse-yank-primary): Switch to the window where
+	the event was initiated.
+	* eat.el (eat-mouse-yank-secondary): Switch to the window where
+	the event was initiated.  Ensure that the secondary selection
+	is non-empty before sending it.
+
+2023-05-06  Akib Azmain Turja  <akib@disroot.org>
+
+	Support middle-click yank in terminal
+
+	* eat.el (eat-mouse-yank-primary, eat-mouse-yank-secondary):
+	New command.
+	* eat.el (eat--prepare-semi-char-mode-map)
+	(eat--eshell-prepare-semi-char-mode-map): Remap commands
+	'mouse-yank-primary' and 'mouse-yank-secondary' to
+	'eat-mouse-yank-primary' and 'eat-mouse-yank-secondary'
+	respectively.
+
+2023-04-17  Akib Azmain Turja  <akib@disroot.org>
+
+	Update documentation in commentary section
+
+	* README.org (Usage): List keybindings in semi-char mode to
+	switch to other keybinding modes.
+	* eat.el (Commentary): Put the documentation of semi-char mode
+	first as it is the default.  List keybindings in semi-char mode
+	to switch to other keybinding modes.  Update stale keybindings
+	listed in emacs mode documentation.
+
+2023-04-09  Akib Azmain Turja  <akib@disroot.org>
+
+	Pass process to eat-exec-hook and eat-exit-hook
+
+	* eat.el (eat-exec-hook, eat-exit-hook): Update docstring.
+	* eat.el (eat--sentinel): Pass process to 'eat-exit-hook'.
+	Delete process after running 'eat-exit-hook'.
+	* eat.el (eat--kill-buffer): New helper function.
+	* eat.el (eat-exec): Pass process to 'eat-exec-hook'.  Add or
+	remove 'eat--kill-process' from 'eat-exit-hook' instead of
+	'kill-buffer'.
+
+2023-04-09  Akib Azmain Turja  <akib@disroot.org>
+
+	New command 'eat-narrow-to-shell-prompt'
+
+	* eat.el (eat--post-prompt): Put the 'eat--shell-prompt-begin'
+	text property at the beginning of shell prompt.
+	* eat.el (eat--correct-shell-prompt-mark-overlays): Don't try
+	to go outside accessible portion of buffer when the buffer is
+	narrowed.
+	* eat.el (eat-narrow-to-shell-prompt): New command.
+	* eat.el (eat-mode-map): Bind key sequence 'C-x n d' to
+	'eat-narrow-to-shell-prompt'.
+	* eat.el (eat--filter-buffer-substring): Remove all text
+	properties added on UI side before passing buffer substring to
+	'eat-term-filter-string'.
+	* eat.texi (Shell Integration): Document
+	'eat-narrow-to-shell-prompt'.
+
+2023-04-07  Akib Azmain Turja  <akib@disroot.org>
+
+	Run hooks on terminal update and process exit
+
+	* eat.el (eat-exit-hook, eat-update-hook, eat-eshell-exit-hook)
+	(eat-eshell-update-hook): New user option.
+	* eat.el (eat-reset, eat--process-output-queue): Run
+	'eat-update-hook'.
+	* eat.el (eat--sentinel): Don't test 'eat-kill-buffer-on-exit',
+	run 'eat-exit-hook'.
+	* eat.el (eat--adjust-process-window-size): Run
+	'eat-update-hook' when the major mode is 'eat-mode'.  Run
+	'eat-eshell-update-hook' in 'eshell-mode' buffers.
+	* eat.el (eat-exec): Don't let-bind 'eat-kill-buffer-on-exit'
+	while killing old process, remove 'kill-buffer' from hook
+	'eat-exit-hook' instead.  When 'eat-kill-buffer-on-exit' is
+	non-nil, add 'kill-buffer' to 'eat-exit-hook' with priority 90.
+	Run 'eat-exec-hook' outside any let-block.
+	* eat.el (eat--eshell-output-filter): Run
+	'eat-eshell-update-hook'.
+	* eat.el (eat--eshell-cleanup): Run 'eat-eshell-exit-hook'.
+
+2023-04-05  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix resizing when alternative display is enabled
+
+	* eat.el (eat--t-term): Fix error while resizing when
+	alternative display is enabled.
+
+2023-04-02  Akib Azmain Turja  <akib@disroot.org>
+
+	Force directionality of paragraphs in Eat buffer
+
+	* eat.el (eat-mode): Set 'bidi-paragraph-direction' to
+	'left-to-right'.
+
+2023-04-02  Akib Azmain Turja  <akib@disroot.org>
+
+	Inform about unlisted semi-char mode exceptions
+
+	* eat.texi (Input Modes): Inform about unlisted semi-char mode
+	exceptions.
+	* README.org: Inform about unlisted semi-char mode exceptions.
+	Add Zsh integration instructions.
+
+2023-03-31  Akib Azmain Turja  <akib@disroot.org>
+
+	Support DECSCUSR control function
+
+	* eat.el (eat-very-visible-vertical-bar-cursor-type)
+	(eat-vertical-bar-cursor-type, eat-horizontal-bar-cursor-type)
+	(eat-very-visible-horizontal-bar-cursor-type): New user
+	options.
+	* eat.el (eat--t-term): New slot 'cur-visible-p'.  Remove slot
+	'cur-blinking-p'.  Change the default value of 'cur-state' to
+	':block'.
+	* eat.el (eat--t-reset): Don't reset slot 'cur-blinking-p'.
+	Reset slot 'cur-visible-p'.  Reset 'cur-state' to ':block'.
+	Reset cursor state to ':block'.
+	* eat.el (eat--t-set-cursor-state): Set slot 'cur-visible-p' to
+	the current visibility of cursor.  Set slot 'cur-state' to the
+	shape of cursor, regardless of visibility.
+	* eat.el (eat--t-default-cursor): Rename to
+	'eat--t-show-cursor'.  Don't change any cursor state except
+	visibility.
+	* eat.el (eat--t-invisible-cursor): Rename to
+	'eat--t-hide-cursor'.  Don't change any cursor state except
+	visibility.
+	* eat.el (eat--t-set-cursor-style): New function.
+	* eat.el (eat--t-blinking-cursor, eat--t-non-blinking-cursor):
+	Update to handle new cursor shapes properly.
+	* eat.el (eat--t-set-modes): Call 'eat--t-show-cursor' instead
+	of 'eat--t-default-cursor'.
+	* eat.el (eat--t-reset-modes): Call 'eat--t-hide-cursor'
+	instead of 'eat--t-invisible-cursor'.
+	* eat.el (eat--t-handle-output): Handle DECSCUSR control
+	function.
+	* eat.el (eat-term-cursor-type): Return ':invisible' if cursor
+	is invisible, otherwise the value of slot 'cur-state'.  Update
+	the list of possible cursor states in the docstring.
+	* eat.el (eat-term-set-cursor-function): Update the list of
+	possible cursor states and fallback cursor state in the
+	docstring.
+	* eat.el (eat--cursor-blink-mode): Add
+	'eat--cursor-blink-stop-timers' to 'kill-buffer-hook'.
+	* eat.el (eat--set-cursor): Support new cursor states.  Update
+	the list of possible cursor states in the docstring.
+	* eat.texi (Cursor Types): Document new user options
+	'eat-vertical-bar-cursor-type',
+	'eat-very-visible-vertical-bar-cursor-type',
+	'eat-horizontal-bar-cursor-type' and
+	'eat-very-visible-horizontal-bar-cursor-type'.
+
+2023-03-31  Akib Azmain Turja  <akib@disroot.org>
+
+	Capture keys 'M-backspace' and 'C-M-backspace'
+
+	* eat.el (eat-term-input-event): Support 'M-backspace' and
+	'C-M-backspace'.
+	* eat.el (eat-term-make-keymap): Bind 'M-backspace' and
+	'C-M-backspace'.
+
+2023-03-31  Akib Azmain Turja  <akib@disroot.org>
+
+	Suggest to invoke 'eat-compile-terminfo' in manual
+
+	* eat.texi (Not Recognized, Garbled Text): Suggest to do
+	'M-x eat-compile-terminfo' when the Terminfo databases aren't
+	working properly.
+
+2023-03-31  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix directory tracking in Zsh
+
+	* integration/zsh (__eat_precmd): Use '$HOST' instead of
+	'$HOSTNAME'.
+
+2023-03-31  Akib Azmain Turja  <akib@disroot.org>
+
+	Implement Zsh integration
+
+	* integration/zsh: New file.
+	* eat.texi (Shell Integration): Add instructions for Zsh.
+	* integration/bash: Always return zero on succuss.
+
+2023-03-30  Akib Azmain Turja  <akib@disroot.org>
+
+	Add new command 'eat-compile-terminfo'
+
+	* eat.el (eat-compile-terminfo): New command.
+	* eat.texi (Hello Terminal): Refer to 'Common Problems'.
+	* eat.texi (Common Problems): Add instructions to compile
+	Terminfo databases with 'eat-compile-terminfo'.
+
+2023-03-29  Akib Azmain Turja  <akib@disroot.org>
+
+	Update manual to correctly describe command 'eat'
+
+	* eat.texi (Hello Terminal): Update to match with the current
+	behavior of command 'eat'.
+
+2023-03-29  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't prompt for program in M-x eat by default
+
+	* eat.el (eat): Prompt for program to run only if double prefix
+	argument is given, otherwise use the default one.
+
+2023-03-28  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix bugs in selection data manipulation code
+
+	* eat.el (eat--t-term): Put a vector of length 8 (instead of
+	10) in 'cut-buffers' slot.
+	* eat.el (eat--t-manipulate-selection): Don't process the
+	targets '8' and '9', since they are not in the protocol.
+	Return correct list of queried targets to the client.  Make
+	sure base64 encoded data doesn't contain line breaks.
+	* eat.el (eat--t-handle-output): Tolerate invalid targets in
+	OSC 52 (manipulate selection data).
+	* eat.el (eat--manipulate-kill-ring): Handle 'nil' correctly.
+
+2023-03-21  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix incompatiblity with Eshell on Emacs 28
+
+	* eat.el (eat--eshell-setup-proc-and-term): Set
+	'eat--input-process' terminal parameter on Emacs 28.
+	* eat.el (eat-eshell-mode): Don't add advice
+	'eat--eshell-set-input-process' on Emacs 28.
+
+2023-03-20  Akib Azmain Turja  <akib@disroot.org>
+
+	Send input to correct process in Eshell pipeline
+
+	* eat.el (eat--process): Remove.
+	* eat.el (eat-mode): Don't make 'eat--process' buffer-local.
+	Use 'eat--terminal' to determine whether terminal is live.
+	* eat.el (eat--eshell-set-input-process): New function.
+	* eat.el (eat--eshell-local-mode): Don't make 'eat--process'
+	buffer-local.  Add 'eat--eshell-set-input-process' as a advice
+	after 'eshell-resume-eval'.
+	* eat.el (eat-exec): Use the terminal parameters
+	'eat--process', 'eat--input-process' and 'eat--output-process'
+	instead of the buffer-local variable 'eat--process' store the
+	process object.
+	* eat.el (eat--sentinel): Don't set 'eat--process' to nil.
+	* eat.el (eat--eshell-setup-proc-and-term): Set the terminal
+	parameters instead of buffer-local 'eat--process'.
+	* eat.el (eat--pre-prompt, eat--pre-cmd, eat-kill-process, eat)
+	(eat--send-input, eat--trace-eshell-adjust-make-process-args)
+	(eat--eshell-cleanup, eat--eshell-output-filter): Get the
+	process from terminal parameter.
+
+2023-02-08  Akib Azmain Turja  <akib@disroot.org>
+
+	* eat.texi (Querying Before Kill): New chapter
+
+2023-02-07  Akib Azmain Turja  <akib@disroot.org>
+
+	Query when killing buffer when command is running
+
+	* eat.el (eat-query-before-killing-running-terminal): New user
+	option.
+	* eat.el (eat--pre-prompt): Unset process query on exit flag if
+	eat-query-before-killing-running-terminal is 'auto'.
+	* eat.el (eat--pre-cmd): Set process query on exit flag if
+	eat-query-before-killing-running-terminal is 'auto'.
+
+2023-01-22  Akib Azmain Turja  <akib@disroot.org>
+
+	Add many more semi-char mode exceptions
+
+	* eat.el (eat-semi-char-non-bound-keys)
+	(eat-eshell-semi-char-non-bound-keys): Add 81 more keys.
+
+2023-01-19  Akib Azmain Turja  <akib@disroot.org>
+
+	Auto reload Eat when "semi-char" map is customized
+
+	* eat.el (eat--load-file-path, eat--being-loaded): New
+	variable.
+	* eat.el (eat-semi-char-non-bound-keys)
+	(eat-eshell-semi-char-non-bound-keys): Reload Eat when
+	customized.  Document what to do if changed from Lisp.
+	* eat.el (eat-update-semi-char-mode-map)
+	(eat-eshell-update-semi-char-mode-map): New function.
+	* eat.el (eat-reload): New command.
+	* eat.texi (Semi-char Mode): Document what to do if the lists
+	of not bound keys are changed from Lisp.
+
+2023-01-18  Akib Azmain Turja  <akib@disroot.org>
+
+	Document some new user options
+
+	* eat.texi (Semi-char Mode): Document
+	'eat-semi-char-non-bound-keys' and
+	'eat-eshell-semi-char-non-bound-keys'.
+	* eat.texi (Input Invisible): New section.
+
+2023-01-16  Akib Azmain Turja  <akib@disroot.org>
+
+	Allow modifying semi-char key exceptions
+
+	* eat.el (eat-semi-char-non-bound-keys)
+	(eat-eshell-semi-char-non-bound-keys): New user option.
+	* eat.el (eat--prepare-semi-char-mode-map)
+	(eat--eshell-prepare-semi-char-mode-map): New function.
+	* eat.el (eat-semi-char-mode-map): Use
+	'eat--prepare-semi-char-mode-map' to make the keymap.
+	* eat.el (eat-eshell-semi-char-mode-map): Use
+	'eat--eshell-prepare-semi-char-mode-map' to make the keymap.
+
+2023-01-15  Akib Azmain Turja  <akib@disroot.org>
+
+	Allow pasting from parent XTerm to Eat terminal
+
+	* eat.el (eat-xterm-paste): New command.
+	* eat.el (eat-mode-map, eat-eshell-emacs-mode-map): Bind
+	<xterm-paste> to 'ignore'.
+	* eat.el (eat-semi-char-mode-map, eat-char-mode-map)
+	(eat-eshell-semi-char-mode-map, eat-eshell-char-mode-map): Bind
+	<xterm-paste> to 'eat-xterm-paste'.
+
+2022-12-28  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't error while handling the sequence '\e[>c'
+
+	* eat.el (eat--t-send-device-attrs): Accept '((nil))' as the
+	value of the parameter PARAMS, but don't accept 'nil'.
+
+2022-12-28  Akib Azmain Turja  <akib@disroot.org>
+
+	* eat.el (eat): Use buffer name for process name
+
+	* eat.el (eat-eshell-exec-hook): Make customizable
+
+	* eat.el (eat-exec-hook): Make customizable
+
+2022-12-28  Akib Azmain Turja  <akib@disroot.org>
+
+	Run eat-eshell-exec-hook as Eshell process is run
+
+	* eat.el (eat--eshell-setup-proc-and-term): Run
+	'eat-eshell-exec-hook' at the very end.
+
+2022-12-22  Akib Azmain Turja  <akib@disroot.org>
+
+	* README.org (Straight.el): New section
+
+2022-12-22  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't let font-lock to mess up text face
+
+	* eat.el (eat--t-repeated-insert, eat--t-write)
+	(eat--t-fix-partial-multi-col-char): Add 'font-lock-face' text
+	property along with 'face' to stop font-lock from removing the
+	face.
+
+2022-12-21  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix terminfo path on case-insensitive filesystems
+
+	* eat.el (eat--terminfo-path): New variable.
+	* eat.el (eat-term-terminfo-directory): Change default value to
+	'PACKAGE-ROOT/terminfo/'.
+	* Makefile (terminfo): Don't depend on other targets.  Make
+	directory 'terminfo'.  Write terminfo to both 'e' and
+	'65' (hexadecimal number of ASCII 'e') directories.
+	* Makefile (e/eat-mono e/eat-color eat-256color e/eat-truecolor):
+	Remove target.
+	* README.org (Quelpa): Update recipe.
+
+2022-12-20  Akib Azmain Turja  <akib@disroot.org>
+
+	* eat.el (eat--t-handle-output): Fix NULL handling
+
+2022-12-17  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix typo in 'eat--t-scroll-up'
+
+	* eat.el (eat--t-scroll-up): Replace 'scroll-begin' with
+	'scroll-end' in '(< scroll-end (eat--t-disp-width disp))',
+	since this will always evaluate to t, and thus it was most
+	probably a typo.
+
+2022-12-17  Akib Azmain Turja  <akib@disroot.org>
+
+	Make sure symbol is used as face parameter value
+
+	* eat.el (eat-term-set-parameter): Make sure face parameter
+	values are symbols.
+
+2022-12-16  Akib Azmain Turja  <akib@disroot.org>
+
+	Allow changing terminal faces terminal-locally
+
+	* eat.el (eat--t-term): New slots: bold-face, faint-face,
+	italic-face, slow-blink-face, fast-blink-face, color-0-face,
+	color-faces, font-faces.  Use hash table for 'params' slot.
+	* eat.el (eat--t-set-sgr-params): Use new slot instead using
+	the faces directly.
+	* eat.el (eat-term-parameter): Update to work with 'params'
+	hash table.
+	* eat.el (eat-term-set-parameter): Update to work with 'params'
+	hash table.  Handle the following parameters specially:
+	bold-face, faint-face, italic-face, slow-blink-face,
+	fast-blink-face, color-0-face, color-1-face, ...,
+	color-255-face, font-0-face, font-1-face, ..., font-9-face.
+
+2022-12-16  Akib Azmain Turja  <akib@disroot.org>
+
+	Decoding UTF-8 encoded strings encoded as base64
+
+	* eat.el (eat--t-set-cwd): Decoding UTF-8 encoded strings encoded as
+	base64.
+	* eat.el (eat--t-manipulate-selection): Use 'ignore-errors'
+	instead of '(ignore-error ...)', since both macro expand to the
+	same code.
+	* eat.el (eat--t-set-cmd): Decoding UTF-8 encoded strings encoded as
+	base64.  Use 'when-let*' instead of 'when' nested in 'let'.
+
+2022-12-15  Akib Azmain Turja  <akib@disroot.org>
+
+	Decrease regexp usage while parsing output
+
+	* eat.el (eat--t-handle-output): Don't use regular expressions
+	while parsing plain text and CSI sequences.  Remove useless
+	code from VT300-specific charset set sequence parser.
+
+2022-12-15  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix handling non-interactive processes in Eshell
+
+	* eat.el (eat--eshell-adjust-make-process-args): Check whether
+	the process going to be run will be interactive process.
+	* eat.el: Declare function 'eshell-interactive-output-p'.a
+
+2022-12-15  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't use '.*-char-property-.*' functions
+
+	* eat.el (eat--t-move-before-to-safe): Use
+	'previous-single-property-change' instead of
+	'(previous-single-char-property-change'.
+	* eat.el (eat--t-join-long-line): Use 'get-text-property'
+	instead of 'get-char-property'.  Handle properly the case where
+	'next-single-property-change' returns nil.
+	* eat.el (eat--t-fix-partial-multi-col-char): Handle properly
+	the case where 'next-single-property-change' returns nil.
+
+2022-12-15  Akib Azmain Turja  <akib@disroot.org>
+
+	Refactor 'eat--eshell-adjust-make-process-args'
+
+	* eat.el (eat--eshell-adjust-make-process-args): Move the
+	'add-hook' out of 'unwind-protect'.
+
+2022-12-15  Akib Azmain Turja  <akib@disroot.org>
+
+	Remove invisible spaces when killing text
+
+	* eat.el (eat-term-filter-string): Remove invisible spaces
+	preceding multi-column width characters.
+	* eat.el (eat--t-join-long-line)
+	(eat--t-fix-partial-multi-col-char): Use
+	'next-single-property-change' instead of
+	'next-single-char-property-change'.
+
+2022-12-14  Akib Azmain Turja  <akib@disroot.org>
+
+	Refactor 'eat--eshell-adjust-make-process-args'
+
+	* eat.el (eat--eshell-adjust-make-process-args): Avoid
+	unnecessary function overrides.  Overriding functions with
+	'cl-letf*' is not well documented, and self-overriding a
+	function (override a function with its own definition) may not
+	a nop.
+
+2022-12-14  Akib Azmain Turja  <akib@disroot.org>
+
+	Ask if 'stty' is unavailable in Eshell
+
+	* eat.el (eat-eshell-fallback-if-stty-not-available): New user
+	option.
+	* eat.el (eat--eshell-adjust-make-process-args): If 'stty' is
+	not available, use 'eat-eshell-fallback-if-stty-not-available'
+	to determine whether to continue terminal emulation or not.
+
+2022-12-12  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix shell prompt navigation
+
+	* eat.el (eat--post-prompt): Set 'eat--shell-prompt-begin' to
+	nil at the very end to ensure prompt end text properties are
+	put.
+
+2022-12-12  Akib Azmain Turja  <akib@disroot.org>
+
+	Synchronize scroll on all windows showing terminal
+
+	* eat.el (eat--synchronize-scroll-windows): New function.
+	* eat.el (eat--synchronize-scroll)
+	(eat--eshell-synchronize-scroll): Take a single argument,
+	WINDOWS, list of windows to synchronize.  The special value
+	'buffer' can also be included, to synchronize the point in
+	buffer.
+	* eat.el (eat-self-input, eat-yank, eat-yank-from-kill-ring):
+	Pass the return value of 'eat--synchronize-scroll-windows' to
+	the function in 'eat--synchronize-scroll-function'.
+	* eat.el (eat--process-output-queue)
+	(eat--adjust-process-window-size, eat--eshell-output-filter)
+	Call 'eat--synchronize-scroll-windows' before doing anything,
+	save the result, and pass it as the first argument to the
+	function in 'eat--synchronize-scroll-function'.
+	* eat.el (eat--trace-replay-eval): Pass the return value of
+	'get-buffer-window-list' to 'eat--synchronize-scroll'.
+
+2022-12-12  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't intercept background processes in Eshell
+
+	* eat.el (eat--eshell-adjust-make-process-args): Don't do any
+	change to the environment if 'eshell-current-subjob-p' is
+	non-nil.
+
+2022-12-11  Akib Azmain Turja  <akib@disroot.org>
+
+	Check whether 'yank-transform-functions' is bound
+
+	* eat.el (eat-yank, eat-yank-from-kill-ring): Check whether
+	'yank-transform-functions' is bound before using it's value.
+	The variable is not available in Emacs 28.
+
+2022-12-11  Akib Azmain Turja  <akib@disroot.org>
+
+	* integration/bash: Check TERM before enabling
+
+	* eat.el (eat-eshell-emacs-mode-map): Disable undo
+
+2022-12-11  Akib Azmain Turja  <akib@disroot.org>
+
+	Use Eshell "emacs" mode map when process is live
+
+	* eat.el (eat-eshell-emacs-mode-map): Update docstring.
+	* eat.el (eat--eshell-process-running-mode): New
+	non-interactive minor mode.
+	* eat.el (eat--eshell-setup-proc-and-term): Enable
+	'eat--eshell-process-running-mode'.
+	* eat.el (eat--eshell-cleanup): Disable
+	'eat--eshell-process-running-mode'.
+	* eat.le (eat--eshell-local-mode): Don't use
+	'eat-eshell-emacs-mode-map' as the mode keymap.
+
+2022-12-11  Akib Azmain Turja  <akib@disroot.org>
+
+	Synchronize scrolling and point properly
+
+	* eat.el (eat--synchronize-scroll)
+	(eat--eshell-synchronize-scroll): Call 'set-window-point' in
+	addition to 'goto-char'.
+
+2022-12-11  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix invoking commands with eshell/sudo from Tramp
+
+	* eat.el (eat--eshell-adjust-make-process-args): Override
+	'start-file-process' on Emacs 28, used by Eshell on Emacs 28.
+	Don't override 'make-process' on Emacs 28, Eshell doesn't use
+	that on Emacs 28.  Set process filter and sentinel in
+	'eshell-exec-hook' instead of 'make-process' advice.
+
+2022-12-11  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix Eshell working directory tracking
+
+	* eat.el (eat--eshell-local-mode): Call
+	'eat--eshell-update-cwd'.
+	* eat.el (eat-eshell-mode): Don't call
+	'eat--eshell-update-cwd'.
+
+2022-12-10  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix yanking text into terminal
+
+	* eat.el (eat-yank): Use simpler, saner and better approach to get the
+	yanked string instead of the previous stupid, insane and buggy
+	approach.
+	* eat.el (eat-yank-pop): Remove, because it's not cancel the text
+	already sent to the terminal.
+	* eat.el (eat-yank-from-kill-ring): New function.  Behaves essentially
+	the same the previous (not properly working) 'eat-yank-pop'.
+	* eat.el (eat-semi-char-mode-map, eat-eshell-semi-char-mode-map):
+	Replace 'eat-yank-pop' with 'eat-yank-from-kill-ring'.
+
+2022-12-10  Akib Azmain Turja  <akib@disroot.org>
+
+	Implement terminal parameters
+
+	* eat.el (eat--t-term): New slot: 'params'.
+	* eat.el (eat-term-parameter): New function and generalized
+	variable.
+	* eat.el (eat-set-term-parameter): New function.
+
+2022-12-09  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix terminal color reporting in text terminals
+
+	* eat.el (eat--t-report-foreground-color): Fix foreground color
+	reporting in text terminals.
+	* eat.el (eat--t-report-background-color): Fix background color
+	reporting in text terminals.
+
+2022-12-08  Akib Azmain Turja  <akib@disroot.org>
+
+	Break combined 'setq'/'setf'/'setq-local's
+
+	When giving more than two arguments to 'setq', it becomes hard
+	to figure out what is assigned to what.  As the number of
+	argument increases, the readablity of code decreases.  This is
+	also true for 'setq-local'.  For 'setf', the problem is even
+	greater, unlike 'setq', all arguments to 'setf' look the same.
+
+	* eat.el (eat--t-reset, eat--t-write, eat--t-save-cur)
+	(eat--t-restore-cur, eat--t-enable-alt-disp)
+	(eat--t-disable-alt-disp, eat--t-change-scroll-region)
+	(eat--t-set-sgr-params, eat--t-manipulate-selection)
+	(eat--t-resize, eat--blink-start-timers, eat-blink-mode)
+	(eat--cursor-blink-mode, eat--set-cursor, eat-self-input)
+	(eat-mode, eat-exec, eat--eshell-setup-proc-and-term)
+	(eat--eshell-cleanup, eat--eshell-adjust-make-process-args)
+	(eat--eshell-local-mode, eat--eshell-exec-visual)
+	(eat--trace-exec, eat--trace-eshell-adjust-make-process-args)
+	(eat--trace-replay-eval, eat-trace-replay, eat-trace--cleanup):
+	Break combined 'setq'/'setf'/'setq-local's.
+
+2022-12-08  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't 'cd' as root when using 'sudo' from Tramp
+
+	* eat.el (eat--eshell-setup-proc-and-term): Don't set
+	'eat--eshell-invocation-directory'.
+	* eat.el (eat--eshell-update-cwd): New function.
+	* eat.el (eat--eshell-local-mode): Call
+	'eat--eshell-update-cwd' when enabling the mode and add it to
+	'eshell-directory-change-hook' to keep track of Eshell's
+	working directory.
+
+2022-12-08  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix prompt annotation bug trigger when shell exits
+
+	* eat.el (eat--correct-shell-prompt-mark-overlays): Make sure
+	'eat--terminal' is non-nil.
+	* eat.el (eat--sentinel): Cancel timers, correct shell prompt
+	annotations for the final time, reset shell prompt annotation
+	related local variables.
+
+2022-12-07  Akib Azmain Turja  <akib@disroot.org>
+
+	Synchronize scrolling only when point is on cursor
+
+	* eat.el (eat--adjust-process-window-size): Synchronize
+	scrolling only when point is on cursor.
+
+2022-12-07  Akib Azmain Turja  <akib@disroot.org>
+
+	Escape control characters in trace output
+
+	* eat.el (eat--trace-log): Escape control
+	characters (codepoints from 0 to 31) in trace output.
+
+2022-12-07  Akib Azmain Turja  <akib@disroot.org>
+
+	Auto update 'eat-term-shell-integration-directory'
+
+	* eat.el: Auto update 'eat-term-shell-integration-directory' if
+	not modified.
+
+2022-12-07  Akib Azmain Turja  <akib@disroot.org>
+
+	Move Bash global variables to function
+
+	* integration/bash (__eat_current_command, __eat_exit_status)
+	(__eat_inhibit_preexec): Move to '__eat_enable_integration'.
+	* integration/bash (__eat_prompt_start, __eat_prompt_end)
+	(__eat_continuation_start, __eat_continuation_end): Move to
+	'__eat_enable_integration' and make local there.
+
+2022-12-07  Akib Azmain Turja  <akib@disroot.org>
+
+	Document annotation correction delay user option
+
+	* eat.texi (Performance Tuning): Document the purpose and the
+	use of 'eat-shell-prompt-annotation-correction-delay' user
+	option.
+
+2022-12-07  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't accept 'nil' as annotation correction delay
+
+	* eat.el (eat-shell-prompt-annotation-correction-delay): Don't
+	accept 'nil'.
+	* eat.el (eat--process-output-queue): Don't accept value 'nil'
+	for 'eat-shell-prompt-annotation-correction-delay'.
+
+2022-12-07  Akib Azmain Turja  <akib@disroot.org>
+
+	Rename some symbols to reflect their purposes
+
+	* eat.el (eat-shell-prompt-annotation-delay): Rename to
+	'eat-shell-prompt-annotation-correction-delay'.
+	* eat.el (eat--update-shell-prompt-mark-overlays): Rename to
+	'eat--correct-shell-prompt-mark-overlays'.
+	* eat.el (eat--shell-prompt-annotation-update-timer): Rename to
+	'eat--shell-prompt-annotation-correction-timer'.
+	* eat.el (eat-mode, eat--process-output-queue, eat--filter):
+	Update references to renamed symbols.
+
+2022-12-07  Akib Azmain Turja  <akib@disroot.org>
+
+	* README.org: Add shell integration instructions
+
+	* eat-tests.el (eat-test-set-cwd): Update test
+
+	* eat.el (eat--t-term): Fix initial value of 'cwd'
+
+2022-12-06  Akib Azmain Turja  <akib@disroot.org>
+
+	Document everything about shell integration
+
+	* eat.texi (Shell Integration): Move to be the first chapter of
+	Part III.  Document everything about shell integration.
+	* eat.texi (Directory Tracking): Merge with the node 'Shell
+	Integration'.
+
+2022-12-06  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix prompt navigation when annotation is disabled
+
+	* eat.el (eat--pre-prompt): Always set
+	'eat--shell-prompt-begin'.
+	* eat.el (eat--post-prompt): Always put special prompt end
+	marking text property.
+
+2022-12-06  Akib Azmain Turja  <akib@disroot.org>
+
+	Add shell prompt navigation commands
+
+	* eat.el (eat--post-prompt): Add special text property on the
+	last character of shell prompt.
+	* eat.el (eat-previous-shell-prompt, eat-next-shell-prompt):
+	New command.
+	* eat.el (eat-mode-map): Bind 'eat-previous-shell-prompt' and
+	'eat-next-shell-prompt' to 'C-c C-p' and 'C-c C-n'
+	respectively.
+
+2022-12-06  Akib Azmain Turja  <akib@disroot.org>
+
+	Annotate shell prompts
+
+	* eat.el (eat-enable-shell-prompt-annotation)
+	(eat-shell-prompt-annotation-position)
+	(eat-shell-prompt-annotation-running-margin-indicator)
+	(eat-shell-prompt-annotation-success-margin-indicator)
+	(eat-shell-prompt-annotation-failure-margin-indicator)
+	(eat-shell-prompt-annotation-delay): New user option.
+	* eat.el (eat-shell-prompt-annotation-running)
+	(eat-shell-prompt-annotation-success)
+	(eat-shell-prompt-annotation-failure): New face.
+	* eat.el (eat--shell-command-status, eat--shell-prompt-begin)
+	(eat--shell-prompt-mark, eat--shell-prompt-mark-overlays): New
+	variable.
+	* eat.el (eat--pre-prompt, eat--post-prompt)
+	(eat--update-shell-prompt-mark-overlays, eat--pre-cmd)
+	(eat--set-cmd-status): New function.
+	* eat.el (eat-mode): Make 'eat--shell-command-status',
+	'eat--shell-prompt-begin', 'eat--shell-prompt-mark',
+	'eat--shell-prompt-mark-overlays' and
+	'eat--shell-prompt-annotation-update-timer' local.  Set margin
+	width if shell prompt annotation is enabled.
+	* eat.el (eat--shell-prompt-annotation-update-timer): New
+	variable.
+	* eat.el (eat--process-output-queue): Call or schedule
+	'eat--update-shell-prompt-mark-overlays' call.
+	* eat.el (eat--filter): Cancel timer
+	'eat--shell-prompt-annotation-update-timer'.
+	* eat.el (eat-exec): Set prompt start & end and command start &
+	end functions.
+
+2022-12-06  Akib Azmain Turja  <akib@disroot.org>
+
+	Add shell commands run in Eat to Emacs history
+
+	* eat.el (eat-enable-shell-command-history): New user option.
+	* eat.el (eat--set-cmd): New function.
+	* eat.el (eat-exec, eat--eshell-setup-proc-and-term): Call
+	'eat--set-cmd' when the shell reports the command being run.
+
+2022-12-06  Akib Azmain Turja  <akib@disroot.org>
+
+	Tighter shell integration
+
+	* eat.el (eat--t-term): New slots: 'prompt-start-fn',
+	'prompt-end-fn', 'cont-prompt-start-fn', 'cont-prompt-end-fn',
+	'set-cmd-fn', 'cmd-start-fn', 'cmd-finish-fn'
+	* eat.el (eat--t-set-cwd): Accept three arguments in two
+	different formats.
+	* eat.el (eat--t-prompt-start, eat--t-prompt-end)
+	(eat--t-cont-prompt-start, eat--t-cont-prompt-end)
+	(eat--t-set-cmd, eat--t-cmd-start, eat--t-cmd-finish): New
+	function.
+	* eat.el (eat--t-handle-output): Accept Eat's own
+	OSC 51 ; e ; ... ST sequences.
+	* eat.el (eat-term-prompt-start-function)
+	(eat-term-prompt-end-function)
+	(eat-term-continuation-prompt-start-function)
+	(eat-term-continuation-prompt-end-function)
+	(eat-term-set-cmd-function, eat-term-cmd-start-function)
+	(eat-term-cmd-finish-function): New generalized variable.
+	* integration/bash (__eat_current_command, __eat_exit_status):
+	New variable.
+	* integration/bash (__eat_prompt_command): Send exit status of
+	last command, if applicable.  Use Eat specific sequence to
+	report working directory.  Set title.
+	* integration/bash (__eat_preexec): Report current command and
+	execution start.
+	* integration/bash (__eat_before_prompt_command): Set
+	'__eat_exit_status' to the exit status of the last command.
+	* integration/bash (__eat_prompt_start, __eat_prompt_end)
+	(__eat_continuation_start, __eat_continuation_end): New
+	variable, used as constant only to make the code more readable.
+	* integration/bash (__eat_enable_integration): Wrap 'PS1' and
+	'PS2'.  Don't set title from 'PS1'.
+
+2022-12-04  Akib Azmain Turja  <akib@disroot.org>
+
+	Calculate the number of lines on window properly
+
+	* eat.el (eat-exec, eat--eshell-setup-proc-and-term)
+	(eat--eshell-adjust-make-process-args)
+	(eat--eshell-synchronize-scroll): Calculate the number of
+	available lines on window properly.
+
+2022-12-04  Akib Azmain Turja  <akib@disroot.org>
+
+	Remap 'insert-char' to read and input a character
+
+	* eat.el (eat-input-char): New function.
+	* eat.el (eat-semi-char-mode-map)
+	(eat-eshell-semi-char-mode-map): Remap 'insert-char' to
+	'eat-input-char'.
+
+2022-12-04  Akib Azmain Turja  <akib@disroot.org>
+
+	Use full command as title in shell integration
+
+	* integration/bash (__eat_in_prompt_command): Rename to
+	'__eat_inhibit_preexec'.
+	* integration/bash (__eat_before_exec): Inhibit further
+	'__eat_preexec' calls until next prompt.
+	* integration/bash (__eat_preexec): Use 'history' to get the
+	real command typed by the user.
+
+2022-12-04  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix Bash integration
+
+	* integration/bash (__eat_enable_integration): Fix moving
+	'PROMPT_COMMAND' array elements.
+
+2022-12-04  Akib Azmain Turja  <akib@disroot.org>
+
+	* eat.el: Fix bright faces face definitions
+
+2022-12-04  Akib Azmain Turja  <akib@disroot.org>
+
+	Refactor shell integration enabling code
+
+	* integration/bash (__eat_enable_integration): New function.
+	* integration/bash: Move enabling code to dedicated function.
+
+2022-12-04  Akib Azmain Turja  <akib@disroot.org>
+
+	Update title automatically in shell integration
+
+	* integration/bash (__eat_prompt_command): Remove extra '\'s.
+	* integration/bash (__eat_in_prompt_command): New variable.
+	* integration/bash (__eat_preexec, __eat_before_prompt_command)
+	(__eat_after_prompt_command, __eat_before_exec): New function.
+	* integration/bash: Modify PS1 to update terminal title when
+	displaying prompt.  Add '__eat_before_exec' as 'DEBUG' trap
+	handler to update terminal title just before executing a
+	command.  Prepend and append '__eat_before_prompt_command' and
+	'__eat_after_prompt_command' to 'PROMPT_COMMAND' to avoid
+	getting trapped in 'DEBUG' trap.
+
+2022-12-04  Akib Azmain Turja  <akib@disroot.org>
+
+	* README.org (Quelpa): Update recipe.
+
+	* term/eat.el: New file.
+
+2022-12-04  Akib Azmain Turja  <akib@disroot.org>
+
+	Refer to NonGNU ELPA in README
+
+	* README.org (NonGNU ELPA Devel): Rename to NonGNU ELPA.
+	Change the code-snippet to use NonGNU ELPA (stable).
+
+2022-12-03  Akib Azmain Turja  <akib@disroot.org>
+
+	* integration/bash: Add copyright notice.
+
+	* integration/bash: Use '__' prefix
+
+	* integration/bash: Append to array more cleanly
+
+	* integration/bash: Don't setup again on reload
+
+2022-12-03  Akib Azmain Turja  <akib@disroot.org>
+
+	Use more uniform names for tracer functions
+
+	* eat.el: Rename 'eat--eshell-trace-...' symbols to
+	'eat--trace-eshell-...'.
+
+2022-12-03  Akib Azmain Turja  <akib@disroot.org>
+
+	Add shell integration script for GNU Bash
+
+	* integration/bash: New file.
+	* eat.el (eat-term-shell-integration-directory): New variable.
+	Contains path to the directory containing the scripts,
+	automatically updated when Eat is updated.
+	* eat.el (eat-exec, eat-eshell-mode): New enviroment variable
+	'EAT_SHELL_INTEGRATION_DIR'.
+	* eat.texi (Shell Integration): New chapter.
+	* eat.texi (Directory Tracking): Refer to 'Shell Integration'.
+
+2022-12-01  Akib Azmain Turja  <akib@disroot.org>
+
+	Check terminal contents while testing bell
+
+	* eat-tests.el (eat-test-character-sets): Check terminal
+	contents.
+
+2022-12-01  Akib Azmain Turja  <akib@disroot.org>
+
+	Refer to Info manual to setup directory tracking
+
+	* eat.el (eat-enable-directory-tracking): Refer to Info manual.
+
+2022-12-01  Akib Azmain Turja  <akib@disroot.org>
+
+	Support directory tracking with OSC 7
+
+	* eat.el: Require 'url'.
+	* eat.el (eat-enable-directory-tracking): New user option.
+	* eat.el (eat--t-term): New slots: 'cwd' and 'set-cwd-fn'.
+	* eat.el (eat--t-set-cwd, eat-term-cwd): New function.
+	* eat.el (eat-term-set-cwd-function): New function and
+	generalized variable.
+	* eat.el (eat--t-handle-output): Handle OSC 7.
+	* eat.el (eat--set-cwd): New function.
+	* eat.el (eat-exec): Use 'eat--set-cwd' to change current
+	working directory.
+	* eat.el (eat--eshell-invocation-directory): New variable,
+	local in Eshell buffers when 'eat-eshell-mode' is enabled.
+	* eat.el (eat--eshell-setup-proc-and-term): Save the invocation
+	directory of process.
+	* eat.el (eat--eshell-cleanup): Revert working directory to
+	invocation directory.
+	* eat.el (eat--eshell-local-mode): When enabling, make
+	'eat--eshell-invocation-directory' local variable and kill when
+	disabling.
+	* eat-tests.el (eat-test-set-cwd): New test.
+	* eat.texi (Directory Tracking): New chapter.
+
+2022-11-30  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix byte-compilation warnings on Emacs 28
+
+	* eat.el (eat-term-input-event): Fix byte-compilation warnings
+	on Emacs 28, caused by calling 'posn-col-row' with two
+	arguments on Emacs >= 29, which is not available on Emacs 28.
+
+2022-11-30  Akib Azmain Turja  <akib@disroot.org>
+
+	* eat.el: Use loop to define color and font faces
+
+2022-11-30  Akib Azmain Turja  <akib@disroot.org>
+
+	Document eat-eshell-visual-command-mode in manual
+
+	* eat.texi (Eshell Terminal): Document
+	'eat-eshell-visual-command-mode' and suggest to set
+	'eshell-visual-commands' to nil.
+
+2022-11-30  Akib Azmain Turja  <akib@disroot.org>
+
+	Fix compatibility issues with Emacs 28
+
+	* eat.el: Require 'subr-x'.
+	* eat.el (eat-yank, eat-yank-pop): Pass three arguments to
+	'mapconcat'.
+	* eat.el (eat--eshell-term-name): New function.
+	* eat.el (eat-eshell-mode): Use 'eat--eshell-term-name' instead
+	of using 'eat-term-name' directly.
+	* eat.el (eat-eshell-mode) [(< emacs-major-version 29)]: Use
+	'eshell-last-async-proc' instead of 'eshell-last-async-procs'.
+	* eat.el (eat--eshell-adjust-make-process-args)
+	[(< emacs-major-version 29)]: Don't check and set ':filter' and
+	':sentinel' of 'make-process' argument plist.  Set process
+	filter and sentinel from 'eshell-exec-hook'.
+	* eat.el (eat--eshell-adjust-make-process-args): Call
+	'eat--eshell-setup-proc-and-term' from 'eshell-exec-hook', not
+	just after 'make-process'.
+
+2022-11-29  Akib Azmain Turja  <akib@disroot.org>
+
+	Don't put 'error' as the only then part of 'if'
+
+	* eat.el (eat-semi-char-mode, eat-char-mode): Don't put 'error'
+	as only then part of 'if'.
+
+2022-11-29  Akib Azmain Turja  <akib@disroot.org>
+
+	Use 'mapc' to make & kill multiple local variables
+
+	* eat.el (eat-blink-mode, eat--cursor-blink-mode, eat-mode)
+	(eat--eshell-local-mode, eat-trace-replay-mode): Use 'mapc' to
+	make & kill multiple local variables.
+
+2022-11-29  Akib Azmain Turja  <akib@disroot.org>
+
+	Put declare-function and defvar outside functions
+
+	* eat.el (eat--flip-slow-blink-state)
+	(eat--flip-fast-blink-state, eat-blink-mode)
+	(eat--eshell-output-filter, eat--eshell-cleanup)
+	(eat--eshell-process-output-queue, eat--eshell-sentinel)
+	(eat-eshell-mode, eat--eshell-visual-sentinel)
+	(eat--eshell-exec-visual, eat-eshell-visual-command-mode)
+	(eat-project): Move 'declare-function's and 'defvar's outside.
+
+2022-11-29  Akib Azmain Turja  <akib@disroot.org>
+
+	Use 'vector' directly instead of backquote
+
+	* eat.el (eat-term-make-keymap): Use 'vector' directly instead
+	of backquote.
+
+2022-11-29  Akib Azmain Turja  <akib@disroot.org>
+
+	* eat.el (eat-term-make-keymap): Use 'cl-flet'
+
+2022-11-29  Akib Azmain Turja  <akib@disroot.org>
+
+	Use more readable '?\C-\s' instead of '?\C-\ '
+
+	* eat.el (eat-term-input-event, eat-term-make-keymap): Use more
+	readable '?\C-\s' instead of '?\C-\ '.
+
+2022-11-29  Akib Azmain Turja  <akib@disroot.org>
+
+	* eat.el (eat-mode): Fix char mode 'help-echo'
+
+	* eat.el (eat--bell): Use 'ding' instead of 'beep'
+
+	* eat.el (eat--trace-exec): Use "-*- mode: MD -*-"
+
+2022-11-29  Akib Azmain Turja  <akib@disroot.org>
+
+	Use 'setf' + 'plist-get' instead of 'plist-put'
+
+	* eat.el (eat--eshell-adjust-make-process-args): Use (setf (plist-get
+	...) ...) instead of 'plist-put' without taking the result, which is
+	not guaranteed to always work.
+
+2022-11-28  Akib Azmain Turja  <akib@disroot.org>
+
+	Prefer 'and-let*' and 'when-let*' over 'when-let'
+
+	* eat.el (eat--t-set-sgr-params): Use 'and-let*' instead of 'when-let'
+	for side-effect free 'when-let'.
+	* eat.el (eat--flip-cursor-blink-state, eat--synchronize-scroll)
+	(eat-exec, eat--eshell-setup-proc-and-term)
+	(eat--eshell-synchronize-scroll, eat--eshell-visual-sentinel)
+	(eat--trace-replay-eval-next): Use 'when-let*' instead of 'when-let'
+	for 'when-let's with side-effect.
+
+2022-11-28  Akib Azmain Turja  <akib@disroot.org>
+
+	Prefer 'pcase-exhaustive' over 'pcase'
+
+	* eat.el (eat--t-erase-in-line, eat--t-erase-in-disp)
+	(eat--t-set-mouse-mode, eat--t-send-device-attrs)
+	(eat--t-handle-output, eat-term-input-event)
+	(eat--manipulate-kill-ring, eat--trace-replay-eval):
+	Prefer 'pcase-exhaustive' over 'pcase'.
+
+2022-11-28  Akib Azmain Turja  <akib@disroot.org>
+
+	* eat.el (eat--t-change-charset): Assert argument
+
+2022-11-28  Akib Azmain Turja  <akib@disroot.org>
+
+	Combine multiple setq/setf/setq-local into one
+
+	* eat.el (eat--t-reset, eat--t-goto, eat--t-write)
+	(eat--t-save-cur, eat--t-enable-alt-disp)
+	(eat--t-change-scroll-region, eat--t-set-sgr-params)
+	(eat--t-manipulate-selection, eat--t-handle-output)
+	(eat--t-resize, eat--flip-slow-blink-state)
+	(eat--flip-fast-blink-state, eat-blink-mode)
+	(eat--cursor-blink-mode, eat--set-cursor, eat-self-input)
+	(eat-mode, eat-exec, eat--eshell-setup-proc-and-term)
+	(eat--eshell-cleanup, eat--eshell-local-mode)
+	(eat--eshell-exec-visual, eat--trace-exec)
+	(eat--eshell-trace-adjust-make-process-args)
+	(eat--trace-replay-eval, eat-trace-replay, eat-trace--cleanup):
+	Combine multiple setq/setf/setq-local into one wherever
+	possible.
+
+2022-11-28  Akib Azmain Turja  <akib@disroot.org>
+
+	Avoid copying STR to the extent possible
+
+	* eat.el (eat--t-write): Take two more optional arguments BEG
+	and END to avoid copying STR multiple times unneccessarily.
+
+2022-11-28  Akib Azmain Turja  <akib@disroot.org>
+
+	Support multi-column characters properly
+
+	* eat.el (eat--t-write): Use 'char-width' instead of the
+	unpredictable 'string-width' to support multi-column characters
+	properly.
+
+2022-11-28  Akib Azmain Turja  <akib@disroot.org>
+
+	Use hash table to convert from charset
+
+	* eat.el (eat--t-dec-line-drawing-chars): New constant
+	containing the hash table.
+	* eat.el (eat--t-write): Use hash-table instead alist while
+	converting from DEC Line Drawing charset.
+
+2022-11-28  Akib Azmain Turja  <akib@disroot.org>
+
+	Use as less let-bindings as possible
+
+	* eat.el (eat--t-goto-bol, eat--t-goto-eol)
+	(eat--t-repeated-insert, eat--t-cur-right, eat--t-cur-left)
+	(eat--t-cur-horizontal-abs, eat--t-beg-of-next-line)
+	(eat--t-beg-of-prev-line, eat--t-cur-down, eat--t-cur-up)
+	(eat--t-cur-vertical-abs, eat--t-scroll-up, eat--t-scroll-down)
+	(eat--t-write, eat--t-horizontal-tab)
+	(eat--t-horizontal-backtab, eat--t-reverse-index)
+	(eat--t-erase-in-line, eat--t-erase-in-disp)
+	(eat--t-insert-char, eat--t-delete-char, eat--t-erase-char)
+	(eat--t-insert-line, eat--t-delete-line)
+	(eat--t-repeat-last-char, eat--t-change-scroll-region)
+	(eat--t-send-device-attrs): Minimize let-binding count.
+	* eat.el (eat--t-break-long-line, eat--t-write)
+	(eat-trace-replay): Use replace 'propertize' call with already
+	propertized string.
+
+2022-11-28  Akib Azmain Turja  <akib@disroot.org>
+
+	Replace 'let*' with 'let' wherever possible
+
+	* eat.el (eat--t-eol, eat--t-reset, eat--t-erase-in-disp)
+	(eat--t-disable-alt-disp, eat--t-resize, eat-term-redisplay)
+	(eat-term-input-event, eat--adjust-process-window-size): Use
+	'let' instead of 'let*' wherever possible.
+	* eat.el (eat--eshell-exec-visual): Use (VAR nil) form instead
+	of VAR form in 'let*' variable list.
+
+2022-11-28  Akib Azmain Turja  <akib@disroot.org>
+
+	* README.org (NonGNU ELPA Devel): New section
+
+2022-11-28  Akib Azmain Turja  <akib@disroot.org>
+
+	Experimentally support for multi-column characters
+
+	* eat.el (eat--t-move-before-to-safe, eat--t-make-pos-safe)
+	(eat--t-fix-partial-multi-col-char): New function.
+	* eat.el (eat--t-write): Handle multi-column characters.
+	* eat.el (eat--t-insert-char, eat--t-delete-char)
+	(eat--t-erase-char): Handle multi-column characters on the
+	display while manipulating text.
+
+2022-11-28  Akib Azmain Turja  <akib@disroot.org>
+
+	* .elpaignore: New file.
+
+2022-11-25  Akib Azmain Turja  <akib@disroot.org>
+
+	Use third argument of posn-col-row on Emacs >= 29
+
+	* eat.el (eat-term-input-event): Use USE-WINDOW argument of
+	'posn-col-row' to support text scaling properly, but only on
+	Emacs >= 29 since on Emacs 28 'posn-col-row' takes only one
+	argument.
+
+2022-11-24  Akib Azmain Turja  <akib@disroot.org>
+
+	* Makefile (all): Remove "check" and "changelog."
+
+2022-11-24  Akib Azmain Turja  <akib@disroot.org>
+
+	Add documentation file generation code to Makefile
+
+	* Makefile (info, dvi, html, pdf, eat.info, eat.dvi, eat.html)
+	(eat.pdf): New targets.
+	* Makefile (all): New dependency "info."
+	* Makefile (.PHONY): Add "info", "dvi", "html" and "pdf."
+
+2022-11-24  Akib Azmain Turja  <akib@disroot.org>
+
+	Add proper dependencies to targets in Makefile
+
+	* Makefile (TIC): New variable.
+	* Makefile (eat.elc): Depend on eat.el.
+	* Makefile (e/eat-mono, e/eat-color, eat-256color)
+	(e/eat-truecolor): Depend on eat.ti.
+
+2022-11-24  Akib Azmain Turja  <akib@disroot.org>
+
+	Implement the terminal
+
+	This includes everything written from 2022-08-15 up to now.
+	* .dir-locals.el:
+	* CONTRIBUTE:
+	* COPYING:
+	* Makefile:
+	* NEWS:
+	* README.org:
+	* eat-tests.el:
+	* eat.el:
+	* eat.texi:
+	* eat.ti:
+	* fdl.texi:
+	* gitlog-to-changelog:
+	* gpl.texi:
+	* make-changelog:
+	* texinfo.tex:
+	New file.
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
+
+  Copyright (C) 2022-2023 Akib Azmain Turja.
+
+  This file is not part of GNU Emacs.
+
+  GNU Emacs is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  GNU Emacs is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
