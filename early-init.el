@@ -1,8 +1,28 @@
-;;; early-init.el --- LEmacs (Lionyx Emacs)  -*- lexical-binding: t; -*-
+;;; lemacs-init.el --- LEmacs (Lionyx Emacs) -*- lexical-binding: t; -*-
 ;;
+;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
+;; URL: https://github.com/LionyxML/lemacs
+;; Keywords: config, emacs, init
+;; Version: 0.2.3
+;; Package-Requires: ((emacs "30"))
+
 ;;; Commentary:
-;; Early init configuration for LEmacs
-;;
+;; Early init configuration for LEmacs.
+
+;;; License:
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 ;;; Code:
 
 ;;; Performance HACKs
@@ -49,23 +69,10 @@
 ;; Ensure Emacs loads the most recent byte-compiled files.
 (setq load-prefer-newer t)
 
-
 ;;; Native Compile Settings
-;;  I use a <emacs-default-dir>/eln-cache-<machine-hostname>/ dir to store
-;;  my different machines eln compiled code. So the same config (and dirs)
-;;  can be used on several machines.
-;;  This is on early init to avoid Emacs on start compiling the native
-;;  packages in eln-cache and than having another eln-cache-debian incomplete,
-;;  causing several unwanted recompilations.
-(when (featurep 'native-compile)
-  ;; Set the right directory to store the native compilation cache
-  (let ((path (expand-file-name (concat "eln-cache-" (system-name) "/") user-emacs-directory)))
-    (setq-default native-comp-eln-load-path       (list path)
-                  native-compile-target-directory path)
-    (startup-redirect-eln-cache path)
-  (setq-default native-comp-async-report-warnings-errors nil  ;; Silence compiler warnings as they can be pretty disruptive
-                native-comp-jit-compilation              t    ;; Make native compilation happens asynchronously
-                package-native-compile                   t)))  ;; Compile installed packages
+(setq-default native-comp-async-report-warnings-errors nil  ;; Silence compiler warnings as they can be pretty disruptive
+              native-comp-jit-compilation              t    ;; Make native compilation happens asynchronously
+              package-native-compile                   t)   ;; Compile installed packages
 
 ;; Ensure that quitting only occurs once Emacs finishes native compiling,
 ;; preventing incomplete or leftover compilation files in `/tmp`.
