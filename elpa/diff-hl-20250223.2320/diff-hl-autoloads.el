@@ -28,8 +28,6 @@ evaluate the variable `diff-hl-mode'.
 The mode's hook is called both when the mode is enabled and when it is
 disabled.
 
-\\{diff-hl-mode-map}
-
 (fn &optional ARG)" t)
 (autoload 'turn-on-diff-hl-mode "diff-hl" "\
 Turn on `diff-hl-mode' or `diff-hl-dir-mode' in a buffer if appropriate.")

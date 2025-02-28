@@ -70,6 +70,10 @@
 (setq load-prefer-newer t)
 
 ;;; Native Compile Settings
+(let ((path (expand-file-name "eln-cache/" user-emacs-directory))) ;; This is the default, I'm leaving this here so if
+    (setq-default native-comp-eln-load-path       (list path)      ;; we want to change it, it is easier.
+                  native-compile-target-directory path)
+    (startup-redirect-eln-cache path))
 (setq-default native-comp-async-report-warnings-errors nil  ;; Silence compiler warnings as they can be pretty disruptive
               native-comp-jit-compilation              t    ;; Make native compilation happens asynchronously
               package-native-compile                   t)   ;; Compile installed packages

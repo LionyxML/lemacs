@@ -217,14 +217,14 @@
 	   ("John Wiegley" . "jwiegley@gmail.com"))
 	  (:commit . "f317b0c9c3e60a959f45d035ed5e31a78f1263ac"))])
  (auctex .
-	 [(14 0 8)
+	 [(14 0 9)
 	  ((emacs
 	    (27 1)))
 	  "Integrated environment for *TeX*" tar
 	  ((:url . "https://www.gnu.org/software/auctex/")
 	   (:keywords "tex" "latex" "texinfo" "context" "doctex" "preview-latex")
 	   (:maintainer nil . "auctex-devel@gnu.org")
-	   (:commit . "b34aff234099fb52fd5616bbbdf86920f029d765"))])
+	   (:commit . "ee58d625501af073bde569718db02d1236162283"))])
  (auctex-cont-latexmk .
 		      [(0 3)
 		       ((emacs
@@ -853,20 +853,20 @@
 	    ("jakanakaevangeli" . "jakanakaevangeli@chiru.no"))
 	   (:commit . "d8e1b04cd359d9f27ab7c6dbf8cae90dde834085"))])
  (counsel .
-	  [(0 14 2)
+	  [(0 15 0)
 	   ((emacs
 	     (24 5))
 	    (ivy
-	     (0 14 2))
+	     (0 15 0))
 	    (swiper
-	     (0 14 2)))
+	     (0 15 0)))
 	   "Various completion functions using Ivy" tar
 	   ((:url . "https://github.com/abo-abo/swiper")
 	    (:keywords "convenience" "matching" "tools")
-	    (:maintainer "Oleh Krehel" . "ohwoeowho@gmail.com")
+	    (:maintainer "Basil L. Contovounesios" . "basil@contovou.net")
 	    (:authors
 	     ("Oleh Krehel" . "ohwoeowho@gmail.com"))
-	    (:commit . "08b0a88d67494aa4cca469247f8b44edb6402b52"))])
+	    (:commit . "942578319c0c997d489ee6e343ef23e80576fef7"))])
  (cpio-mode .
 	    [(0 17)
 	     nil "Handle cpio archives in the style of dired." tar
@@ -1458,7 +1458,7 @@
 		     (:url . "https://elpa.gnu.org/packages/elisp-benchmarks.html")
 		     (:commit . "1a3d97954957a95a179806e0d49ca6d178b097af"))])
  (ellama .
-	 [(1 4 2)
+	 [(1 4 4)
 	  ((emacs
 	    (28 1))
 	   (llm
@@ -1475,7 +1475,7 @@
 	   (:maintainer "Sergey Kostyaev" . "sskostyaev@gmail.com")
 	   (:authors
 	    ("Sergey Kostyaev" . "sskostyaev@gmail.com"))
-	   (:commit . "682686da7c7dbbf361d02b6bf7bf27e76f44d558"))])
+	   (:commit . "92cdebd10f0adc9511c54e9b6dff896a1e837f87"))])
  (emacs-gc-stats .
 		 [(1 4 2)
 		  ((emacs
@@ -2236,31 +2236,31 @@
 	      (:url . "https://elpa.gnu.org/packages/iterators.html")
 	      (:commit . "99bdcc8bdfcbc6a8de3d2675450c2fe0aa0e72fd"))])
  (ivy .
-      [(0 14 2)
+      [(0 15 0)
        ((emacs
 	 (24 5)))
        "Incremental Vertical completYon" tar
        ((:url . "https://github.com/abo-abo/swiper")
 	(:keywords "matching")
-	(:maintainer "Oleh Krehel" . "ohwoeowho@gmail.com")
+	(:maintainer "Basil L. Contovounesios" . "basil@contovou.net")
 	(:authors
 	 ("Oleh Krehel" . "ohwoeowho@gmail.com"))
-	(:commit . "97dfa3e7991aa7b713c04918ca0fbf43b7e3a201"))])
+	(:commit . "9d99a8b78457eab732c9fb68c14bdb30bdb76ac9"))])
  (ivy-avy .
-	  [(0 14 2)
+	  [(0 15 0)
 	   ((emacs
 	     (24 5))
 	    (ivy
-	     (0 14 2))
+	     (0 15 0))
 	    (avy
 	     (0 5 0)))
 	   "Avy integration for Ivy" tar
 	   ((:url . "https://github.com/abo-abo/swiper")
 	    (:keywords "convenience")
-	    (:maintainer "Oleh Krehel" . "ohwoeowho@gmail.com")
+	    (:maintainer "Basil L. Contovounesios" . "basil@contovou.net")
 	    (:authors
 	     ("Oleh Krehel" . "ohwoeowho@gmail.com"))
-	    (:commit . "48bde81f31d0c201540d696f60fd33a2a7ccb7e1"))])
+	    (:commit . "520809b9ddecc007d294a370332502fdc7072edd"))])
  (ivy-explorer .
 	       [(0 3 2)
 		((emacs
@@ -2275,20 +2275,20 @@
 		  ("Clemens Radermacher" . "clemera@posteo.net"))
 		 (:commit . "14adb6164f1d1646f503c3e4bd9aa559805f93d7"))])
  (ivy-hydra .
-	    [(0 14 2)
+	    [(0 15 0)
 	     ((emacs
 	       (24 5))
 	      (ivy
-	       (0 14 2))
+	       (0 15 0))
 	      (hydra
 	       (0 14 0)))
 	     "Additional key bindings for Ivy" tar
 	     ((:url . "https://github.com/abo-abo/swiper")
 	      (:keywords "convenience")
-	      (:maintainer "Oleh Krehel" . "ohwoeowho@gmail.com")
+	      (:maintainer "Basil L. Contovounesios" . "basil@contovou.net")
 	      (:authors
 	       ("Oleh Krehel" . "ohwoeowho@gmail.com"))
-	      (:commit . "ceeef47a0fd4f8f78a4718a2df691793959bbac8"))])
+	      (:commit . "ffde82793eb2bfeb552154ed5f6e584ed9f064cd"))])
  (ivy-posframe .
 	       [(0 6 3)
 		((emacs
@@ -3160,7 +3160,7 @@
 	      ("Ian Dunn" . "dunni@gnu.org"))
 	     (:commit . "8258a4dfa00aa522249cdf9aeea5be4de97bd7c1"))])
  (org-gnosis .
-	     [(0 0 7)
+	     [(0 0 9)
 	      ((emacs
 		(27 2))
 	       (emacsql
@@ -3173,7 +3173,7 @@
 	       (:maintainer "Thanos Apollo" . "public@thanosapollo.org")
 	       (:authors
 		("Thanos Apollo" . "public@thanosapollo.org"))
-	       (:commit . "5027605e2dfea1031ffe97da1f1e8d35c63e2479"))])
+	       (:commit . "2f1ed5320b8e9b31c67c0720be2693fe416f16a1"))])
  (org-jami-bot .
 	       [(0 0 5)
 		((emacs
@@ -4327,18 +4327,18 @@
 		  ("Nicolas P. Rougier" . "Nicolas.Rougier@inria.fr"))
 		 (:commit . "49809d64e6b8084c6468d4a6ffe5523fd4dda8f4"))])
  (swiper .
-	 [(0 14 2)
+	 [(0 15 0)
 	  ((emacs
 	    (24 5))
 	   (ivy
-	    (0 14 2)))
+	    (0 15 0)))
 	  "Isearch with an overview.  Oh, man!" tar
 	  ((:url . "https://github.com/abo-abo/swiper")
 	   (:keywords "matching")
-	   (:maintainer "Oleh Krehel" . "ohwoeowho@gmail.com")
+	   (:maintainer "Basil L. Contovounesios" . "basil@contovou.net")
 	   (:authors
 	    ("Oleh Krehel" . "ohwoeowho@gmail.com"))
-	   (:commit . "3d755fd540c0fa0c7d398bb709361291bd1fba0c"))])
+	   (:commit . "094e6b0c4b9b12604deb8059913497863fb796d2"))])
  (switchy-window .
 		 [(1 3)
 		  ((emacs
@@ -4560,7 +4560,7 @@
 		  (:url . "https://elpa.gnu.org/packages/track-changes.html")
 		  (:commit . "44036b32ba398cf284320285b60be35874b6eea5"))])
  (tramp .
-	[(2 7 2 1)
+	[(2 7 2 2)
 	 ((emacs
 	   (27 1)))
 	 "Transparent Remote Access, Multiple Protocol" tar
@@ -4569,7 +4569,7 @@
 	  (:maintainer "Michael Albinus" . "michael.albinus@gmx.de")
 	  (:authors
 	   ("Kai Großjohann" . "kai.grossjohann@gmx.net"))
-	  (:commit . "8e038b0dc1fc16acf26c1c4b549a7be3c86e8a45"))])
+	  (:commit . "03ee1a30d526613dbfd970ddbc2ca6c657e8d865"))])
  (tramp-nspawn .
 	       [(1 0 1)
 		((emacs
@@ -4616,7 +4616,7 @@
 	       ("Jonas Bernoulli" . "emacs.transient@jonas.bernoulli.dev"))
 	      (:commit . "e5cb1fd7e8d35e264313436f47972acae0819764"))])
  (transient-cycles .
-		   [(1 0)
+		   [(1 1)
 		    ((emacs
 		      (27 1)))
 		    "Define command variants with transient cycling" tar
@@ -4625,7 +4625,7 @@
 		     (:maintainer "Sean Whitton" . "spwhitton@spwhitton.name")
 		     (:authors
 		      ("Sean Whitton" . "spwhitton@spwhitton.name"))
-		     (:commit . "a5b86dd04e84e7ff1cf8c4062843fccb92991145"))])
+		     (:commit . "456495db28a72a343907e58ee43e7470144282aa"))])
  (tree-inspector .
 		 [(0 4)
 		  ((emacs
