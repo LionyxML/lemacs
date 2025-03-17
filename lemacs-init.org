@@ -182,7 +182,7 @@ And many more...
             (const :tag "nil" nil))
     :group 'lemacs)
 
-  (defcustom lemacs-ascii-art 'baron
+  (defcustom lemacs-ascii-art 'blood
     "Enables ASCII art on GUI Emacs."
     :type '(choice
             (const :tag "lemacs" lemacs)
