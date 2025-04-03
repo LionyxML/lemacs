@@ -215,7 +215,7 @@ matches the above version requirement.
 #+BEGIN_SRC bash
 git clone git://git.savannah.gnu.org/emacs.git
 
-./configure --with-native-compilation=aot --with-tree-sitter --with-gif --with-png --with-jpeg --with-rsvg --with-tiff --with-imagemagick --with-x-toolkit=lucid --with-json --with-mailutils
+./configure --with-native-compilation=aot --with-tree-sitter --with-gif --with-png --with-jpeg --with-rsvg --with-tiff --with-imagemagick --with-x-toolkit=lucid --with-mailutils
 
 make clean
 
