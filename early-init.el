@@ -79,7 +79,7 @@
     (startup-redirect-eln-cache path))
 (setq-default native-comp-async-report-warnings-errors nil  ;; Silence compiler warnings as they can be pretty disruptive
               native-comp-jit-compilation              t    ;; Make native compilation happens asynchronously
-              package-native-compile                   t)   ;; Compile installed packages
+              package-native-compile                   nil) ;; We want straight to compile packages for us
 
 ;; Ensure that quitting only occurs once Emacs finishes native compiling,
 ;; preventing incomplete or leftover compilation files in `/tmp`.
