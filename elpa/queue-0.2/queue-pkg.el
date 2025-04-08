@@ -1,2 +1,0 @@
-;; Generated package description from queue.el  -*- no-byte-compile: t -*-
-(define-package "queue" "0.2" "Queue data structure" 'nil :commit "c9ec2e33f26b068c40b8391e91a7839546fa8355" :authors '(("Inge Wallin" . "inge@lysator.liu.se") ("Toby Cubitt" . "toby-predictive@dr-qubit.org")) :maintainer '("Toby Cubitt" . "toby-predictive@dr-qubit.org") :keywords '("extensions" "data structures" "queue") :url "http://www.dr-qubit.org/emacs.php")

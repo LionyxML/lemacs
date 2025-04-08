@@ -74,3 +74,4 @@ lemacs-init.el*
 todos.org
 forge-database.sqlite
 saveplace
+straight/

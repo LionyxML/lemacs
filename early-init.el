@@ -25,6 +25,9 @@
 
 ;;; Code:
 
+;;; We are going to use the straight package manager
+(setq package-enable-at-startup nil)
+
 ;;; Performance HACKs
 ;; --- Max GC Buffer while starting Emacs
 ;; --- Quickier filename handling
@@ -83,6 +86,8 @@
 (setq native-comp-async-query-on-exit t)
 (setq confirm-kill-processes t)
 
+(setq native-comp-async-jobs-number 1) ;; Slower but also quieter 
+
 ;;; LSP Flag to use PLISTS
 (setenv "LSP_USE_PLISTS" "true")
 
@@ -105,6 +110,7 @@
 
 ;;; Don´t compact font caches during GC
 (setq inhibit-compacting-font-caches t)
+
 
 ;;; Disables unused UI Elements
 (menu-bar-mode -1)
