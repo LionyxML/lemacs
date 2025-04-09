@@ -379,92 +379,92 @@ Utils provided ls lacks the =--dired= flag.
     (when (eq system-type 'darwin)
       (setq insert-directory-program "gls")
       (setq mac-option-key-is-meta nil
-	    mac-option-modifier nil
-	    mac-command-key-is-meta t
-	    mac-command-modifier 'meta)
+  	      mac-option-modifier nil
+  	      mac-command-key-is-meta t
+  	      mac-command-modifier 'meta)
       (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 140))
 
     ;; Modeline fonts ajustments per OS
     (unless (eq system-type 'darwin)
       (if (facep 'mode-line-active)
-	  (set-face-attribute 'mode-line-active nil
-					:family "JetBrainsMono Nerd Font"
-					:height 105) ; For 29+
-	(set-face-attribute 'mode-line nil
-				  :family "JetBrainsMono Nerd Font"
-				  :height 105))
+  	    (set-face-attribute 'mode-line-active nil
+  					        :family "JetBrainsMono Nerd Font"
+  					        :height 105) ; For 29+
+  	  (set-face-attribute 'mode-line nil
+  				          :family "JetBrainsMono Nerd Font"
+  				          :height 105))
       (set-face-attribute 'mode-line-inactive nil
-				:family "JetBrainsMono Nerd Font"
-				:height 105))
+  				        :family "JetBrainsMono Nerd Font"
+  				        :height 105))
 
     (when (eq system-type 'darwin)
       (if (facep 'mode-line-active)
-	  (set-face-attribute 'mode-line-active nil
-					:family "JetBrainsMono Nerd Font"
-					:height 130) ; For 29+
-	(set-face-attribute 'mode-line nil
-				  :family "JetBrainsMono Nerd Font"
-				  :height 130))
+  	    (set-face-attribute 'mode-line-active nil
+  					        :family "JetBrainsMono Nerd Font"
+  					        :height 130) ; For 29+
+  	  (set-face-attribute 'mode-line nil
+  				          :family "JetBrainsMono Nerd Font"
+  				          :height 130))
       (set-face-attribute 'mode-line-inactive nil
-				:family "JetBrainsMono Nerd Font"
-				:height 130))
+  				        :family "JetBrainsMono Nerd Font"
+  				        :height 130))
 
     ;; Do not allow the cursor in the minibuffer prompt
     (setq minibuffer-prompt-properties
-	  '(read-only t cursor-intangible t face minibuffer-prompt))
+  	    '(read-only t cursor-intangible t face minibuffer-prompt))
     (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
     (defun lemacs/find-projects-and-switch (&optional directory)
       "Find and switch to a project directory from ~/Projects."
       (interactive)
       (let* ((d (or directory lemacs-default-projects-folder))
-	     (find-command (concat "find " d " -mindepth 1 -maxdepth 4 -type d"))
-	     (project-list (split-string (shell-command-to-string find-command) "\n" t))
-	     (selected-project (completing-read "Select project: " project-list)))
-	(when (and selected-project (file-directory-p selected-project))
-	  (project-switch-project selected-project))))
+  	       (find-command (concat "find " d " -mindepth 1 -maxdepth 4 -type d"))
+  	       (project-list (split-string (shell-command-to-string find-command) "\n" t))
+  	       (selected-project (completing-read "Select project: " project-list)))
+  	  (when (and selected-project (file-directory-p selected-project))
+  	    (project-switch-project selected-project))))
     (global-set-key (kbd "C-x p P") 'lemacs/find-projects-and-switch)
 
     (defun lemacs/transparency-set ()
       "Set frame transparency (Graphical Mode)."
       (interactive)
       (dolist (frame (frame-list))
-	(set-frame-parameter frame 'alpha-background 85)))
+  	  (set-frame-parameter frame 'alpha-background 85)))
 
     (defun lemacs/transparency-unset ()
       "Unset frame transparency (Graphical Mode)."
       (interactive)
       (dolist (frame (frame-list))
-	(set-frame-parameter frame 'alpha-background 100)))
+  	  (set-frame-parameter frame 'alpha-background 100)))
 
     (defun lemacs/transparency-apply-customdef ()
       (when lemacs-start-transparent
-	(if (not (display-graphic-p))
-	    (set-face-background 'default "unspecified")
-	  (lemacs/transparency-set))))
+  	  (if (not (display-graphic-p))
+  	      (set-face-background 'default "unspecified")
+  	    (lemacs/transparency-set))))
 
     (defun lemacs/rename-buffer-and-move-to-new-window ()
       "Promotes a side buffer to a new window."
       (interactive)
       (let ((temp-name (make-temp-name "temp-buffer-")))
-	(rename-buffer temp-name t)
-	(delete-window)
-	(split-window-right)
-	(switch-to-buffer temp-name)))
+  	  (rename-buffer temp-name t)
+  	  (delete-window)
+  	  (split-window-right)
+  	  (switch-to-buffer temp-name)))
     (global-set-key (kbd "C-x x x") 'lemacs/rename-buffer-and-move-to-new-window)
 
     (defun lemacs/all-available-fonts ()
       "Create and visit a buffer containing a sorted list of available fonts."
       (interactive)
       (let ((font-list (sort (x-list-fonts "*") #'string<))
-	    (font-buffer (generate-new-buffer "*Font List*")))
-	(with-current-buffer font-buffer
-	  (dolist (font font-list)
-	    (let* ((font-family (nth 2 (split-string font "-"))))
-		(insert (format "%s\n" (propertize font 'face `(:family ,font-family :height 110))))))
-	  (goto-char (point-min))
-	  (setq buffer-read-only t))
-	(pop-to-buffer font-buffer)))
+  	      (font-buffer (generate-new-buffer "*Font List*")))
+  	  (with-current-buffer font-buffer
+  	    (dolist (font font-list)
+  	      (let* ((font-family (nth 2 (split-string font "-"))))
+  		    (insert (format "%s\n" (propertize font 'face `(:family ,font-family :height 110))))))
+  	    (goto-char (point-min))
+  	    (setq buffer-read-only t))
+  	  (pop-to-buffer font-buffer)))
 
     ;; Enable indent-tabs-mode (no tabs) for all prog-modes
     (defun lemacs/prefer-tabs ()
@@ -480,18 +480,18 @@ Utils provided ls lacks the =--dired= flag.
       (interactive)
       (eww-copy-page-url)
       (let ((url (current-kill 0)))
-	(message (concat ">>> Sent to mpv: " url))
-	(start-process "mpv" nil "mpv" "--cache=yes" "--force-window=yes" url)))
+  	  (message (concat ">>> Sent to mpv: " url))
+  	  (start-process "mpv" nil "mpv" "--cache=yes" "--force-window=yes" url)))
 
     ;; Add prompt indicator to `completing-read-multiple'.
     ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
     (defun crm-indicator (args)
       (cons (format "[CRM%s] %s"
-		      (replace-regexp-in-string
-		       "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-		       crm-separator)
-		      (car args))
-	    (cdr args)))
+  		          (replace-regexp-in-string
+  		           "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+  		           crm-separator)
+  		          (car args))
+  	      (cdr args)))
     (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
     ;; Unbinds C-z to (suspend-frame)
@@ -509,12 +509,12 @@ Utils provided ls lacks the =--dired= flag.
       (interactive)
       (scroll-down-command)
       (unless (= (window-start) (point-min))
-	(recenter))
+  	  (recenter))
       (when (= (window-start) (point-min))
-	(let ((midpoint (/ (window-height) 2)))
-	  (goto-char (window-start))
-	  (forward-line midpoint)
-	  (recenter midpoint))))
+  	  (let ((midpoint (/ (window-height) 2)))
+  	    (goto-char (window-start))
+  	    (forward-line midpoint)
+  	    (recenter midpoint))))
 
     (global-set-key (kbd "C-v") #'lemacs/page-down-and-recenter)
     (global-set-key (kbd "M-v") #'lemacs/page-up-and-recenter)
@@ -523,12 +523,12 @@ Utils provided ls lacks the =--dired= flag.
     (defun lemacs/outline-set-buffer-local-ellipsis (ellipsis)
       "Apply the ellipsis ELLIPSIS to outline mode locally to a buffer."
       (let* ((display-table (or buffer-display-table (make-display-table)))
-	     (face-offset (* (face-id 'shadow) (ash 1 22)))
-	     (value (vconcat (mapcar (lambda (c) (+ face-offset c)) ellipsis))))
-	(set-display-table-slot display-table 'selective-display value)
-	(setq buffer-display-table display-table)))
+  	       (face-offset (* (face-id 'shadow) (ash 1 22)))
+  	       (value (vconcat (mapcar (lambda (c) (+ face-offset c)) ellipsis))))
+  	  (set-display-table-slot display-table 'selective-display value)
+  	  (setq buffer-display-table display-table)))
     (add-hook 'outline-minor-mode-hook
-		#'(lambda() (lemacs/outline-set-buffer-local-ellipsis " ▼ ")))
+  		    #'(lambda() (lemacs/outline-set-buffer-local-ellipsis " ▼ ")))
 
     ;; Starts elisp with outline collapse
     (defun lemacs/elisp-mode-hook ()
@@ -542,67 +542,44 @@ Utils provided ls lacks the =--dired= flag.
     (setq custom-file (locate-user-emacs-file "custom-vars.el"))
     (load custom-file 'noerror 'nomessage)
 
-    ;; Duplicate line
-    (defun lemacs/duplicate-line-or-region (&optional n)
-      "Duplicate current line, or region if active.
-  With argument N, make N copies.
-  negative N, comment out original line and use the absolute value."
-      (interactive "*p")
-      (let ((use-region (use-region-p)))
-	(save-excursion
-	  (let ((text (if use-region                 ;Get region if active, otherwise line
-				(buffer-substring (region-beginning) (region-end))
-			      (prog1 (thing-at-point 'line)
-				(end-of-line)
-				(if (< 0 (forward-line 1)) ;Go to beginning of next line, or make a new one
-					(newline))))))
-	    (dotimes (_ (abs (or n 1)))               ;Insert N times, or once if not specified
-		(insert text))))
-	(if use-region nil                                   ;Only if we're working with a line (not a region)
-	  (let ((pos (- (point) (line-beginning-position)))) ;Save column
-	    (if (> 0 n)                                      ;Comment out original with negative arg
-		  (comment-region (line-beginning-position) (line-end-position)))
-	    (forward-line 1)
-	    (forward-char pos)))))
-
     ;; Welcome to LEmacs
     (add-hook 'emacs-startup-hook
-		(lambda ()
-		  (message "Emacs has fully loaded. This code runs after startup.")
-		  ;; (profiler-stop)
-		  ;; (profiler-report)
-		  ;; (use-package-report)
-		  (message (format "Loading time: %s - Packages: %s"
-					   (emacs-init-time)
-					   (number-to-string (length package-activated-list))))))
+  		    (lambda ()
+  		      (message "Emacs has fully loaded. This code runs after startup.")
+  		      ;; (profiler-stop)
+  		      ;; (profiler-report)
+  		      ;; (use-package-report)
+  		      (message (format "Loading time: %s - Packages: %s"
+  					           (emacs-init-time)
+  					           (number-to-string (length package-activated-list))))))
 
     ;; LEmacs default starting buffer if no arguments or file
     (add-hook 'emacs-startup-hook
-		(lambda ()
-		  (let* ((filtered-args (seq-filter
-						     (lambda (arg)
-						       (not (member arg '("-Q" "-nw" "--eval"))))
-						     command-line-args)))
-		    (when (= (length filtered-args) 1)
-		      (ignore-errors
-			    (pcase lemacs-default-initial-buffer
-			      ('scratch (scratch-buffer))
-			      ('dashboard (dashboard-open))
-			      ('terminal (lemacs/open-term))))))))
+  		    (lambda ()
+  		      (let* ((filtered-args (seq-filter
+  						             (lambda (arg)
+  						               (not (member arg '("-Q" "-nw" "--eval"))))
+  						             command-line-args)))
+  		        (when (= (length filtered-args) 1)
+  		          (ignore-errors
+  			        (pcase lemacs-default-initial-buffer
+  			          ('scratch (scratch-buffer))
+  			          ('dashboard (dashboard-open))
+  			          ('terminal (lemacs/open-term))))))))
 
     ;; Runs 'private.el' after Emacs inits
     (add-hook 'after-init-hook
-		(lambda ()
-		  (let ((private-file (expand-file-name "private.el" user-emacs-directory)))
-		    (when (file-exists-p private-file)
-		      (load private-file)))))
+  		    (lambda ()
+  		      (let ((private-file (expand-file-name "private.el" user-emacs-directory)))
+  		        (when (file-exists-p private-file)
+  		          (load private-file)))))
 
     ;; Add option "d" to whenever using C-x s or C-x C-c, allowing a quick preview
     ;; of the diff of what you're asked to save.
     (add-to-list 'save-some-buffers-action-alist
-		   (list "d"
-			     (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
-			     "show diff between the buffer and its file"))
+  		       (list "d"
+  			         (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
+  			         "show diff between the buffer and its file"))
 
     :bind
     (("C-x C-b" . 'ibuffer)
@@ -610,7 +587,7 @@ Utils provided ls lacks the =--dired= flag.
     :init
     (when (eq lemacs-default-theme 'catppuccin)
       (ignore-errors
-	(load-theme 'catppuccin :no-confirm)))
+  	  (load-theme 'catppuccin :no-confirm)))
 
     ;; Makes everything accept utf-8 as default, so buffers with tsx and so
     ;; won't ask for encoding (because undecided-unix) every single keystroke
@@ -1565,17 +1542,6 @@ they have a 'package version', like =eglot= and =eldoc=.
     :defer t
     :ensure t
     :straight t)
-
-#+END_SRC
-
-*** JS-PKG
-#+BEGIN_SRC emacs-lisp
-  (use-package js-pkg-mode
-    :vc (:url "https://github.com/ovistoica/js-pkg-mode"
-	      :branch "main")
-    :ensure t
-    :straight t
-    :defer t)
 
 #+END_SRC
 
