@@ -86,7 +86,7 @@
 (setq native-comp-async-query-on-exit t)
 (setq confirm-kill-processes t)
 
-(setq native-comp-async-jobs-number 1) ;; Slower but also quieter 
+(setq native-comp-async-jobs-number 1) ;; Slower but also quieter
 
 ;;; LSP Flag to use PLISTS
 (setenv "LSP_USE_PLISTS" "true")
@@ -111,6 +111,10 @@
 ;;; Don´t compact font caches during GC
 (setq inhibit-compacting-font-caches t)
 
+;; Avoid raising the *Messages* buffer if anything is still without
+;; lexical bindings
+(setq warning-minimum-level :error)
+(setq warning-suppress-types '((lexical-binding)))
 
 ;;; Disables unused UI Elements
 (menu-bar-mode -1)
