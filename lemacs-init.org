@@ -263,7 +263,7 @@ And many more...
               (const :tag "nil" nil))
     :group 'lemacs)
 
-  (defcustom lemacs-start-tab-bar-mode 'nil
+  (defcustom lemacs-start-tab-bar-mode 't
     "Makes Emacs start with tab-bar-mode turned on."
     :type '(choice
               (const :tag "t" t)
