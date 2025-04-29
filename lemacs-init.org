@@ -378,10 +378,7 @@ Utils provided ls lacks the =--dired= flag.
 
     (when (eq system-type 'darwin)
       (setq insert-directory-program "gls")
-      (setq mac-option-key-is-meta nil
-              mac-option-modifier nil
-              mac-command-key-is-meta t
-              mac-command-modifier 'meta)
+      (setq mac-command-modifier 'meta)
       (set-face-attribute 'default nil :family "JetBrainsMono Nerd Font" :height 140))
 
     ;; Modeline fonts ajustments per OS
