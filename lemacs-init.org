@@ -2913,6 +2913,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     (setq magit-diff-use-overlays nil)
     (setq magit-ediff-dwim-show-on-hunks t)
     (setq magit-executable "/usr/local/bin/git")
+    (setq magit-process-finish-apply-ansi-colors t)
 
     (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-topleft-v1)
     ;; (setq magit-display-buffer-function 'magit-display-buffer-fullcolumn-most-v1)
