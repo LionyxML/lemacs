@@ -2863,11 +2863,14 @@ they have a 'package version', like =eglot= and =eldoc=.
     :custom
     (diff-hl-side 'left)                           ;; Set the side for diff indicators.
     (diff-hl-margin-symbols-alist '((insert . "│") ;; Customize symbols for each change type.
-                                                  (delete . "-")
-                                                  (change . "│")
-                                                  (unknown . "?")
-                                                  (ignored . "i")))
+                                    (delete . "-")
+                                    (change . "│")
+                                    (unknown . "?")
+                                    (ignored . "i")))
     :config
+    (global-set-key (kbd "M-9") 'diff-hl-previous-hunk)
+    (global-set-key (kbd "M-0") 'diff-hl-next-hunk)
+
     (global-diff-hl-mode)
     (diff-hl-flydiff-mode)
     (diff-hl-margin-mode)
