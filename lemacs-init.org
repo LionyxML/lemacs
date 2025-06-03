@@ -1751,15 +1751,14 @@ they have a 'package version', like =eglot= and =eldoc=.
        (bg-active bg-main)
        (fg-main "#EEFFFF")
        (fg-active fg-main)
-       ;; (fg-mode-line-active "#A6Accd")
-       (fg-mode-line-active "#ffffff")
+       (fg-mode-line-active "#A6Accd")
        (bg-mode-line-active "#232635")
        (fg-mode-line-inactive "#676E95")
        (bg-mode-line-inactive "#282c3d")
-       (border-mode-line-active unspecified)
-       (border-mode-line-inactive unspecified)
        ;; (border-mode-line-active "#676E95")
        ;; (border-mode-line-inactive bg-dim)
+       (border-mode-line-active nil)
+       (border-mode-line-inactive nil)
        (bg-tab-bar      "#242837")
        (bg-tab-current  bg-main)
        (bg-tab-other    "#242837")
@@ -1796,7 +1795,7 @@ they have a 'package version', like =eglot= and =eldoc=.
        (string "#c3e88d")
        (fnname "#82aaff")
        (type "#c792ea")
-       (variable "#ffcb6b")
+       (variable "#c792ea")
        (docstring "#8d92af")
        (constant "#f78c6c")))
     :config
@@ -1808,24 +1807,22 @@ they have a 'package version', like =eglot= and =eldoc=.
        `(diff-hl-insert ((,c :foreground ,green :background unspecified)))
        `(popup-tip-face ((,c :background "#232635")))
        `(tab-bar
-           ((,c
-             :background "#232635"
-             :foreground "#ffffff"
-             ;; :box (:line-width 1 :color "#676E95")
-             )))
+         ((,c
+           :background "#232635"
+           :foreground "#A6Accd"
+           ;; :box (:line-width 1 :color "#676E95")
+           )))
        `(tab-bar-tab
-           ((,c
-             :background "#232635"
-             :underline t
-             ;; :box (:line-width 1 :color "#676E95")
-             :box (:line-width 1 :color "#232635")
-             )))
+         ((,c
+           ;; :background "#232635"
+           ;; :underline t
+           ;; :box (:line-width 1 :color "#676E95")
+           )))
        `(tab-bar-tab-inactive
-           ((,c
-             :background "#232635"
-             ;; :box (:line-width 1 :color "#676E95")
-             :box (:line-width 1 :color "#232635")
-             )))))
+         ((,c
+           ;; :background "#232635"
+           ;; :box (:line-width 1 :color "#676E95")
+           )))))
     :init
     (load-theme 'modus-vivendi-tinted t)
     (lemacs/transparency-apply-customdef))
@@ -1895,7 +1892,7 @@ they have a 'package version', like =eglot= and =eldoc=.
   ;; (use-package ellama
   ;;   :defer t
   ;;   :ensure t
-  :straight t
+  ;;   :straight t
   ;;   :init
   ;;   (setopt ellama-language "English")
   ;;   (require 'llm-ollama)
