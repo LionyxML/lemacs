@@ -147,7 +147,7 @@ Not a fan of nerd-fonts? Just switch it off.
 And many more...
 
 #+BEGIN_SRC emacs-lisp
-  (defcustom lemacs-input-mode 'evil
+  (defcustom lemacs-input-mode 'emacs
     "The input mode to use."
     :type '(choice
               (const :tag "evil" evil)
