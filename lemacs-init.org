@@ -2400,7 +2400,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     :ensure t
     :straight t
     :bind
-    (("C-SPC" . my/expand-region-wrapper))
+    (("C-S-SPC" . my/expand-region-wrapper))
     :config
     ;; This extends expand-region to also expand from treesit nodes
     (add-to-list 'load-path "~/.emacs.d/site-lisp/treesit-er-expansions")
