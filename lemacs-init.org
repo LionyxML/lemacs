@@ -153,7 +153,7 @@ Not a fan of nerd-fonts? Just switch it off.
 And many more...
 
 #+BEGIN_SRC emacs-lisp
-  (defcustom lemacs-input-mode 'emacs
+  (defcustom lemacs-input-mode 'evil
     "The input mode to use."
     :type '(choice
               (const :tag "evil" evil)
@@ -269,7 +269,7 @@ And many more...
               (const :tag "nil" nil))
     :group 'lemacs)
 
-  (defcustom lemacs-start-tab-bar-mode 't
+  (defcustom lemacs-start-tab-bar-mode 'nil
     "Makes Emacs start with tab-bar-mode turned on."
     :type '(choice
               (const :tag "t" t)
@@ -327,6 +327,8 @@ Utils provided ls lacks the =--dired= flag.
 
 #+BEGIN_SRC emacs-lisp
   (use-package emacs
+    :bind
+    (("M-g r" . recentf))
     :custom
     (auto-revert-verbose t)
     (bookmark-fringe-mark nil)
@@ -2022,31 +2024,31 @@ they have a 'package version', like =eglot= and =eldoc=.
       (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
     (add-hook 'eshell-mode-hook (lambda ()
-                                                (setq-local corfu-auto nil)
-                                                (corfu-mode)))
+                                  (setq-local corfu-auto nil)
+                                  (corfu-mode)))
 
     (setq corfu--frame-parameters
-            '((no-accept-focus . t)
-              (no-focus-on-map . t)
-              (min-width . t)
-              (min-height . t)
-              (border-width . 0)
-              (outer-border-width . 0)
-              (internal-border-width . 1)
-              (child-frame-border-width . 2)
-              (left-fringe . 0)
-              (right-fringe . 0)
-              (vertical-scroll-bars)
-              (horizontal-scroll-bars)
-              (menu-bar-lines . 0)
-              (tool-bar-lines . 0)
-              (tab-bar-lines . 0)
-              (no-other-frame . t)
-              (unsplittable . t)
-              (undecorated . t)
-              (cursor-type)
-              (no-special-glyphs . t)
-              (desktop-dont-save . t)))
+          '((no-accept-focus . t)
+            (no-focus-on-map . t)
+            (min-width . t)
+            (min-height . t)
+            (border-width . 0)
+            (outer-border-width . 0)
+            (internal-border-width . 1)
+            (child-frame-border-width . 2)
+            (left-fringe . 0)
+            (right-fringe . 0)
+            (vertical-scroll-bars)
+            (horizontal-scroll-bars)
+            (menu-bar-lines . 0)
+            (tool-bar-lines . 0)
+            (tab-bar-lines . 0)
+            (no-other-frame . t)
+            (unsplittable . t)
+            (undecorated . t)
+            (cursor-type)
+            (no-special-glyphs . t)
+            (desktop-dont-save . t)))
 
 
     :init
@@ -2056,7 +2058,10 @@ they have a 'package version', like =eglot= and =eldoc=.
     ;; HACK: this avoids corfu to hang while waiting for completions from lsp
     (advice-add #'lsp-completion-at-point :around #'cape-wrap-noninterruptible)
 
-    (when (not window-system)
+    ;; NOTE: after emacs 31, child frames are suported
+    (when (and
+           (not window-system)
+           (< emacs-major-version 31))
       (add-to-list 'load-path "~/.emacs.d/site-lisp/corfu-terminal/")
       (require 'corfu-terminal)
       (corfu-terminal-mode)))
@@ -2453,6 +2458,7 @@ they have a 'package version', like =eglot= and =eldoc=.
     (evil-define-key 'normal 'global (kbd "C-u") #'lemacs/page-up-and-recenter)
 
     ;; Keybindings for searching and finding files.
+    (evil-define-key 'normal 'global (kbd "<leader> s r") 'recentf)
     (evil-define-key 'normal 'global (kbd "<leader> s f") 'consult-fd)
     (evil-define-key 'normal 'global (kbd "<leader> s g") 'consult-ripgrep)
     (evil-define-key 'normal 'global (kbd "<leader> s G") 'consult-git-grep)
@@ -2672,8 +2678,6 @@ they have a 'package version', like =eglot= and =eldoc=.
 
     (when (not (display-graphic-p))
         (evil-define-key 'normal 'global (kbd "K") #'lemacs-open-eldoc))
-
-    (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point)
 
 
     ;; On minibuffer, makes C-p C-n work with selections on vertico
@@ -3159,6 +3163,7 @@ You need to Install globally (and for every every asdf plugin shim if you're usi
                  ruby-base-mode
                  prisma-mode
                  typescript-mode
+                 go-ts-mode
                  js-ts-mode) . lsp-deferred))
       :ensure t
       :straight t
@@ -4139,6 +4144,7 @@ file via *C-x f* or inside eshell.
     ;; (eldoc-box-border ((t (:background "#333"))))
     :config
     (global-set-key (kbd "C-h C-.") #'eldoc-box-help-at-point)
+    (global-set-key (kbd "C-h .") #'eldoc-box-help-at-point)
 
     (setq eldoc-box-frame-parameters
           '((left . -1)

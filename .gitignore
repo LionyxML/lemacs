@@ -76,3 +76,4 @@ forge-database.sqlite
 saveplace
 straight/
 elpa/
+.aider*
