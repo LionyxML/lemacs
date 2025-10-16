@@ -223,7 +223,7 @@ both as options to ~when I need to run a term~."
   :group 'lemacs)
 
 
-(defcustom lemacs-default-modeline 'emacs
+(defcustom lemacs-default-modeline 'doom
   "Default LEmacs Modeline."
   :type '(choice
           (const :tag "doom" "doom")
