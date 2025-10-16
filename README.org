@@ -3,6 +3,8 @@
 #+EMAIL: rahul.juliato@gmail.com
 #+OPTIONS: toc:nil
 
+Careful, this is for personal use and is currently *unstable*.
+
 ** Features
 As this is my fully-featured configuration for Emacs, you will find
 everything and some quirks around here. Looking for something simpler?
