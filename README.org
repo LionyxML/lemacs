@@ -24,7 +24,7 @@ sane defaults:
 - use [[https://github.com/LionyxML/emacs-solo][Emacs-Solo]] for a focused, modern, built-in-first approach
 - use [[https://github.com/LionyxML/emacs-kick][Emacs-Kick]] if you’re coming from (neo)vim and want a smoother transition
 
-**LEmacs is (and will always be) experimental.** You’ve been warned 🙂
+=LEmacs is (and will always be) experimental= You’ve been warned 🙂
 
 ** Features
 As this is my fully-featured configuration for Emacs, you will find
