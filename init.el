@@ -1636,6 +1636,55 @@ As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_addin
 
 
 ;;;; Tools - Checkers and Linting
+(use-package flymake
+  :defer t
+  :ensure t
+  :straight t
+  :hook
+  (prog-mode . flymake-mode)
+  :custom
+  (flymake-show-diagnostics-at-end-of-line 'short)
+  (flymake-indicator-type 'margins)
+  (flymake-margin-indicators-string
+   `((error "»" compilation-error)
+     (warning "»" compilation-warning)
+     (note "»" compilation-info)))
+  :config
+  (defun lemacs/toggle-flymake-inline-diagnostics ()
+    "Toggle `flymake-show-diagnostics-at-end-of-line` between 'short and nil, and refresh Flymake."
+    (interactive)
+    (setq flymake-show-diagnostics-at-end-of-line
+          (if (eq flymake-show-diagnostics-at-end-of-line 'short)
+              nil
+            'short))
+    ;; Refresh Flymake to apply the new setting
+    (flymake-mode-off)
+    (flymake-mode)
+    (message "flymake-show-diagnostics-at-end-of-line is now %s"
+             flymake-show-diagnostics-at-end-of-line))
+
+  (defun lemacs/toggle-flymake-diagnostics ()
+    "Toggle Flymake mode on or off."
+    (interactive)
+    (if flymake-mode
+        (progn
+          (flymake-mode-off)
+          (message "Flymake mode is now OFF"))
+      (flymake-mode)
+      (message "Flymake mode is now ON")))
+
+  (bind-keys :map flymake-mode-map
+             ;; ("C-c ! l" . flymake-show-buffer-diagnostics)
+             ("C-c ! l" . consult-flymake)
+             ("C-c ! P" . flymake-show-project-diagnostics)
+             ("C-c ! n" . flymake-goto-next-error)
+             ("C-c ! p" . flymake-goto-prev-error)
+             ("C-c ! i" . lemacs/toggle-flymake-inline-diagnostics)
+             ("C-c ! d" . lemacs/toggle-flymake-diagnostics)
+             ("M-7" . flymake-goto-prev-error)
+             ("M-8" . flymake-goto-next-error)))
+
+
 ;;;;;; Package-Lint
 (use-package package-lint
   :ensure t
@@ -2253,29 +2302,6 @@ As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_addin
   :after evil-collection
   :config
   (global-evil-matchit-mode 1))
-
-
-;;;;;; Pulsar
-(use-package pulsar
-  :defer t
-  :ensure t
-  :hook
-  (after-init . pulsar-global-mode)
-  :config
-  (setq pulsar-pulse t)
-  (setq pulsar-delay 0.025)
-  (setq pulsar-iterations 10)
-
-  (add-to-list 'pulsar-pulse-functions 'evil-scroll-down)
-  (add-to-list 'pulsar-pulse-functions 'flymake-goto-next-error)
-  (add-to-list 'pulsar-pulse-functions 'flymake-goto-prev-error)
-  (add-to-list 'pulsar-pulse-functions 'evil-yank)
-  (add-to-list 'pulsar-pulse-functions 'evil-yank-line)
-  (add-to-list 'pulsar-pulse-functions 'evil-delete)
-  (add-to-list 'pulsar-pulse-functions 'evil-delete-line)
-  (add-to-list 'pulsar-pulse-functions 'evil-jump-item)
-  (add-to-list 'pulsar-pulse-functions 'diff-hl-next-hunk)
-  (add-to-list 'pulsar-pulse-functions 'diff-hl-previous-hunk))
 
 
 ;;;;;; SmartParens
