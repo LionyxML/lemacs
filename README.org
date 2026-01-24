@@ -5,18 +5,18 @@
 
 * ⚠️ Warning
 
-This configuration is for **personal use** and is currently *unstable*.
+This configuration is for =personal use= and is currently *unstable*.
 
 I officially maintain [[https://github.com/LionyxML/emacs-solo][Emacs-Solo]] and [[https://github.com/LionyxML/emacs-kick][Emacs-Kick]]. If you are looking
-for something **maintained, curated, documented, and stable**, you
-should **use one of those instead**.
+for something =maintained, curated, documented, and stable=, you
+should =use one of those instead=.
 
-As a result, **LEmacs** has become somewhat *obsolete* over time.
+As a result, =LEmacs= has become somewhat *obsolete* over time.
 
-On **23 Jan 2026**, I started a general cleanup: removing a lot of
+On =23 Jan 2026=, I started a general cleanup: removing a lot of
 complexity, simplifying many parts, and making it *installable*
-again. It is now much more minimal and usable — but **far simpler** and
-**not representative of the screenshots** you may find in the
+again. It is now much more minimal and usable — but =far simpler= and
+=not representative of the screenshots= you may find in the
 repository.
 
 If you want a supported setup with regular improvements, updates, and
