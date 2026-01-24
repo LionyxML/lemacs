@@ -88,21 +88,6 @@
 
 (setq native-comp-async-jobs-number 1) ;; Slower but also quieter
 
-;;; LSP Flag to use PLISTS
-(setenv "LSP_USE_PLISTS" "true")
-
-;;; Hack to avoid being flashbanged
-(defun lemacs/avoid-initial-flash-of-light ()
-  "Avoid flash of light when starting Emacs."
-  (setq mode-line-format nil)
-  ;; These colors should match your selected theme for maximum effect
-  ;; Note that for catppuccin whenever we create a new frame or open it on terminal
-  ;; it is necessary to reload the theme.
-  (set-face-attribute 'default nil :background "#292D3E" :foreground "white")
-  (set-face-attribute 'mode-line nil :background "#292D3E" :foreground "white" :box 'unspecified))
-
-(lemacs/avoid-initial-flash-of-light)
-
 ;;; Better Window Management handling
 (setq frame-resize-pixelwise t
       frame-inhibit-implied-resize t
@@ -121,6 +106,8 @@
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (tooltip-mode -1)
+
+(load-theme 'modus-vivendi-tinted)
 
 (provide 'early-init)
 ;;; early-init.el ends here

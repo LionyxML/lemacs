@@ -3,7 +3,7 @@
 ;; Author: Rahul M. Juliato <rahul.juliato@gmail.com>
 ;; URL: https://github.com/LionyxML/lemacs
 ;; Keywords: config, emacs, init
-;; Version: 0.3.0
+;; Version: 0.4.0
 ;; Package-Requires: ((emacs "31"))
 
 ;;; Commentary:
@@ -29,11 +29,13 @@
 
 ;; Package Management
 ;;
-;; We used to use the built-in =package.el= exclusively in order to install
-;; packages, 3rd or 1st party. From Emacs =30.1= onward I started having
-;; problems with it and tangling org-mode, it looks like packages got
-;; initialized before ALL packages was installed. So I ended up using
-;; =straight.el= in tandem with =use-package=.
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
+;; and `package-pinned-packages`. Most users will not need or want to do this.
+;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(package-initialize)
 
 ;; Every package is declared using the =use-package= macro, with deffered
 ;; execution, meaning faster loading time for Emacs.
@@ -41,27 +43,6 @@
 ;; On the first install we also byte compile and native compile every
 ;; package, avoiding to spend time and resources while actually using
 ;; Emacs.
-
-;; Bootstraps `straight.el'
-(setq straight-check-for-modifications nil)
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name
-        "straight/repos/straight.el/bootstrap.el"
-        (or (bound-and-true-p straight-base-dir)
-            user-emacs-directory)))
-      (bootstrap-version 7))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-(straight-use-package '(project :type built-in))
-(straight-use-package 'use-package)
-
 
 ;; LEMACS Installer
 ;; This is the =LEmacs= installer function. It should be called after init is loaded
@@ -74,10 +55,6 @@
 
   (message ">>> All required packages installed and byte compiled.")
   (message ">>> Configuring LEmacs...")
-
-  (message ">>> Configuring Tree Sitter parsers...")
-  (require 'treesit-auto)
-  (treesit-auto-install-all)
 
   (message ">>> Configuring Nerd Fonts...")
   (require 'nerd-icons)
@@ -117,33 +94,18 @@
           (message ">>> Deleted directory: %s" dirpath)))))
   (message ">>> Cleanup completed!"))
 
-(defun lemacs/update-all-packages ()
-  "Update and rebuild all packages managed by straight.el."
-  (interactive)
-  (straight-pull-all)
-  (straight-rebuild-all))
-
 
 ;; LEMACS Custom Options
 ;;
 ;; LEmacs provides some useful switches you can use to customize your experience.
 ;; Don't like Evil? Ok, switch to Emacs bindings.
-;; Want eglot instead of lsp-mode? No problem, just change a switch.
 ;; Not a fan of nerd-fonts? Just switch it off.
 ;; And many more...
-(defcustom lemacs-input-mode 'evil
+(defcustom lemacs-input-mode 'emacs
   "The input mode to use."
   :type '(choice
           (const :tag "evil" evil)
           (const :tag "emacs" emacs))
-  :group 'lemacs)
-
-(defcustom lemacs-lsp-client 'lsp-mode
-  "The LSP implementation to use."
-  :type '(choice
-          (const :tag "eglot" eglot)
-          (const :tag "lsp-mode" lsp-mode)
-          (const :tag "none" nil))
   :group 'lemacs)
 
 (defcustom lemacs-in-buffer-completion 'corfu
@@ -155,7 +117,7 @@
 
 (defcustom lemacs-polymode 'off
   "Enables polymode, like to styled-components on style[s|d].[t|j]sx? files.
-      Notice this is a bit messy."
+Notice this is a bit messy."
   :type '(choice
           (const :tag "on" 1)
           (const :tag "off" nil))
@@ -193,13 +155,6 @@ Requires an installed patched Nerd Font."
           (const :tag "nil" nil))
   :group 'lemacs)
 
-(defcustom lemacs-start-transparent 't
-  "Makes Emacs use Transparency when loaded."
-  :type '(choice
-          (const :tag "t" t)
-          (const :tag "nil" nil))
-  :group 'lemacs)
-
 (defcustom lemacs-default-terminal-emulator 'vterm
   "Default terminal `emulator/shell' for lemacs.
 Possible values are `eshell' or `vterm'.  Yes, I known,
@@ -214,16 +169,7 @@ both as options to ~when I need to run a term~."
   :type 'string
   :group 'lemacs)
 
-(defcustom lemacs-default-theme 'catppuccin
-  "Default LEmacs Theme.  Change it to nil to set your own."
-  :type '(choice
-          (const :tag "catppuccin" "catppuccin")
-          (const :tag "modus" "modus")
-          (const :tag "nil" nil))
-  :group 'lemacs)
-
-
-(defcustom lemacs-default-modeline 'doom
+(defcustom lemacs-default-modeline 'emacs
   "Default LEmacs Modeline."
   :type '(choice
           (const :tag "doom" "doom")
@@ -237,14 +183,6 @@ both as options to ~when I need to run a term~."
           (const :tag "scratch" "scratch")
           (const :tag "dashboard" "dashboard")
           (const :tag "terminal" "terminal"))
-  :group 'lemacs)
-
-(defcustom lemacs-codeium-scope 'nil
-  "Default Codeium (AI assist) scope."
-  :type '(choice
-          (const :tag "everywhere" "everywhere")
-          (const :tag "prog-mode" "prog-mode")
-          (const :tag "nil" nil))
   :group 'lemacs)
 
 (defcustom lemacs-start-tab-bar-mode 'nil
@@ -384,24 +322,6 @@ both as options to ~when I need to run a term~."
       (when (and selected-project (file-directory-p selected-project))
         (project-switch-project selected-project))))
   (global-set-key (kbd "C-x p P") 'lemacs/find-projects-and-switch)
-
-  (defun lemacs/transparency-set ()
-    "Set frame transparency (Graphical Mode)."
-    (interactive)
-    (dolist (frame (frame-list))
-      (set-frame-parameter frame 'alpha-background 85)))
-
-  (defun lemacs/transparency-unset ()
-    "Unset frame transparency (Graphical Mode)."
-    (interactive)
-    (dolist (frame (frame-list))
-      (set-frame-parameter frame 'alpha-background 100)))
-
-  (defun lemacs/transparency-apply-customdef ()
-    (when lemacs-start-transparent
-      (if (not (display-graphic-p))
-          (set-face-background 'default "unspecified")
-        (lemacs/transparency-set))))
 
   (defun lemacs/rename-buffer-and-move-to-new-window ()
     "Promotes a side buffer to a new window."
@@ -567,7 +487,6 @@ both as options to ~when I need to run a term~."
   (savehist-mode 1)
   (winner-mode 1)
   (xterm-mouse-mode 1))
-
 
 ;;;; Built-In Packages
 ;;;;;; Auth-Source
@@ -1382,7 +1301,6 @@ both as options to ~when I need to run a term~."
 ;;;;;; Apheleia
 (use-package apheleia
   :ensure t
-  :straight t
   :defer t
   :init
   (add-hook 'prog-mode-hook #'apheleia-mode)
@@ -1407,7 +1325,6 @@ both as options to ~when I need to run a term~."
 (use-package dockerfile-mode
   :defer t
   :ensure t
-  :straight t
   :config
   (pcase lemacs-docker-executable
     ('docker
@@ -1419,28 +1336,24 @@ both as options to ~when I need to run a term~."
 ;;;;;; DotEnv Mode
 (use-package dotenv-mode
   :defer t
-  :ensure t
-  :straight t)
+  :ensure t)
 
 
 ;;;;;; Geiser-Guile
 (use-package geiser-guile
   :defer t
-  :ensure t
-  :straight t)
+  :ensure t)
 
 
 ;;;;;; Handlebars
 (use-package handlebars-mode
   :defer t
-  :ensure t
-  :straight t)
+  :ensure t)
 
 
 ;;;;;; Markdown-Mode
 (use-package markdown-mode
   :ensure t
-  :straight t
   :defer t
   :bind
   (:map markdown-mode-map
@@ -1454,7 +1367,6 @@ both as options to ~when I need to run a term~."
 (use-package pyvenv
   :defer t
   :ensure t
-  :straight t
   :after (:any python-ts-mode))
 
 
@@ -1462,7 +1374,6 @@ both as options to ~when I need to run a term~."
 (use-package polymode
   :if (eq lemacs-polymode 'on)
   :ensure t
-  :straight t
   :defer t
   :config
   ;; React.JS styled-components "integration"
@@ -1493,7 +1404,6 @@ both as options to ~when I need to run a term~."
 ;;;;;; Sly
 (use-package sly
   :ensure t
-  :straight t
   :defer t
   :init
   ;; 1.) Install sbcl systemwide (brew install sbcl | apt install sbcl)
@@ -1506,202 +1416,203 @@ both as options to ~when I need to run a term~."
   (setq inferior-lisp-program "sbcl"))
 
 
-;;;;;; SASS
-(use-package sass-mode
+;;; │ RUBY-TS-MODE
+(use-package ruby-ts-mode
+  :ensure nil
+  :mode "\\.rb\\'"
+  :mode "Rakefile\\'"
+  :mode "Gemfile\\'"
+  :custom
+  (add-to-list 'treesit-language-source-alist '(ruby "https://github.com/tree-sitter/tree-sitter-ruby" "master" "src"))
+  (ruby-indent-level 2)
+  (ruby-indent-tabs-mode nil))
+
+
+;;; │ JS-TS-MODE
+(use-package js-ts-mode
+  :ensure js ;; I care about js-base-mode but it is locked behind the feature "js"
+  :mode "\\.jsx?\\'"
   :defer t
-  :ensure t
-  :straight t)
+  :hook
+  ((js-ts-mode-hook . (lambda ()
+                        (setq indent-tabs-mode nil)
+                        (add-hook 'after-save-hook #'emacs-solo-movements/format-current-file nil t))))
+  :custom
+  (js-indent-level 2)
+  :config
+  (add-to-list 'treesit-language-source-alist '(javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+  (add-to-list 'treesit-language-source-alist '(jsdoc "https://github.com/tree-sitter/tree-sitter-jsdoc" "master" "src")))
 
-
-;;;;;; SCSS
-(use-package scss-mode
+;;; │ JSON-TS-MODE
+(use-package json-ts-mode
+  :mode "\\.json\\'"
   :defer t
-  :ensure t
-  :straight t)
+  :hook
+  ((json-ts-mode-hook . (lambda ()
+                          (setq indent-tabs-mode nil)
+                          (add-hook 'after-save-hook #'emacs-solo-movements/format-current-file nil t)))))
 
 
-;;;;;; Treesit-Auto
-(use-package treesit-auto
-  :ensure t
-  :straight t
+;;; │ TYPESCRIPT-TS-MODE
+(defun emacs-solo/add-jsdoc-in-typescript-ts-mode ()
+  "Add jsdoc treesitter rules to typescript as a host language.
+As seen on: https://www.reddit.com/r/emacs/comments/1kfblch/need_help_with_adding_jsdoc_highlighting_to"
+  ;; I copied this code from js.el (js-ts-mode), with minimal modifications.
+  (when (treesit-ready-p 'typescript)
+    (when (treesit-ready-p 'jsdoc t)
+      (setq-local treesit-range-settings
+                  (treesit-range-rules
+                   :embed 'jsdoc
+                   :host 'typescript
+                   :local t
+                   `(((comment) @capture (:match ,(rx bos "/**") @capture)))))
+      (setq c-ts-common--comment-regexp (rx (or "comment" "line_comment" "block_comment" "description")))
+
+      (defvar my/treesit-font-lock-settings-jsdoc
+        (treesit-font-lock-rules
+         :language 'jsdoc
+         :override t
+         :feature 'document
+         '((document) @font-lock-doc-face)
+
+         :language 'jsdoc
+         :override t
+         :feature 'keyword
+         '((tag_name) @font-lock-constant-face)
+
+         :language 'jsdoc
+         :override t
+         :feature 'bracket
+         '((["{" "}"]) @font-lock-bracket-face)
+
+         :language 'jsdoc
+         :override t
+         :feature 'property
+         '((type) @font-lock-type-face)
+
+         :language 'jsdoc
+         :override t
+         :feature 'definition
+         '((identifier) @font-lock-variable-face)))
+      (setq-local treesit-font-lock-settings
+                  (append treesit-font-lock-settings my/treesit-font-lock-settings-jsdoc)))))
+
+(use-package typescript-ts-mode
+  :mode "\\.ts\\'"
+  :defer t
+  :hook
+  ((typescript-ts-mode-hook .
+                            (lambda ()
+                              (setq indent-tabs-mode nil)
+                              (add-hook 'after-save-hook #'emacs-solo-movements/format-current-file nil t)
+                              (emacs-solo/add-jsdoc-in-typescript-ts-mode))))
+  :custom
+  (typescript-indent-level 2)
+  :config
+  (add-to-list 'treesit-language-source-alist '(typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+  (unbind-key "M-." typescript-ts-base-mode-map))
+
+
+(use-package tsx-ts-mode
+  :mode "\\.tsx\\'"
+  :defer t
+  :hook
+  ((tsx-ts-mode-hook .
+                     (lambda ()
+                       (setq indent-tabs-mode nil)
+                       (add-hook 'after-save-hook #'emacs-solo-movements/format-current-file nil t)
+                       (emacs-solo/add-jsdoc-in-typescript-ts-mode))))
+  :custom
+  (typescript-indent-level 2)
+  :config
+  (add-to-list 'treesit-language-source-alist '(tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+  (unbind-key "M-." typescript-ts-base-mode-map))
+
+
+;;; │ RUST-TS-MODE
+(use-package rust-ts-mode
+  :ensure rust-ts-mode
+  :mode "\\.rs\\'"
   :defer t
   :custom
-  (treesit-auto-install t)
-  :hook
-  (after-init . global-treesit-auto-mode)
+  (rust-indent-level 2)
   :config
-  (treesit-auto-add-to-auto-mode-alist 'all))
+  (add-to-list 'treesit-language-source-alist '(rust "https://github.com/tree-sitter/tree-sitter-rust" "master" "src")))
 
 
-;;;;;; Typescript
-(use-package typescript-mode
+;;; │ TOML-TS-MODE
+(use-package toml-ts-mode
+  :ensure toml-ts-mode
+  :mode "\\.toml\\'"
   :defer t
-  :ensure t
-  :straight t)
+  :config
+  (add-to-list 'treesit-language-source-alist '(toml "https://github.com/ikatyang/tree-sitter-toml" "master" "src")))
 
 
-;;;;;; Web-Mode
-(use-package web-mode
+;;; │ MARKDOWN-TS-MODE - EMACS-31
+;;  As I first proposed here:
+;;  https://lists.gnu.org/archive/html/emacs-devel/2025-02/msg00810.html
+(use-package markdown-ts-mode
+  :ensure nil
+  :mode "\\.md\\'"
   :defer t
-  :ensure t
-  :straight t
-  :mode
-  (("\\.phtml\\'" . web-mode)
-   ("\\.php\\'" . web-mode)
-   ("\\.tpl\\'" . web-mode)
-   ("\\.[agj]sp\\'" . web-mode)
-   ("\\.as[cp]x\\'" . web-mode)
-   ("\\.erb\\'" . web-mode)
-   ("\\.mustache\\'" . web-mode)
-   ("\\.djhtml\\'" . web-mode)))
+  :config
+  ;; (add-to-list 'major-mode-remap-alist '(markdown-mode . markdown-ts-mode))
+  (add-to-list 'treesit-language-source-alist '(markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown/src"))
+  (add-to-list 'treesit-language-source-alist '(markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" "split_parser" "tree-sitter-markdown-inline/src")))
 
 
-;;;;;; Yaml
-(use-package yaml-mode
+;;; │ YAML-TS-MODE
+(use-package yaml-ts-mode
+  :ensure yaml-ts-mode
+  :mode "\\.ya?ml\\'"
   :defer t
-  :ensure t
-  :straight t
-  :mode
-  ("\\.yaml\\'" "\\.yml\\'")
-  :custom-face
-  (font-lock-variable-name-face ((t (:foreground "#cba6f7")))))
+  :config
+  (add-to-list 'treesit-language-source-alist '(yaml "https://github.com/tree-sitter-grammars/tree-sitter-yaml" "master" "src")))
 
+
+;;; │ DOCKERFILE-TS-MODE
+(use-package dockerfile-ts-mode
+  :ensure dockerfile-ts-mode
+  :mode "\\Dockerfile.*\\'"
+  :defer t
+  :config
+  (add-to-list 'treesit-language-source-alist '(dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile" "main" "src")))
+
+
+;;; │ GO-TS-MODE
+(use-package go-ts-mode
+  :ensure t
+  :mode ("\\.go\\'" . go-ts-mode)
+  :mode ("go\\.mod\\'" . go-mod-ts-mode)
+  :hook
+  ((go-ts-mode-hook . lemacs/go-common-setup)
+   (go-mod-ts-mode-hook . lemacs/go-common-setup))
+  :defer t)
+
+(defun lemacs/go-common-setup ()
+  "Common settings for Go tree-sitter modes."
+  (add-hook 'before-save-hook #'eglot-format nil t) ; buffer-local
+  (setq indent-tabs-mode t)                         ; Go likes tabs
+  (setq tab-width 4)                                ; Tabs *display* as 4 spaces
+  (when (derived-mode-p 'go-ts-mode)
+    (setq-local go-ts-mode-indent-offset tab-width)))
+
+
+;;;;;; SASS/SCSS
+(use-package scss-mode
+  :mode "\\.sass\\'"
+  :hook
+  ((scss-mode-hook . (lambda ()
+                       (setq indent-tabs-mode nil))))
+  :defer t)
 
 
 ;;;; Themes & Colors
-;;;;;; Catppuccin
-(use-package catppuccin-theme
-  :if (eq lemacs-default-theme 'catppuccin)
-  :defer t
-  :ensure t
-  :straight t
-  :config
-  ;; NOTE reloading catppuccin "undoes" what early init does to screen NOT to flash on GUI boot
-  (defun lemacs/catppuccin-hack (_)
-    "A catppuccin hack to make sure everything is loaded"
-    (catppuccin-reload))
-  (add-hook 'after-init-hook (lambda ()
-                               (run-with-timer 0.3 nil
-                                               (lambda ()(lemacs/catppuccin-hack nil)))))
-  (add-hook 'after-make-frame-functions 'lemacs/catppuccin-hack)
-
-  ;; Custom diff-hl colors
-  (custom-set-faces
-   `(diff-hl-change ((t (:background unspecified :foreground ,(catppuccin-get-color 'blue))))))
-  (custom-set-faces
-   `(diff-hl-delete ((t (:background unspecified :foreground ,(catppuccin-get-color 'red))))))
-  (custom-set-faces
-   `(diff-hl-insert ((t (:background unspecified :foreground ,(catppuccin-get-color 'green))))))
-
-  (custom-set-faces
-   `(tab-bar-tab
-     ((t
-       (:background unspecified
-                    :box (:line-width 2 :color "#676E95" :style released-button))))))
-
-  ;; Custom vhl/default-face
-  (custom-set-faces `(vhl/default-face ((t (:background ,(catppuccin-get-color 'surface2))))))
-  :init
-  (ignore-errors
-      (load-theme 'catppuccin :no-confirm)))
-
-
-;;;;;; Modus
-(use-package modus-themes
-  :if (eq lemacs-default-theme 'modus)
-  :defer t
-  :custom
-  (modus-themes-italic-constructs t)
-  (modus-themes-bold-constructs t)
-  (modus-themes-mixed-fonts nil)
-  (modus-themes-prompts '(bold intense))
-  (modus-themes-common-palette-overrides
-   `((bg-main "#292D3E")
-     (bg-active bg-main)
-     (fg-main "#EEFFFF")
-     (fg-active fg-main)
-     (fg-mode-line-active "#A6Accd")
-     (bg-mode-line-active "#232635")
-     (fg-mode-line-inactive "#676E95")
-     (bg-mode-line-inactive "#282c3d")
-     ;; (border-mode-line-active "#676E95")
-     ;; (border-mode-line-inactive bg-dim)
-     (border-mode-line-active nil)
-     (border-mode-line-inactive nil)
-     (bg-tab-bar      "#242837")
-     (bg-tab-current  bg-main)
-     (bg-tab-other    "#242837")
-     (fg-prompt "#c792ea")
-     (bg-prompt unspecified)
-     (bg-hover-secondary "#676E95")
-     (bg-completion "#2f447f")
-     (fg-completion white)
-     (bg-region "#3C435E")
-     (fg-region white)
-
-     (fg-line-number-active fg-main)
-     (fg-line-number-inactive "gray50")
-     (bg-line-number-active unspecified)
-     (bg-line-number-inactive "#292D3E")
-     (fringe "#292D3E")
-
-     (fg-heading-0 "#82aaff")
-     (fg-heading-1 "#82aaff")
-     (fg-heading-2 "#c792ea")
-     (fg-heading-3 "#bb80b3")
-     (fg-heading-4 "#a1bfff")
-
-     (fg-prose-verbatim "#c3e88d")
-     (bg-prose-block-contents "#232635")
-     (fg-prose-block-delimiter "#676E95")
-     (bg-prose-block-delimiter bg-prose-block-contents)
-
-     (accent-1 "#79a8ff")
-
-     (keyword "#89DDFF")
-     (builtin "#82aaff")
-     (comment "#676E95")
-     (string "#c3e88d")
-     (fnname "#82aaff")
-     (type "#c792ea")
-     (variable "#c792ea")
-     (docstring "#8d92af")
-     (constant "#f78c6c")))
-  :config
-  (modus-themes-with-colors
-    (custom-set-faces
-     `(flymake-end-of-line-diagnostics-face ((,c :inherit modus-themes-slant :height 0.85 :box unspecified)))
-     `(diff-hl-change ((,c :foreground ,blue :background unspecified)))
-     `(diff-hl-delete ((,c :foreground ,red :background unspecified)))
-     `(diff-hl-insert ((,c :foreground ,green :background unspecified)))
-     `(popup-tip-face ((,c :background "#232635")))
-     `(tab-bar
-       ((,c
-         :background "#232635"
-         :foreground "#A6Accd"
-         ;; :box (:line-width 1 :color "#676E95")
-         )))
-     `(tab-bar-tab
-       ((,c
-         ;; :background "#232635"
-         ;; :underline t
-         ;; :box (:line-width 1 :color "#676E95")
-         )))
-     `(tab-bar-tab-inactive
-       ((,c
-         ;; :background "#232635"
-         ;; :box (:line-width 1 :color "#676E95")
-         )))))
-  :init
-  (load-theme 'modus-vivendi-tinted t)
-  (lemacs/transparency-apply-customdef))
-
-
 ;;;;;; Rainbow-Delimiters
 (use-package rainbow-delimiters
   :defer t
   :ensure t
-  :straight t
   :hook
   (prog-mode . rainbow-delimiters-mode))
 
@@ -1710,7 +1621,6 @@ both as options to ~when I need to run a term~."
 (use-package colorful-mode
   :defer t
   :ensure t
-  :straight t
   :custom
   (colorful-use-prefix t)
   (colorful-prefix-alignment 'left)
@@ -1720,104 +1630,16 @@ both as options to ~when I need to run a term~."
 ;;;; Tools - Auth
 (use-package pinentry
   :ensure t
-  :straight t
   :demand t
   :config
   (pinentry-start))
 
 
-;;;; Tools - AI Assistency
-;;;;;; Codeium
-(use-package codeium
-  :if (not (eq lemacs-codeium-scope 'nil))
-  :load-path "site-lisp/codeium/"
-  :config
-  ;; First time loading this package, you need to set up your API key:
-  ;; (setq codeium/metadata/api_key "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
-  ;;
-  ;; You can do this from within Emacs by running: M-x codeium-install
-  (when lemacs-codeium-scope
-    (pcase lemacs-codeium-scope
-      ('everywhere (add-to-list 'completion-at-point-functions #'codeium-completion-at-point))
-      ('prog-mode  (add-hook 'prog-mode-hook
-                             (lambda ()
-                               (require 'cape)
-                               (setq-local completion-at-point-functions
-                                           (list (cape-capf-super #'codeium-completion-at-point #'lsp-completion-at-point)))))))
-    (codeium-init)))
-
-
 ;;;; Tools - Checkers and Linting
-;;;;;; Flymake
-(use-package flymake
-  :defer t
-  :ensure t
-  :straight t
-  :hook
-  (prog-mode . flymake-mode)
-  :custom
-  (flymake-show-diagnostics-at-end-of-line 'short)
-  (flymake-indicator-type 'margins)
-  (flymake-margin-indicators-string
-   `((error "»" compilation-error)
-     (warning "»" compilation-warning)
-     (note "»" compilation-info)))
-  :config
-  (defun lemacs/toggle-flymake-inline-diagnostics ()
-    "Toggle `flymake-show-diagnostics-at-end-of-line` between 'short and nil, and refresh Flymake."
-    (interactive)
-    (setq flymake-show-diagnostics-at-end-of-line
-          (if (eq flymake-show-diagnostics-at-end-of-line 'short)
-              nil
-            'short))
-    ;; Refresh Flymake to apply the new setting
-    (flymake-mode-off)
-    (flymake-mode)
-    (message "flymake-show-diagnostics-at-end-of-line is now %s"
-             flymake-show-diagnostics-at-end-of-line))
-
-  (defun lemacs/toggle-flymake-diagnostics ()
-    "Toggle Flymake mode on or off."
-    (interactive)
-    (if flymake-mode
-        (progn
-          (flymake-mode-off)
-          (message "Flymake mode is now OFF"))
-      (flymake-mode)
-      (message "Flymake mode is now ON")))
-
-  (bind-keys :map flymake-mode-map
-             ;; ("C-c ! l" . flymake-show-buffer-diagnostics)
-             ("C-c ! l" . consult-flymake)
-             ("C-c ! P" . flymake-show-project-diagnostics)
-             ("C-c ! n" . flymake-goto-next-error)
-             ("C-c ! p" . flymake-goto-prev-error)
-             ("C-c ! i" . lemacs/toggle-flymake-inline-diagnostics)
-             ("C-c ! d" . lemacs/toggle-flymake-diagnostics)
-             ("M-7" . flymake-goto-prev-error)
-             ("M-8" . flymake-goto-next-error)))
-
-
 ;;;;;; Package-Lint
 (use-package package-lint
   :ensure t
-  :straight t
   :defer t)
-
-
-;;;; Tools - Completions - In Buffer
-;;;;;; Cape
-(use-package cape
-  :ensure t
-  :straight t
-  :config
-  (defun lemacs/eglot-capf ()
-    (setq-local completion-at-point-functions
-                (list (cape-capf-super
-                       #'eglot-completion-at-point
-                       #'tempel-expand
-                       #'cape-file))))
-  (add-hook 'eglot-managed-mode-hook #'lemacs/eglot-capf))
 
 
 ;;;;;; Corfu
@@ -1825,13 +1647,12 @@ both as options to ~when I need to run a term~."
   :if (eq lemacs-in-buffer-completion 'corfu)
   :defer t
   :ensure t
-  :straight t
   :custom-face
   ;; (corfu-border ((t (:background  "#333"))))
   :custom
   ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  (corfu-auto t)                    ;; Enable auto completion
-  (corfu-auto-delay 0)
+  (corfu-auto nil)                  ;; Enable auto completion
+  (corfu-auto-delay 0.2)
   (corfu-auto-prefix 1)
   ;; (corfu-separator ?\s)          ;; Orderless field separator
   ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
@@ -1861,30 +1682,6 @@ both as options to ~when I need to run a term~."
                                 (setq-local corfu-auto nil)
                                 (corfu-mode)))
 
-  (setq corfu--frame-parameters
-        '((no-accept-focus . t)
-          (no-focus-on-map . t)
-          (min-width . t)
-          (min-height . t)
-          (border-width . 0)
-          (outer-border-width . 0)
-          (internal-border-width . 1)
-          (child-frame-border-width . 2)
-          (left-fringe . 0)
-          (right-fringe . 0)
-          (vertical-scroll-bars)
-          (horizontal-scroll-bars)
-          (menu-bar-lines . 0)
-          (tool-bar-lines . 0)
-          (tab-bar-lines . 0)
-          (no-other-frame . t)
-          (unsplittable . t)
-          (undecorated . t)
-          (cursor-type)
-          (no-special-glyphs . t)
-          (desktop-dont-save . t)))
-
-
   :init
   (global-corfu-mode)
   (corfu-popupinfo-mode t)
@@ -1901,53 +1698,10 @@ both as options to ~when I need to run a term~."
     (corfu-terminal-mode)))
 
 
-;;;;;; Tempel
-(use-package tempel
-  ;; Require trigger prefix before template name when completing.
-  ;; :custom
-  ;; (tempel-trigger-prefix "<")
-
-  :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
-         ("M-*" . tempel-insert))
-
-  :init
-  ;; Setup completion at point
-  (defun tempel-setup-capf ()
-    ;; Add the Tempel Capf to `completion-at-point-functions'.
-    ;; `tempel-expand' only triggers on exact matches. Alternatively use
-    ;; `tempel-complete' if you want to see all matches, but then you
-    ;; should also configure `tempel-trigger-prefix', such that Tempel
-    ;; does not trigger too often when you don't expect it. NOTE: We add
-    ;; `tempel-expand' *before* the main programming mode Capf, such
-    ;; that it will be tried first.
-    (setq-local completion-at-point-functions
-                (cons #'tempel-expand
-                      completion-at-point-functions)))
-
-  (add-hook 'conf-mode-hook 'tempel-setup-capf)
-  (add-hook 'prog-mode-hook 'tempel-setup-capf)
-  (add-hook 'text-mode-hook 'tempel-setup-capf)
-
-  ;; Optionally make the Tempel templates available to Abbrev,
-  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
-  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
-  ;; (global-tempel-abbrev-mode)
-  )
-
-
-;;;;;; Tempel-Collection
-(use-package tempel-collection
-  :defer t
-  :ensure t
-  :straight t
-  :after tempel)
-
-
 ;;;; Tools - Completions - Minibuffer
 ;;;;;; Consult
 (use-package consult
   :ensure t
-  :straight t
   :defer t
   ;; Replace bindings. Lazily loaded due by `use-package'.
   :bind (;; C-c bindings in `mode-specific-map'
@@ -2071,7 +1825,6 @@ both as options to ~when I need to run a term~."
 ;;;;;; Embark
 (use-package embark
   :ensure t
-  :straight t
   :defer t
   :bind
   (("C-c ." . embark-act)       ;; pick some comfortable binding
@@ -2139,7 +1892,7 @@ both as options to ~when I need to run a term~."
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
   :ensure t
-  :straight t ; only need to install it, embark loads it after consult if found
+   ; only need to install it, embark loads it after consult if found
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
@@ -2147,7 +1900,6 @@ both as options to ~when I need to run a term~."
 ;;;;;; Marginalia
 (use-package marginalia
   :ensure t
-  :straight t
   :bind (:map minibuffer-local-map
               ("M-A" . marginalia-cycle))
   :custom
@@ -2160,7 +1912,6 @@ both as options to ~when I need to run a term~."
 ;;;;;; Orderless
 (use-package orderless
   :ensure t
-  :straight t
   :defer t
   :after vertico
   :init
@@ -2172,7 +1923,6 @@ both as options to ~when I need to run a term~."
 ;;;;;; Vertico
 (use-package vertico
   :ensure t
-  :straight t
   :hook
   (after-init . vertico-mode)
   :custom
@@ -2197,7 +1947,6 @@ both as options to ~when I need to run a term~."
 (use-package docker
   :defer t
   :ensure t
-  :straight t
   :bind ("C-c d" . docker)
   :config
   (pcase lemacs-docker-executable
@@ -2212,34 +1961,10 @@ both as options to ~when I need to run a term~."
 
 
 ;;;; Tools - Enhanced Editing
-;;;;;; Expand-Region
-(use-package expand-region
-  :defer t
-  :ensure t
-  :straight t
-  :bind
-  (("C-S-SPC" . my/expand-region-wrapper))
-  :config
-  ;; This extends expand-region to also expand from treesit nodes
-  (add-to-list 'load-path "~/.emacs.d/site-lisp/treesit-er-expansions")
-  (when (and (functionp 'treesit-available-p)
-             (treesit-available-p))
-    (require 'treesit-er-expansions))
-
-  (defun my/expand-region-wrapper ()
-    "Wrapper function for expand-region in Tree-sitter mode."
-    (interactive)
-    (condition-case nil
-        (er/treesit-er-parent-node)
-      (error
-       (er/expand-region 1)))))
-
-
 ;;;;;; Evil
 (use-package evil
   :if (eq lemacs-input-mode 'evil)
   :ensure t
-  :straight t
   :defer t
   :hook
   (after-init . evil-mode)
@@ -2507,7 +2232,6 @@ both as options to ~when I need to run a term~."
 (use-package evil-collection
   :defer t
   :ensure t
-  :straight t
   :custom
   (evil-collection-want-find-usages-bindings t)
   (evil-collection-setup-minibuffer t)
@@ -2518,7 +2242,6 @@ both as options to ~when I need to run a term~."
 ;;;;;; Evil Surround
 (use-package evil-surround
   :ensure t
-  :straight t
   :after evil-collection
   :config
   (global-evil-surround-mode 1))
@@ -2527,7 +2250,6 @@ both as options to ~when I need to run a term~."
 ;;;;;; Evil Matchit
 (use-package evil-matchit
   :ensure t
-  :straight t
   :after evil-collection
   :config
   (global-evil-matchit-mode 1))
@@ -2537,14 +2259,12 @@ both as options to ~when I need to run a term~."
 (use-package pulsar
   :defer t
   :ensure t
-  :straight t
   :hook
   (after-init . pulsar-global-mode)
   :config
   (setq pulsar-pulse t)
   (setq pulsar-delay 0.025)
   (setq pulsar-iterations 10)
-  (setq pulsar-face 'evil-ex-lazy-highlight)
 
   (add-to-list 'pulsar-pulse-functions 'evil-scroll-down)
   (add-to-list 'pulsar-pulse-functions 'flymake-goto-next-error)
@@ -2562,7 +2282,6 @@ both as options to ~when I need to run a term~."
 (use-package smartparens
   :defer t
   :ensure t
-  :straight t
   :hook
   (prog-mode . smartparens-mode))
 
@@ -2571,7 +2290,6 @@ both as options to ~when I need to run a term~."
 (use-package undo-tree
   :defer t
   :ensure t
-  :straight t
   :hook
   (after-init . global-undo-tree-mode)
   :config
@@ -2582,7 +2300,6 @@ both as options to ~when I need to run a term~."
 (use-package wgrep
   :defer 2
   :ensure t
-  :straight t
   :custom
   ;; (wgrep-enable-key "e")
   (wgrep-auto-save-buffer t)
@@ -2595,7 +2312,6 @@ both as options to ~when I need to run a term~."
 (use-package async
   :defer t
   :ensure t
-  :straight t
   :hook
   ((dired-mode . dired-async-mode)
    (after-init . async-bytecomp-package-mode)))
@@ -2605,7 +2321,6 @@ both as options to ~when I need to run a term~."
 (use-package diredfl
   :defer t
   :ensure t
-  :straight t
   :hook
   (dired-mode . diredfl-global-mode))
 
@@ -2613,7 +2328,6 @@ both as options to ~when I need to run a term~."
 ;;;;;; DiredSubtree
 (use-package dired-subtree
   :ensure t
-  :straight t
   :after dired
   :bind
   ( :map dired-mode-map
@@ -2629,7 +2343,6 @@ both as options to ~when I need to run a term~."
 (use-package treemacs
   :defer t
   :ensure t
-  :straight t
   :bind
   (("M-i" . treemacs))
   :config
@@ -2650,8 +2363,7 @@ both as options to ~when I need to run a term~."
 ;;;;;; Treemacs-Evil
 (use-package treemacs-evil
   :after (treemacs evil)
-  :ensure t
-  :straight t)
+  :ensure t)
 
 
 ;;;; Tools - GIT Version Control
@@ -2659,7 +2371,6 @@ both as options to ~when I need to run a term~."
 (use-package diff-hl
   :defer 2
   :ensure t
-  :straight t
   :custom
   (diff-hl-side 'left)                           ;; Set the side for diff indicators.
   (diff-hl-margin-symbols-alist '((insert . "│") ;; Customize symbols for each change type.
@@ -2682,7 +2393,6 @@ both as options to ~when I need to run a term~."
 (use-package git-timemachine
   :defer t
   :ensure t
-  :straight t
   :bind ("M-g t" . git-timemachine-toggle))
 
 
@@ -2690,7 +2400,6 @@ both as options to ~when I need to run a term~."
 (use-package magit
   :defer t
   :ensure t
-  :straight t
   :preface (defun lemacs/magit-kill-buffers ()
              "Restore window configuration and kill all Magit buffers."
              (interactive)
@@ -2728,22 +2437,19 @@ both as options to ~when I need to run a term~."
   :if nil
   :defer t
   :after magit-status
-  :ensure t
-  :straight t)
+  :ensure t)
 
 
 ;;;;;; Magit-Stats
 (use-package magit-stats
   :defer t
-  :ensure t
-  :straight t)
+  :ensure t)
 
 
 ;;;;;; Treemacs-Magit
 (use-package treemacs-magit
   :defer t
   :ensure t
-  :straight t
   :after (:all treemacs))
 
 
@@ -2751,7 +2457,6 @@ both as options to ~when I need to run a term~."
 (use-package vc-msg
   :defer t
   :ensure t
-  :straight t
   :bind
   (("M-2" . 'vc-msg-show))
   :config
@@ -2765,7 +2470,6 @@ both as options to ~when I need to run a term~."
 (use-package erc-hl-nicks
   :defer t
   :ensure t
-  :straight t
   :config
   :after (:all erc))
 
@@ -2795,370 +2499,63 @@ both as options to ~when I need to run a term~."
 (use-package breadcrumb
   :defer t
   :ensure t
-  :straight t
   :hook
   (eglot-connect . breadcrumb-mode))
 
 
 ;;;;;;;; Eglot
 (use-package eglot
-  :if (eq lemacs-lsp-client 'eglot)
-  :ensure t
-  :straight t
-  :defer t
-  :hook
-  (python-ts-mode . eglot-ensure)
-  (js-ts-mode . eglot-ensure)
-  (typescript-ts-mode . eglot-ensure)
-  (typescriptreact-mode . eglot-ensure)
-  (tsx-ts-mode . eglot-ensure)
-  (rust-ts-mode . eglot-ensure)
-  (css-mode . eglot-ensure)
-  (sass-mode . eglot-ensure)
-  (web-mode . eglot-ensure)
-  (prisma-mode . eglot-ensure)
-  (ruby-base-mode . eglot-ensure)
+  :ensure nil
   :custom
   (eglot-autoshutdown t)
-  (eglot-events-buffer-size 0)
-  (eglot-sync-connect nil)
-  (eglot-connect-timeout nil)
-  :config
-  (when (eq lemacs-lsp-client 'eglot)
-
-    (with-eval-after-load 'eglot
-      (add-to-list 'eglot-server-programs '((ruby-mode ruby-ts-mode) "ruby-lsp")))
-
-    (fset #'jsonrpc--log-event #'ignore)
-
-    (progn
-      (bind-keys :map eglot-mode-map
-                 ("C-c l a" . eglot-code-actions)
-                 ("C-c l o" . eglot-code-action-organize-imports)
-                 ("C-c l r" . eglot-rename)
-                 ("C-c l f" . eglot-format))))
-
-  (cl-delete-duplicates (nconc eglot-server-programs
-                               '((((js-mode :language-id "javascript")
-                                   (js-ts-mode :language-id "javascript")
-                                   (tsx-ts-mode :language-id "typescriptreact")
-                                   (typescript-ts-mode :language-id "typescript")
-                                   (typescript-mode :language-id "typescript"))
-                                  .
-                                  ("typescript-language-server" "--stdio"
-                                   :initializationOptions
-                                   (:preferences
-                                    (:includeInlayEnumMemberValueHints t
-                                                                       :includeInlayFunctionLikeReturnTypeHints t
-                                                                       :includeInlayFunctionParameterTypeHints t
-                                                                       :includeInlayParameterNameHints "all"
-                                                                       :includeInlayParameterNameHintsWhenArgumentMatchesName t
-                                                                       :includeInlayPropertyDeclarationTypeHints t
-                                                                       :includeInlayVariableTypeHints t
-                                                                       :includeInlayVariableTypeHintsWhenTypeMatchesName t
-                                                                       :completeFunctionCalls t))))))
-                        :test #'(lambda (element _)
-                                  (if (listp (car element))
-                                      (if (listp (caar element))
-                                          (memq 'js-mode (caar element))
-                                        (memq 'js-mode (car element)))
-                                    (eq 'js-mode element))))
-
-  (setq-default eglot-workspace-configuration
-                '(:completions
-                  (:completeFunctionCalls t))))
-
-
-;;;;;;;; Flymake-ESLint
-(use-package flymake-eslint
-  :ensure t
-  :straight t
-  :config
-  ;; If Emacs is compiled with JSON support
-  (setq flymake-eslint-prefer-json-diagnostics t)
-
-  (defun lemacs/use-local-eslint ()
-    "Set project's `node_modules' binary eslint as first priority.
-    If nothing is found, keep the default value flymake-eslint set or
-    your override of `flymake-eslint-executable-name.'"
-    (interactive)
-    (let* ((root (locate-dominating-file (buffer-file-name) "node_modules"))
-           (eslint (and root
-                        (expand-file-name "node_modules/.bin/eslint"
-                                          root))))
-      (when (and eslint (file-executable-p eslint))
-        (setq-local flymake-eslint-executable-name eslint)
-        (message (format "Found local ESLINT! Setting: %s" eslint))
-        (flymake-eslint-enable))))
-
-
-  (defun lemacs/configure-eslint-with-flymake ()
-    (when (or (eq major-mode 'tsx-ts-mode)
-              (eq major-mode 'typescript-ts-mode)
-              (eq major-mode 'typescriptreact-mode))
-      (lemacs/use-local-eslint)))
-
-
-  ;; eglot can't yet deal with 2 or more lsps per buffer... sad
-  (add-hook 'eglot-managed-mode-hook #'lemacs/use-local-eslint)
-
-  ;; We trust lsp-mode to do the right thing
-  ;; (add-hook 'lsp-mode-hook #'lemacs/use-local-eslint)
-
-  ;; With older projects without LSP or if eglot fails
-  ;; you can call interactivelly M-x lemacs/use-local-eslint RET
-  ;; or add a hook like:
-  ;; (add-hook 'js-ts-mode-hook #'lemacs/use-local-eslint)
-  )
-
-
-;;;;;; LSP-MODE Family
-;;;;;;;; LSP
-;; This is ugly but the only way I managed to make it work, manual hooks didn't do the trick :/
-(when (eq lemacs-lsp-client 'lsp-mode)
-  (use-package lsp-mode
-    :if (eq lemacs-lsp-client 'lsp-mode)
-    :defer t
-    :hook ((lsp-mode . lsp-diagnostics-mode)
-           (lsp-mode . lsp-enable-which-key-integration)
-           ((tsx-ts-mode
-             typescript-ts-mode
-             css-mode
-             rust-ts-mode
-             python-ts
-             web-mode
-             ruby-base-mode
-             prisma-mode
-             typescript-mode
-             go-ts-mode
-             js-ts-mode) . lsp-deferred))
-    :ensure t
-    :straight t
-    :custom
-    (lsp-keymap-prefix "C-c l")
-    ;; (lsp-inlay-hint-enable t)
-    (lsp-completion-provider :none)
-    (lsp-session-file (locate-user-emacs-file ".lsp-session"))
-    (lsp-log-io nil)   ;; nil for speed
-    (lsp-idle-delay 0.5) ;; debouncing, if needed 0.5
-    (lsp-keep-workspace-alive nil)
-    ;; core
-    (lsp-enable-xref t)
-    (lsp-auto-configure t)
-    (lsp-enable-links nil)
-    (lsp-eldoc-enable-hover t)
-    (lsp-eldoc-render-all t)
-    (lsp-enable-dap-auto-configure t)
-    (lsp-enable-file-watchers nil)
-    (lsp-enable-folding nil)
-    (lsp-enable-imenu t)
-    (lsp-enable-indentation nil)
-    (lsp-enable-on-type-formatting nil)
-    (lsp-enable-suggest-server-download t)
-    (lsp-enable-symbol-highlighting t)
-    (lsp-enable-text-document-color t)
-    ;; modeline
-    (lsp-modeline-code-actions-enable nil)     ; Modeline should be relatively clean
-    (lsp-modeline-diagnostics-enable nil)      ; Already supported through `flycheck'/ `flymake'
-    (lsp-modeline-workspace-status-enable nil) ; Modeline displays "LSP" when lsp-mode is enabled
-    (lsp-signature-doc-lines 1)                ; Don't raise the echo area. It's distracting
-    (lsp-eldoc-render-all t)
-    ;; completion
-    (lsp-completion-enable t)
-    (lsp-completion-enable-additional-text-edit t) ; Ex: auto-insert an import for a completion candidate
-    (lsp-enable-snippet nil)                       ; Important to provide full JSX completion
-    (lsp-completion-show-kind t)                   ; Optional
-    ;; lens
-    (lsp-lens-enable t)
-    ;; headerline
-    (lsp-headerline-breadcrumb-enable-symbol-numbers t)
-    (lsp-headerline-arrow "▶")
-    (lsp-headerline-breadcrumb-enable-diagnostics nil)
-    (lsp-headerline-breadcrumb-icons-enable nil)
-    ;; semantic
-    (lsp-semantic-tokens-enable nil)
-
-    ;; RUBY - ruby-lsp
-    (lsp-disabled-clients '(ruby-ls rubocop-ls))   ;; we disable these so ruby-lsp is next in priority
-    ;; (lsp-ruby-lsp-library-directories '("~/.asdf/shims/" "~/.rbenv/" "/usr/lib/ruby/" "~/.rvm/" "~/.gem/"))
-
-    ;; RUBY - solargraph
-    ;;  (lsp-solargraph-use-bundler nil)    ;; Use Bundler if the project uses it
-    ;;  (lsp-solargraph-multi-root nil)     ;; Only work in the current project
-    ;;  (lsp-solargraph-diagnostics t)      ;; Enable diagnostics
-    ;;  (lsp-solargraph-log-level "warn")
-    ;;  (lsp-solargraph-library-directories '("~/.asdf/" "~/.rbenv/" "/usr/lib/ruby/" "~/.rvm/" "~/.gem/"))
-
-    ;; :config
-    ;; FIXME: Trying to make hover work with ruby-lsp
-    ;;
-    ;; Try 0 - ruby-lsp just increasing priority
-    ;; (with-eval-after-load 'lsp-mode
-    ;;   (lsp-register-client
-    ;;    (make-lsp-client
-    ;;     :new-connection (lsp-stdio-connection '("ruby-lsp"))
-    ;;     :activation-fn (lsp-activate-on "ruby")
-    ;;     :library-folders-fn (lambda (_workspace) lsp-ruby-lsp-library-directories)
-    ;;     :priority 10   ;; Same as default, just priority increased
-    ;;     :server-id 'ruby-lsp-ls)))
-
-    ;; ;; Try 1 - ruby-lsp
-    ;; (add-hook 'ruby-mode-hook
-    ;;           (lambda ()
-    ;;             (require 'lsp-mode)
-    ;;             (add-to-list 'lsp-language-id-configuration '(ruby-mode . "ruby-lsp"))
-    ;;             (lsp-register-client
-    ;;              (make-lsp-client
-    ;;               :new-connection (lsp-stdio-connection '("ruby-lsp"))
-    ;;               :activation-fn (lambda (&rest _) t) ;; Activation function can be simplified.
-    ;;               :library-folders-fn (lambda (_workspace) '("~/.rbenv/" "/usr/lib/ruby/" "~/.rvm/" "~/.gem/" "~/.asdf"))
-    ;;               :server-id 'ruby-lsp
-    ;;               :notification-handlers (ht ("textDocument/hover" #'ignore))
-    ;;               ))
-    ;;             (lsp))) ;; Ensure the LSP is started.
-
-        ;;; Try 2 - ruby-lsp with json by shopify
-    ;; (with-eval-after-load 'lsp-mode
-    ;;   (lsp-register-client
-    ;;    (make-lsp-client
-    ;;     :new-connection (lsp-stdio-connection "ruby-lsp")
-    ;;     :major-modes '(ruby-mode enh-ruby-mode ruby-ts-mode)
-    ;;     :server-id 'ruby-lsp
-    ;;     :initialized-fn (lambda (workspace)
-    ;;                       (with-lsp-workspace workspace
-    ;;                         (lsp--set-configuration
-    ;;                          `(:ruby-lsp ,(json-encode
-    ;;                                        '(:enabledFeatures
-    ;;                                          (:codeActions t
-    ;;                                                        :codeLens t
-    ;;                                                        :completion t
-    ;;                                                        :definition t
-    ;;                                                        :diagnostics t
-    ;;                                                        :documentHighlights t
-    ;;                                                        :documentLink t
-    ;;                                                        :documentSymbols t
-    ;;                                                        :foldingRanges t
-    ;;                                                        :formatting t
-    ;;                                                        :hover t
-    ;;                                                        :inlayHint t
-    ;;                                                        :onTypeFormatting t
-    ;;                                                        :selectionRanges t
-    ;;                                                        :semanticHighlighting t
-    ;;                                                        :signatureHelp t
-    ;;                                                        :typeHierarchy t
-    ;;                                                        :workspaceSymbol t)
-    ;;                                          :featuresConfiguration
-    ;;                                          (:inlayHint
-    ;;                                           (:implicitHashValue t
-    ;;                                                               :implicitRescue t))
-    ;;                                          :indexing
-    ;;                                          (:excludedPatterns ["path/to/excluded/file.rb"]
-    ;;                                                             :includedPatterns ["path/to/included/file.rb"]
-    ;;                                                             :excludedGems ["gem1" "gem2" "etc."]
-    ;;                                                             :excludedMagicComments ["compiled:true"])
-    ;;                                          :formatter "auto"
-    ;;                                          :linters []
-    ;;                                          :experimentalFeaturesEnabled :json-false))))))
-    ;;     :initialization-options (lambda () `(:enabledFeatures
-    ;;                                          (:codeActions t
-    ;;                                                        :codeLens t
-    ;;                                                        :completion t
-    ;;                                                        :definition t
-    ;;                                                        :diagnostics t
-    ;;                                                        :documentHighlights t
-    ;;                                                        :documentLink t
-    ;;                                                        :documentSymbols t
-    ;;                                                        :foldingRanges t
-    ;;                                                        :formatting t
-    ;;                                                        :hover t
-    ;;                                                        :inlayHint t
-    ;;                                                        :onTypeFormatting t
-    ;;                                                        :selectionRanges t
-    ;;                                                        :semanticHighlighting t
-    ;;                                                        :signatureHelp t
-    ;;                                                        :typeHierarchy t
-    ;;                                                        :workspaceSymbol t)
-    ;;                                          :featuresConfiguration
-    ;;                                          (:inlayHint
-    ;;                                           (:implicitHashValue t
-    ;;                                                               :implicitRescue t))
-    ;;                                          :indexing
-    ;;                                          (:excludedPatterns ["path/to/excluded/file.rb"]
-    ;;                                                             :includedPatterns ["path/to/included/file.rb"]
-    ;;                                                             :excludedGems ["gem1" "gem2" "etc."]
-    ;;                                                             :excludedMagicComments ["compiled:true"])
-    ;;                                          :formatter "auto"
-    ;;                                          :linters []
-    ;;                                          :experimentalFeaturesEnabled :json-false)))))
-
-
-    :init
-    (setq lsp-use-plists t)
-    ;; (lsp-inlay-hints-mode)
-    ))
-
-
-;;;;;;;; LSP-Prisma
-(use-package lsp-prisma
-  :defer t
-  :after (:any prisma-mode)
-  :load-path "site-lisp/prisma-mode/")
-
-
-;;;;;;;; LSP-Tailwindcss
-(use-package lsp-tailwindcss
-  :ensure t
-  :straight t
-  :defer t
-  :config
-  (add-to-list 'lsp-language-id-configuration '(".*\\.erb$" . "html"))
+  (eglot-events-buffer-size 0) ;; EMACS-31 -- do we still need it?
+  (eglot-events-buffer-config '(:size 0 :format full))
+  (eglot-prefer-plaintext nil)
+  (jsonrpc-event-hook nil)
+  (eglot-code-action-indications nil) ;; EMACS-31 -- annoying as hell
   :init
-  (setq lsp-tailwindcss-add-on-mode t))
+  (fset #'jsonrpc--log-event #'ignore)
 
+  (setq-default eglot-workspace-configuration (quote
+                                               (:gopls (:hints (:parameterNames t)))))
 
-;;;;;;;; LSP-Booster
-;; This is not a package, but an override.
-;; First, install the Rust booster with: cargo install emacs-lsp-booster.
-;; Now, the overrides below:
-(defun lsp-booster--advice-json-parse (old-fn &rest args)
-  "Try to parse bytecode instead of json."
-  (or
-   (when (equal (following-char) ?#)
-     (let ((bytecode (read (current-buffer))))
-       (when (byte-code-function-p bytecode)
-         (funcall bytecode))))
-   (apply old-fn args)))
+  (defun emacs-solo/eglot-setup ()
+    "Setup eglot mode with specific exclusions."
+    (unless (eq major-mode 'emacs-lisp-mode)
+      (eglot-ensure)))
 
-(advice-add (if (progn (require 'json)
-                       (fboundp 'json-parse-buffer))
-                'json-parse-buffer
-              'json-read)
-            :around
-            #'lsp-booster--advice-json-parse)
+  (add-hook 'prog-mode-hook #'emacs-solo/eglot-setup)
 
-(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  "Prepend emacs-lsp-booster command to lsp CMD."
-  (let ((orig-result (funcall old-fn cmd test?)))
-    (if (and (not test?)                             ;; for check lsp-server-present?
-             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-             lsp-use-plists
-             (not (functionp 'json-rpc-connection))  ;; native json-rpc
-             (executable-find "emacs-lsp-booster"))
-        (progn
-          (when-let* ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-            (setcar orig-result command-from-exec-path))
-          (message "Using emacs-lsp-booster for %s!" orig-result)
-          (cons "emacs-lsp-booster" orig-result))
-      orig-result)))
+  (with-eval-after-load 'eglot
+    (add-to-list
+     'eglot-server-programs
+     '((ruby-mode ruby-ts-mode) "ruby-lsp")))
 
-(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+  (with-eval-after-load 'eglot
+    (add-to-list
+     'eglot-server-programs
+     '((tsx-ts-mode typescript-ts-mode js-mode js-jsx-mode js-ts-mode)
+       . ("rass"
+          "--"
+          "typescript-language-server" "--stdio"
+          "--"
+          "eslint-lsp" "--stdio"
+          "--"
+          "tailwindcss-language-server" "--stdio"))))
+
+  :bind (:map
+         eglot-mode-map
+         ("C-c l a" . eglot-code-actions)
+         ("C-c l o" . eglot-code-action-organize-imports)
+         ("C-c l r" . eglot-rename)
+         ("C-c l i" . eglot-inlay-hints-mode)
+         ("C-c l f" . eglot-format)))
 
 
 ;;;; Tools - Session and Window Management
 ;;;;;; Ace Window
 (use-package ace-window
   :ensure t
-  :straight t
   :defer t
   :bind
   ("M-O" . ace-window)
@@ -3168,7 +2565,6 @@ both as options to ~when I need to run a term~."
 ;;;;;; IBuffer-Project
 (use-package ibuffer-project
   :ensure t
-  :straight t
   ;; :defer t
   :config
   (add-hook
@@ -3179,218 +2575,14 @@ both as options to ~when I need to run a term~."
        (ibuffer-do-sort-by-project-file-relative)))))
 
 
-;;;;;; Transpose
-(use-package transpose-frame
-  :defer t
-  :ensure t
-  :straight t
-  :bind
-  (("C-x 4 t" . transpose-frame)
-   ("C-x 4 r" . rotate-frame-clockwise)))
-
-
-;;;;;; Persp
-(use-package persp-mode
-  :defer t
-  :ensure t
-  :straight t
-  :custom
-  (persp-auto-save-opt 0)     ;; I don't want perspectives saved
-  (persp-auto-resume-time 0)
-  (persp-lighter              ;; How persp is shown in modeline
-   '(:eval
-     (format
-      (propertize " #%.12s" 'face
-                  (let ((persp (get-current-persp)))
-                    (if persp
-                        (if
-                            (persp-contain-buffer-p (current-buffer)
-                                                    persp)
-                            'font-lock-builtin-face
-                          'persp-face-lighter-buffer-not-in-persp)
-                      'persp-face-lighter-nil-persp)))
-      (safe-persp-name (get-current-persp)))))
-  :hook
-  (after-init . persp-mode)
-  :config
-  ;; Makes tab-bar tabs also restorable via persp-mode
-  ;; FIXME
-  ;; (add-hook 'persp-before-deactivate-functions
-  ;;           (defun +workspaces-save-tab-bar-data-h (_)
-  ;;             (when (get-current-persp)
-  ;;               (set-persp-parameter
-  ;;                'tab-bar-tabs (tab-bar-tabs)))))
-
-  ;; FIXME
-  ;; (add-hook 'persp-activated-functions
-  ;;           (defun +workspaces-load-tab-bar-data-h (_)
-  ;;             (tab-bar-tabs-set (persp-parameter 'tab-bar-tabs))
-  ;;             (tab-bar--update-tab-bar-lines t)))
-
-  ;; Makes persp name appear on global-mode-string, hence it
-  ;; is also printed on tab-bar, top-right position
-  (add-to-list 'tab-bar-format 'tab-bar-format-align-right 'append)
-  (add-to-list 'tab-bar-format 'tab-bar-format-global 'append)
-
-  (defun lemacs/persp-tab-bar-format ()
-    "Return the current perspective name formatted for the tab-bar."
-    (when (bound-and-true-p lemacs/persp-global-string)
-      (concat " "
-              (propertize " " 'display '(raise +0.05))
-              (propertize (concat " " lemacs/persp-global-string " ")
-                          'face '(:foreground "white" :background "#242837"
-                                              :weight bold
-                                              ;; :box (:line-width 1 :color "#676E95")
-                                              ))
-              (propertize " " 'display '(raise -0.05))
-              " ")))
-
-  (add-to-list 'tab-bar-format #'lemacs/persp-tab-bar-format 'append)
-
-  (defun lemacs/update-persp-in-global-mode-string (&rest _)
-    "Update `lemacs/persp-global-string` with the current perspective name."
-    (when (bound-and-true-p persp-mode)
-      (setq lemacs/persp-global-string persp-last-persp-name)
-      (tab-bar--update-tab-bar-lines)))
-
-  (defun lemacs/setup-persp-global-mode-string ()
-    "Set up integration of `lemacs/persp-global-string` with the tab-bar."
-    (add-hook 'persp-activated-functions #'lemacs/update-persp-in-global-mode-string)
-    (add-hook 'persp-renamed-functions #'lemacs/update-persp-in-global-mode-string)
-    (add-hook 'persp-created-functions #'lemacs/update-persp-in-global-mode-string)
-    (add-hook 'persp-before-switch-functions #'lemacs/update-persp-in-global-mode-string))
-
-  (lemacs/setup-persp-global-mode-string))
-
-
-;;;;;; Persp-Mode-Project-Bridge
-(use-package persp-mode-project-bridge
-  :defer t
-  :ensure t
-  :straight t
-  :hook
-  (persp-mode-project-bridge-mode . (lambda ()
-                                      (if persp-mode-project-bridge-mode
-                                          (persp-mode-project-bridge-find-perspectives-for-all-buffers)
-                                        (persp-mode-project-bridge-kill-perspectives))))
-  (persp-mode . persp-mode-project-bridge-mode))
-
-
 ;;;; Tools - Media Players
-;;;;;; EMMS
-(use-package emms
-  :defer 3
-  :ensure t
-  :straight t
-  :config
-  (require 'emms-setup)
-  (emms-all)
-  (emms-default-players)
-  (setq-default
-   emms-source-playlist-default-format 'm3u
-   emms-playlist-mode-center-when-go t
-   emms-playlist-default-major-mode 'emms-playlist-mode
-   emms-show-format "NP: %s"
-
-   emms-player-list '(emms-player-mpv)
-   emms-player-mpv-environment '("PULSE_PROP_media.role=music")
-   emms-player-mpv-parameters '("--quiet" "--really-quiet" "--no-video" "--no-audio-display" "--force-window=no" "--vo=null"))
-  (setq emms-player-mpv-update-metadata t)
-
-  ;; The tinytag python package is a dependency
-  ;; Install it with: python3 -m pip install tinytag
-  (setq emms-info-functions '(emms-info-tinytag))
-
-  ;; Load cover images
-  (setq emms-browser-covers 'emms-browser-cache-thumbnail-async)
-
-  (defun pad-string (str len)
-    "Return a string of length LEN starting with STR, truncating or padding as necessary."
-    (let* ((str-len (length str))
-           (extra-len (- len str-len)))
-      (if (>= extra-len 0)
-          (concat str (make-string extra-len ? ))
-        (concat (substring str 0 (- len 3)) "..."))))
-
-  (defun my-emms-track-description-function (track)
-    "Detailed track listing for TRACK."
-    (let ((type (emms-track-get track 'type))
-          (name (emms-track-get track 'name))
-          (artist (emms-track-get track 'info-artist))
-          (album (emms-track-get track 'info-album))
-          (title (emms-track-get track 'info-title))
-          (tracknumber (emms-track-get track 'info-tracknumber))
-          (year (emms-track-get-year track))
-          (timet (emms-track-get track 'info-playing-time)))
-      (cond ((eq type 'file)
-             ;; If it has a minimum of metadata
-             (if (and artist title)
-                 (concat
-                  " "
-                  (pad-string
-                   (if title
-                       (if tracknumber
-                           (concat "["
-                                   (format "%02d" (string-to-number tracknumber))
-                                   "] "
-                                   title)
-                         title)
-                     "Unknown Title")
-                   33)
-                  "  "
-                  (pad-string (if timet
-                                  (format "%02d:%02d" (/ timet 60) (% timet 60))
-                                "")
-                              5)
-                  "  "
-                  (pad-string (or artist "Unknown Artist") 18)
-                  "  "
-                  (pad-string (if album
-                                  (if year
-
-                                      album)
-                                "Unknown Album")
-                              25)
-                  "  "
-                  (pad-string (or year "")
-                              4))
-               name))
-            ((eq 'url type)
-             (emms-format-url-track-name name))
-            ;; E.g. playlists
-            (t (concat (symbol-name type) ":" name)))))
-
-  (setq emms-track-description-function 'my-emms-track-description-function))
-
-
 ;;;;;; Ready Player
 (use-package ready-player
   :defer t
   :ensure t
-  :straight t
   :after dired
   :hook
   (dired-mode . ready-player-mode))
-
-
-;;;;;; Yeetube
-;; (use-package yeetube
-;;   :ensure t
-;;   :straight (yeetube :source melpa)
-;;   :defer t
-;;   :init (define-prefix-command 'lemacs/yeetube-map)
-;;   :config
-;;   (setf yeetube-mpv-disable-video t) ;; Disable video output
-;;   :bind (("C-c y" . 'lemacs/yeetube-map)
-;;         :map lemacs/yeetube-map
-;;         ("s" . 'yeetube-search)
-;;         ("b" . 'yeetube-play-saved-video)
-;;         ("d" . 'yeetube-download-videos)
-;;         ("p" . 'yeetube-mpv-toggle-pause)
-;;         ("v" . 'yeetube-mpv-toggle-video)
-;;         ("V" . 'yeetube-mpv-toggle-no-video-flag)
-;;         ("k" . 'yeetube-remove-saved-video)))
-
 
 
 ;;;; Tools - Modeline
@@ -3398,7 +2590,6 @@ both as options to ~when I need to run a term~."
 (use-package doom-modeline
   :defer t
   :ensure t
-  :straight t
   :hook
   (after-init . (lambda ()
                   (if (eq lemacs-default-modeline 'doom)
@@ -3420,7 +2611,6 @@ both as options to ~when I need to run a term~."
 ;;;;;; Nerd-Icons
 (use-package nerd-icons
   :ensure t
-  :straight t
   :defer nil
   :if lemacs-nerd-icons
   ;; :custom
@@ -3435,7 +2625,6 @@ both as options to ~when I need to run a term~."
 (use-package nerd-icons-completion
   :if lemacs-nerd-icons
   :ensure t
-  :straight t
   ;; :defer t
   :after (:all nerd-icons marginalia)
   :config
@@ -3447,7 +2636,6 @@ both as options to ~when I need to run a term~."
 (use-package nerd-icons-corfu
   :if lemacs-nerd-icons
   :ensure t
-  :straight t
   :defer t
   :after (:all corfu))
 
@@ -3457,7 +2645,7 @@ both as options to ~when I need to run a term~."
   ;; :defer t
   :if lemacs-nerd-icons
   :ensure t
-  :straight t
+
   :after (:all nerd-icons dired)
   :config
   (add-hook 'dired-mode-hook #'nerd-icons-dired-mode))
@@ -3468,7 +2656,7 @@ both as options to ~when I need to run a term~."
   ;; :defer t
   :if lemacs-nerd-icons
   :ensure t
-  :straight t
+
   :after (:any nerd-icons)
   :config
   (add-hook 'ibuffer-mode-hook #'nerd-icons-ibuffer-mode))
@@ -3477,15 +2665,13 @@ both as options to ~when I need to run a term~."
 ;;;;;; Treemacs-Icons-Dired
 (use-package treemacs-icons-dired
   :defer t
-  :ensure t
-  :straight t)
+  :ensure t)
 
 
 ;;;;;; Treemacs-Nerd-Icons
 (use-package treemacs-nerd-icons
   :if lemacs-nerd-icons
   :ensure t
-  :straight t
   :defer 1
   :config
   (treemacs-load-theme "nerd-icons"))
@@ -3496,7 +2682,6 @@ both as options to ~when I need to run a term~."
 (use-package org-ros
   :defer t
   :ensure t
-  :straight t
   :bind
   (("C-S-p" . org-ros)))
 
@@ -3505,7 +2690,6 @@ both as options to ~when I need to run a term~."
 (use-package org-modern
   :defer t
   :ensure t
-  :straight t
   :hook
   (org-mode . org-modern-mode))
 
@@ -3515,37 +2699,13 @@ both as options to ~when I need to run a term~."
 ;;;;;; Vdirel
 (use-package vdirel
   :ensure t
-  :straight t
   :defer t)
-
-
-;;;;;; Khalel
-;; (use-package khalel
-;;   :ensure t
-;; :straight t
-;;   :after org
-;;   :config
-;;   ;; (setq khalel-khal-command "~/.local/bin/khal")
-;;   (setq org-agenda-files  (list (concat org-directory "/" "calendar.org")))
-;;   (setq khalel-import-org-file (concat org-directory "/" "calendar.org"))
-;;   (setq khalel-vdirsyncer-command "vdirsyncer")
-;;   (setq khalel-capture-key "e")
-;;   (setq khalel-import-org-file-confirm-overwrite nil)
-;;   (setq khalel-import-end-date "+30d")
-
-;;   (defun lemacs/calendar-sync ()
-;;     (interactive)
-;;     (khalel-run-vdirsyncer)
-;;     (khalel-import-events))
-
-;;   (khalel-add-capture-template))
 
 
 ;;;; Tools - Processes Management
 ;;;;;; Proced-Narrow
 (use-package proced-narrow
   :ensure t
-  :straight t
   :defer t
   :after proced)
 
@@ -3558,92 +2718,25 @@ both as options to ~when I need to run a term~."
 ;; look at =doc/verb_example.org= for examples of how to use it.
 (use-package verb
   :ensure t
-  :straight t
   :defer t)
-
-
-;;;; Tools - RSS News Feeds
-;;;;;; Elfeed
-(use-package elfeed
-  :defer t
-  :ensure t
-  :straight t
-  :config
-  (setq elfeed-use-curl t)
-  (define-advice elfeed-search--header (:around (oldfun &rest args))
-    (if elfeed-db
-        (apply oldfun args)
-      "No database loaded yet"))
-
-  ;; NOTE: set your feeds like these
-  ;; (setq elfeed-feeds
-  ;;       '(
-  ;;         "https://planet.emacslife.com/atom.xml"
-  ;;         "https://www.rahuljuliato.com/rss.xml"
-  ;;         "https://www.youtube.com/feeds/videos.xml?channel_id=UCAiiOTio8Yu69c3XnR7nQBQ"
-  ;;         ))
-
-  (add-hook 'elfeed-new-entry-hook
-            (elfeed-make-tagger :feed-url "youtube\\.com"
-                                :add '(video youtube)))
-
-  (add-hook 'elfeed-new-entry-hook
-            (elfeed-make-tagger :before "2 weeks ago"
-                                :remove 'unread))
-
-  (defun lemacs/elfeed-play-enclosure ()
-    "Play elfeed enclosure file (for podcasts)."
-    (interactive)
-    (require 'mpv)
-    (let ((entry elfeed-show-entry))
-      (if entry
-          (let ((entry elfeed-show-entry)
-                (url (car (elt (elfeed-entry-enclosures entry)  0 ))))
-            (message (concat ">>> Loading: " url))
-            (mpv-play-url url))))))
-
-
-;;;;;; Elfeed Tube
-(use-package elfeed-tube
-  :ensure t
-  :straight t
-  :defer t
-  :hook
-  (elfeed-search-update . elfeed-tube-setup)
-  :config
-  ;; (setq elfeed-tube-auto-save-p nil) ; default value
-  ;; (setq elfeed-tube-auto-fetch-p t)  ; default value
-  )
-
-
-;;;;;; Elfeed Tube MPV
-(use-package elfeed-tube-mpv
-  ;; :defer t
-  :ensure t
-  :straight t
-  :after elfeed-tube)
-
 
 ;;;; Tools - Sharing
 ;;;;;; 0x0
 (use-package 0x0
   :ensure t
-  :straight t
   :defer t)
 
 
 ;;;;;; Transmission
 (use-package transmission
   :defer t
-  :ensure t
-  :straight t)
+  :ensure t)
 
 
 ;;;; Tools - Splash-screen
 ;;;;;; Dashboard
 (use-package dashboard
   :ensure t
-  :straight t
   :defer 2
   :config
   ;; (setq dashboard-startup-banner (".....logo.png" . ".....logo.txt"))
@@ -3701,10 +2794,10 @@ both as options to ~when I need to run a term~."
   (setq dashboard-navigator-buttons ;; format: icon title help action face prefix suffix`.
         `((
            (,(nerd-icons-faicon "nf-fa-envelope") "gnus" "" (lambda (&rest _) (gnus)))
-           (,(nerd-icons-faicon "nf-fa-rss") "elfeed" "" (lambda (&rest _) (elfeed)))
+           ;; (,(nerd-icons-faicon "nf-fa-rss") "elfeed" "" (lambda (&rest _) (elfeed)))
            (,(nerd-icons-faicon "nf-fa-firefox") "eww" "" (lambda (&rest _) (call-interactively 'eww)))
-           (,(nerd-icons-faicon "nf-fa-music") "emms" "" (lambda (&rest _) (emms-browser)))
-           (,(nerd-icons-faicon "nf-fa-youtube_play") "yeetube" "" (lambda (&rest _) (call-interactively 'yeetube-search)))
+           ;; (,(nerd-icons-faicon "nf-fa-music") "emms" "" (lambda (&rest _) (emms-browser)))
+           ;; (,(nerd-icons-faicon "nf-fa-youtube_play") "yeetube" "" (lambda (&rest _) (call-interactively 'yeetube-search)))
            (,(nerd-icons-faicon "nf-fa-hashtag") "erc" "" (lambda (&rest _) (call-interactively 'erc-tls)))
            (,(nerd-icons-faicon "nf-fa-cog") "config" "" (lambda (&rest _) (call-interactively (customize-group 'lemacs))))
            )))
@@ -3717,7 +2810,6 @@ both as options to ~when I need to run a term~."
 (use-package exec-path-from-shell
   :defer t
   :ensure t
-  :straight t
   :hook
   (after-init . (lambda ()
                   (when (memq window-system '(mac ns x))
@@ -3727,7 +2819,6 @@ both as options to ~when I need to run a term~."
 ;;;;;; Add node-modules path
 (use-package add-node-modules-path
   :ensure t
-  :straight t
   :defer t
   :custom
   ;; Makes sure you are using the local bin for your
@@ -3746,7 +2837,6 @@ both as options to ~when I need to run a term~."
 (use-package xclip
   :defer t
   :ensure t
-  :straight t
   :config
   (xclip-mode 1))
 
@@ -3755,14 +2845,12 @@ both as options to ~when I need to run a term~."
 ;;;;;; Vterm
 (use-package vterm
   :ensure t
-  :straight t
   :defer t)
 
 
 ;;;;;; Eshell Z
 (use-package eshell-z
   :ensure t
-  :straight t
   :defer t
   :hook
   (eshell-mode . (lambda ()
@@ -3773,7 +2861,6 @@ both as options to ~when I need to run a term~."
 ;;;;;; Eshell-Syntax-Highlighting
 (use-package eshell-syntax-highlighting
   :ensure t
-  :straight t
   :defer t
   :after eshell
   :config
@@ -3785,22 +2872,11 @@ both as options to ~when I need to run a term~."
     :group 'eshell-syntax-highlighting))
 
 
-;;;;;; Sudo Edit
-;; This package provides *sudo-edit* and *sudo-edit-find-file* so we can
-;; easily edit files as root, either from an open buffer or finding a
-;; file via *C-x f* or inside eshell.
-(use-package sudo-edit
-  :ensure t
-  :straight t
-  :defer t)
-
-
 ;;;; Tools - Text Visualization Aid
 ;;;;;; Eldoc
 (use-package eldoc
   :defer t
   :ensure t
-  :straight t
   :config
   (setq eldoc-idle-delay 0)
   (setq eldoc-echo-area-use-multiline-p nil)
@@ -3812,7 +2888,6 @@ both as options to ~when I need to run a term~."
   :if (window-system)
   :defer t
   :ensure t
-  :straight t
   :after (:all eldoc)
   :custom-face
   ;; (eldoc-box-border ((t (:background "#333"))))
@@ -3854,15 +2929,13 @@ both as options to ~when I need to run a term~."
 ;;;;;; GH-MD
 (use-package gh-md
   :defer t
-  :ensure t
-  :straight t)
+  :ensure t)
 
 
 ;;;;;; HL-TODO
 (use-package hl-todo
   :defer t
   :ensure t
-  :straight t
   :hook
   (prog-mode . hl-todo-mode))
 
@@ -3871,7 +2944,6 @@ both as options to ~when I need to run a term~."
 (use-package indent-guide
   :defer t
   :ensure t
-  :straight t
   :hook
   (prog-mode . indent-guide-mode)
   :config
@@ -3883,7 +2955,6 @@ both as options to ~when I need to run a term~."
   :if (eq lemacs-ligatures 'on)
   :defer t
   :ensure t
-  :straight t
   :hook (after-init . global-ligature-mode)
   :config
   ;; Enable the "www" ligature in every possible major mode
@@ -3911,7 +2982,6 @@ both as options to ~when I need to run a term~."
 (use-package olivetti
   :defer t
   :ensure t
-  :straight t
   :init
   (defun lemacs/center-visual-fill-on ()
     (interactive)
@@ -3925,8 +2995,6 @@ both as options to ~when I need to run a term~."
     (olivetti-mode 0)
     (visual-line-mode 1))
 
-  (add-hook 'elfeed-show-mode-hook 'lemacs/center-visual-fill-on)
-  (add-hook 'elfeed-search-mode-hook 'lemacs/center-visual-fill-on)
   (add-hook 'gnus-group-mode-hook 'lemacs/center-visual-fill-on)
   (add-hook 'gnus-summary-mode-hook 'lemacs/center-visual-fill-on)
   (add-hook 'gnus-article-mode-hook 'lemacs/center-visual-fill-on)
@@ -3945,7 +3013,6 @@ both as options to ~when I need to run a term~."
 (use-package kkp
   :if (not window-system)
   :ensure t
-  :straight t
   :defer t
   :config
   ;; (setq kkp-alt-modifier 'alt) ;; use this if you want to map the Alt keyboard modifier to Alt in Emacs (and not to Meta)
@@ -3955,8 +3022,7 @@ both as options to ~when I need to run a term~."
 ;;;;;; XTerm-Color
 (use-package xterm-color
   :defer t
-  :ensure t
-  :straight t)
+  :ensure t)
 
 
 ;; Provide
